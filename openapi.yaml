@@ -1,0 +1,354 @@
+openapi: 3.0.3
+info:
+  title: Attorney Tech API
+  description: Operating and get information of AttorneyTech
+  version: v1
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://localhost:3000/v1
+externalDocs:
+  description: GitHub Repository
+  url: https://github.com/AttorneyTech/attorneytech-API
+security:
+  - OAuth2:
+    - full
+paths:
+  /users:
+    post:
+      description: Create a user
+      summary: Create a user
+      tags:
+        - users
+      operationId: postUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPostBody'
+      responses: 
+        '201':
+          description: User record successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'  
+        '202':
+          description: The backend data source needs to do additional processing with the
+            new person record. Person record accepted but not yet created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'  
+        '400':
+          $ref: '#/components/responses/400'
+        '409':
+          $ref: '#/components/responses/409Post'
+        '500':
+          $ref: '#/components/responses/500'
+  /users/{userId}:
+    get:
+      description: Get information of a user
+      summary: Get information of a user
+      tags:
+        - users
+      operationId: getUserById
+      parameters:
+        - $ref: '#/components/parameters/userId'       
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+  parameters:
+    userId:
+      name: userId
+      in: path
+      required: true
+      description: ID of a user
+      schema:
+        type: string
+    
+  responses:
+    '400':
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    '404':
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    '409Post':
+      description: >-
+        The request body resource object's type was invalid or, if a username was used 
+        or a user has already be created, which means a resource already exists with this 
+        username or ID number
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    '409Patch':
+      description: >-
+        The request body resource object had an invalid type, invalid ID, or violated a uniqueness
+        constraint
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+  schemas:
+    UserType:
+      type: string
+      enum: [user]
+    UserPostRequired:
+      type: object
+      required:
+        - role
+        - idNumber
+        - firstName
+        - lastName
+    UserPostAttributes:
+      type: object
+      additionalProperties: false
+      properties:
+        role:
+          type: string
+          enum: [agent, client]
+          description: 
+            User's role
+            - `agent` - The attorney of law firm
+            - `client` - The client of law firm
+        username:
+          type: string
+          nullable: false
+          description: Username of user's account
+          example: mary449
+        password:
+          type: string
+          format: password
+          nullable: false
+          description: Password of user's account
+        idNumber:
+          type: string
+          nullable: false
+          description: Id number of User
+          example: A123456789
+        firstName:
+          type: string
+          nullable: false
+          description: First name of user
+          example: Mary
+        middleName:
+          type: string
+          description: Middle name of user
+          example: Elizabeth
+        lastName:
+          type: string
+          nullable: false
+          description: Last name of user
+          example: Smith
+        email:
+          type: string
+          description: Email address of user
+          example: mary.smith@gmail.com
+        phone:
+          type: string
+          description: Phone number of user
+          example: 0911123456
+        streetName:
+          type: string
+          description: The part of the user's address below the street name
+          example: 西園路一段 200 號 8 樓
+        district:
+          type: string
+          description: The district name of user's address
+          example: 萬華區
+        city:
+          type: string
+          description: The city name of user's address
+          example: 台北市
+        zipCode:
+          type: string
+          description: The zip code of user's address
+          example: '108'
+    UserAttributes: 
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [agent, client]
+          description: 
+            User's role
+            - `agent` - The attorney of law firm
+            - `client` - The client of law firm
+        username:
+          type: string
+          nullable: false
+          description: Username of user's account
+          example: mary449
+        password:
+          type: string
+          format: password
+          nullable: false
+          description: Password of user's account
+        firstName:
+          type: string
+          nullable: false
+          description: First name of user
+          example: Mary
+        middleName:
+          type: string
+          description: Middle name of user
+          example: Elizabeth
+        lastName:
+          type: string
+          nullable: false
+          description: Last name of user
+          example: Smith
+        email:
+          type: string
+          description: Email address of user
+          example: mary.smith@gmail.com
+        phone:
+          type: string
+          description: Phone number of user
+          example: 0911123456
+        streetName:
+          type: string
+          description: The part of the user's address below the street name
+          example: 西園路一段 200 號 8 樓
+        district:
+          type: string
+          description: The district name of user's address
+          example: 萬華區
+        city:
+          type: string
+          description: The city name of user's address
+          example: 台北市
+        zipCode:
+          type: string
+          description: The zip code of user's address
+          example: '108'      
+    UserResult: 
+      type: object
+      properties:
+        links:
+          $ref: '#/components/schemas/SelfLink'
+        data:
+          $ref: '#/components/schemas/UserResource'
+    UserResource:
+      type: object
+      properties:
+        id: 
+          type: string
+          description: ID of a user
+          example: '323'
+        type:
+          $ref: '#/components/schemas/UserType'
+        links:
+          $ref: '#/components/schemas/SelfLink'
+        attributes:
+          allOf:
+            - $ref: '#/components/schemas/UserPostAttributes'
+            - $ref: '#/components/schemas/UserAttributes'
+    UserPostBody:
+      type: object
+      required:
+        - data
+      additionalProperties: false
+      properties:
+        data:
+          type: object
+          required:
+            - type
+            - attributes
+          additionalProperties: false
+          properties:
+            type:
+              $ref: '#/components/schemas/UserType'
+            attributes:
+              allOf:
+                - $ref: '#/components/schemas/UserPostRequired'
+                - $ref: '#/components/schemas/UserPostAttributes'
+
+    SelfLink:
+      type: object
+      properties:
+        self:
+          type: string
+          format: uri
+          description: Self link of resource
+    ErrorObject:
+      type: object
+      properties:
+        status:
+          type: string
+          description: HTTP status code
+          example: '123'
+        title:
+          type: string
+          description: A short, user readable summary of the error
+          example: Not Found
+        code:
+          type: string
+          description: An application-specific error code
+          example: '1234'
+        detail:
+          type: string
+          description: A long description of the error that may contain instance-specific
+            details
+        links:
+          type: object
+          properties:
+            about:
+              type: string
+              format: uri
+              description: A link to further information about the error
+              example: 
+    ErrorResult:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorObject'
+
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 
+          scopes:
+            full: Full access to the API
