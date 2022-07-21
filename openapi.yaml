@@ -3,11 +3,15 @@ info:
   title: Attorney Tech API
   description: Operating and get information of AttorneyTech
   version: v1
+  contact:
+    name: Hsieh-Te Hsieh
+    url: https://github.com/AttorneyTech
+    email: attorneytech.tw@gmail.com
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://localhost:3000/v1
+  - url: https://localhost/v1
 externalDocs:
   description: GitHub Repository
   url: https://github.com/AttorneyTech/attorneytech-API
@@ -69,18 +73,6 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-
-
-
-
-
-
-
-
-
-
-
-
 components:
   parameters:
     userId:
@@ -90,7 +82,6 @@ components:
       description: ID of a user
       schema:
         type: string
-    
   responses:
     '400':
       description: Bad request
@@ -135,9 +126,9 @@ components:
       type: object
       required:
         - role
-        - idNumber
         - firstName
         - lastName
+        - email
     UserPostAttributes:
       type: object
       additionalProperties: false
@@ -145,7 +136,7 @@ components:
         role:
           type: string
           enum: [agent, client]
-          description: 
+          description: |
             User's role
             - `agent` - The attorney of law firm
             - `client` - The client of law firm
@@ -153,113 +144,73 @@ components:
           type: string
           nullable: false
           description: Username of user's account
-          example: mary449
+          example: saulgoodman2002
         password:
           type: string
           format: password
           nullable: false
           description: Password of user's account
-        idNumber:
-          type: string
-          nullable: false
-          description: Id number of User
-          example: A123456789
         firstName:
           type: string
           nullable: false
           description: First name of user
-          example: Mary
+          example: Saul
         middleName:
           type: string
           description: Middle name of user
-          example: Elizabeth
+          example: Jimmy
         lastName:
           type: string
           nullable: false
           description: Last name of user
-          example: Smith
+          example: Goodman
         email:
           type: string
+          nullable: false
           description: Email address of user
-          example: mary.smith@gmail.com
+          example: saul.goodman@gmail.com
         phone:
           type: string
           description: Phone number of user
-          example: 0911123456
-        streetName:
-          type: string
-          description: The part of the user's address below the street name
-          example: 西園路一段 200 號 8 樓
-        district:
-          type: string
-          description: The district name of user's address
-          example: 萬華區
-        city:
-          type: string
-          description: The city name of user's address
-          example: 台北市
-        zipCode:
-          type: string
-          description: The zip code of user's address
-          example: '108'
+          example: '0911123456'
+        address: 
+          type: object
+          properties:
+            addressLine1:
+              type: string
+              description: The street name, section, and house number of user's address
+              example: 西園路一段 200 號 8 樓
+            addressLine2:
+              type: string
+              description: The district name of user's address
+              example: 萬華區
+            city:
+              type: string
+              description: The city name of user's address
+              example: 台北市
+            zipCode:
+              type: string
+              description: The zip code of user's address
+              example: '108'
     UserAttributes: 
       type: object
       properties:
         role:
-          type: string
-          enum: [agent, client]
-          description: 
-            User's role
-            - `agent` - The attorney of law firm
-            - `client` - The client of law firm
+          $ref: '#/components/schemas/UserPostAttributes/properties/role'
         username:
-          type: string
-          nullable: false
-          description: Username of user's account
-          example: mary449
-        password:
-          type: string
-          format: password
-          nullable: false
-          description: Password of user's account
+          $ref: '#/components/schemas/UserPostAttributes/properties/username'
         firstName:
-          type: string
-          nullable: false
-          description: First name of user
-          example: Mary
+          $ref: '#/components/schemas/UserPostAttributes/properties/firstName'
         middleName:
-          type: string
-          description: Middle name of user
-          example: Elizabeth
+          $ref: '#/components/schemas/UserPostAttributes/properties/middleName'
         lastName:
-          type: string
-          nullable: false
-          description: Last name of user
-          example: Smith
+          $ref: '#/components/schemas/UserPostAttributes/properties/lastName'
         email:
-          type: string
-          description: Email address of user
-          example: mary.smith@gmail.com
+          $ref: '#/components/schemas/UserPostAttributes/properties/email'
         phone:
-          type: string
-          description: Phone number of user
-          example: 0911123456
-        streetName:
-          type: string
-          description: The part of the user's address below the street name
-          example: 西園路一段 200 號 8 樓
-        district:
-          type: string
-          description: The district name of user's address
-          example: 萬華區
-        city:
-          type: string
-          description: The city name of user's address
-          example: 台北市
-        zipCode:
-          type: string
-          description: The zip code of user's address
-          example: '108'      
+          $ref: '#/components/schemas/UserPostAttributes/properties/phone'
+        address: 
+          $ref: '#/components/schemas/UserPostAttributes/properties/address'
     UserResult: 
       type: object
       properties:
@@ -301,7 +252,6 @@ components:
               allOf:
                 - $ref: '#/components/schemas/UserPostRequired'
                 - $ref: '#/components/schemas/UserPostAttributes'
-
     SelfLink:
       type: object
       properties:
@@ -343,12 +293,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ErrorObject'
-
   securitySchemes:
     OAuth2:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: 
+          tokenUrl: 'http://'
           scopes:
             full: Full access to the API
