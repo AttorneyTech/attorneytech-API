@@ -31,16 +31,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPostBody'
-      responses: 
+      responses:  
         '201':
           description: User record successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResult'  
-        '202':
-          description: The backend data source needs to do additional processing with the
-            new person record. Person record accepted but not yet created.
           content:
             application/json:
               schema:
@@ -49,6 +42,42 @@ paths:
           $ref: '#/components/responses/400'
         '409':
           $ref: '#/components/responses/409Post'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      description: Get list of user
+      summary: Get list of user
+      tags:
+        - users
+      operationId: getUser
+      parameters:
+        - name: filter[role]
+          in: query
+          required: false
+          description: Filter results by role.
+          schema:
+            type: string
+        - name: filter[city]
+          in: query
+          required: false
+          description: Filter results by city.
+          schema:
+            type: string
+            enum:
+              &cityEnums [臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 新竹縣,
+              苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣,
+              澎湖縣, 金門縣, 連江縣, 基隆市, 新竹市, 嘉義市]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /users/{userId}:
@@ -71,6 +100,34 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    patch: 
+      description: Update information for a user
+      summary: Update information for a user
+      tags:
+        - users
+      operationId: patchUserById
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPatchBody'
+        description: patch body for a user
+        required: true
+      responses:  
+        '201':
+          description: User record successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'  
+        '400':
+          $ref: '#/components/responses/400'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
 components:
@@ -130,8 +187,17 @@ components:
         - lastName
         - email
     UserPostAttributes:
-      type: object
       additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/UserAttributes'
+        - properties: 
+            password:
+              type: string
+              format: password
+              nullable: false
+              description: Password of user's account     
+    UserAttributes: 
+      type: object
       properties:
         role:
           type: string
@@ -145,11 +211,6 @@ components:
           nullable: false
           description: Username of user's account
           example: saulgoodman2002
-        password:
-          type: string
-          format: password
-          nullable: false
-          description: Password of user's account
         firstName:
           type: string
           nullable: false
@@ -182,35 +243,17 @@ components:
               example: 西園路一段 200 號 8 樓
             addressLine2:
               type: string
-              description: The district name of user's address
+              description: The district or township or city of country name of user's address
               example: 萬華區
             city:
               type: string
+              enum: *cityEnums
               description: The city name of user's address
               example: 台北市
             zipCode:
               type: string
               description: The zip code of user's address
               example: '108'
-    UserAttributes: 
-      type: object
-      properties:
-        role:
-          $ref: '#/components/schemas/UserPostAttributes/properties/role'
-        username:
-          $ref: '#/components/schemas/UserPostAttributes/properties/username'
-        firstName:
-          $ref: '#/components/schemas/UserPostAttributes/properties/firstName'
-        middleName:
-          $ref: '#/components/schemas/UserPostAttributes/properties/middleName'
-        lastName:
-          $ref: '#/components/schemas/UserPostAttributes/properties/lastName'
-        email:
-          $ref: '#/components/schemas/UserPostAttributes/properties/email'
-        phone:
-          $ref: '#/components/schemas/UserPostAttributes/properties/phone'
-        address: 
-          $ref: '#/components/schemas/UserPostAttributes/properties/address'
     UserResult: 
       type: object
       properties:
@@ -252,6 +295,21 @@ components:
               allOf:
                 - $ref: '#/components/schemas/UserPostRequired'
                 - $ref: '#/components/schemas/UserPostAttributes'
+    UserPatchBody:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          required:
+            - type
+          additionalProperties: false
+          properties:
+            type:
+              $ref: '#/components/schemas/UserType'
+            attributes:
+              $ref: '#/components/schemas/UserPostAttributes'
     SelfLink:
       type: object
       properties:
@@ -270,22 +328,10 @@ components:
           type: string
           description: A short, user readable summary of the error
           example: Not Found
-        code:
-          type: string
-          description: An application-specific error code
-          example: '1234'
         detail:
           type: string
           description: A long description of the error that may contain instance-specific
             details
-        links:
-          type: object
-          properties:
-            about:
-              type: string
-              format: uri
-              description: A link to further information about the error
-              example: 
     ErrorResult:
       type: object
       properties:
@@ -298,6 +344,6 @@ components:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: 'http://'
+          tokenUrl: 'https://localhost/oauth/token'
           scopes:
             full: Full access to the API
