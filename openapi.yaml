@@ -163,7 +163,8 @@ paths:
         - events
       operationId: getEvents
       parameters:
-        - $ref: '#/components/parameters/filter[clientId]'
+        - $ref: '#/components/parameters/filterClientIds'
+        - $ref: '#/components/parameters/filterAgentIds'
       responses:
         '200':
           description: Successful response
@@ -274,7 +275,25 @@ paths:
           schema:
             type: integer
             format: int32
-            example: '111'
+        - name: filter[caseType]
+          in: query
+          required: false
+          description: Filter results by type of case.
+          schema:
+            type: string
+        - name: filter[causeOfAction]
+          in: query
+          required: false
+          description: Filter results by cause of action
+          schema:
+            type: string
+        - $ref: '#/components/parameters/filterEventIds'
+        - $ref: '#/components/parameters/filterClientIds'
+        - $ref: '#/components/parameters/filterAgentIds'
+        - $ref: '#/components/parameters/filterOppositeAgentIds'
+        - $ref: '#/components/parameters/filterOppositeClientIds'
+        - $ref: '#/components/parameters/filterSectionInChargeIds'
+        - $ref: '#/components/parameters/filterCourtIds'
       responses:
         '200':
           description: Successful response
@@ -361,13 +380,62 @@ components:
       description: ID of a case
       schema: 
         type: string 
-    filter[clientId]:
-      name: filter[clientId]
+    filterClientIds:
+      name: filter[clientIds]
       in: query
       required: false
-      description: Filter result by clientId
+      description: Filter result by clientIds
+      schema: 
+        type: string
+    filterAgentIds:
+      name: filter[agentIds]
+      in: query
+      required: false
+      description: Filter result by agentIds
+      schema: 
+        type: string
+    filterOppositeClientIds:
+      name: filter[oppositeClientIds]
+      in: query
+      required: false
+      description: Filter result by oppositeClientIds
+      schema: 
+        type: string
+    filterOppositeAgentIds:
+      name: filter[oppositeAgentIds]
+      in: query
+      required: false
+      description: Filter result by oppositeAgentIds
       schema: 
         type: string 
+    filterEventIds:
+      name: filter[eventIds]
+      in: query
+      required: false
+      description: Filter result by eventIds
+      schema: 
+        type: string
+    filterCaseIds:
+      name: filter[caseIds]
+      in: query
+      required: false
+      description: Filter result by caseIds
+      schema: 
+        type: string
+    filterCourtIds:
+      name: filter[courtIds]
+      in: query
+      required: false
+      description: Filter result by courtIds
+      schema: 
+        type: string
+    filterSectionInChargeIds:
+      name: filter[sectionInChargeIds]
+      in: query
+      required: false
+      description: Filter result by sectionInChargeIds
+      schema: 
+        type: string
   responses:
     '400':
       description: Bad request
