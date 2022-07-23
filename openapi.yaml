@@ -73,7 +73,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'
+                $ref: '#/components/schemas/UserSetResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -154,9 +154,9 @@ components:
             $ref: '#/components/schemas/ErrorResult'
     '409Post':
       description: >-
-        The request body resource object's type was invalid or, if a username was used 
-        or a user has already be created, which means a resource already exists with this 
-        username or ID number
+        The request body resource object's type was invalid or, if a username or email was 
+        used or a user has already be created, which means a resource already exists with this 
+        username or email
       content:
         application/json:
           schema:
@@ -228,6 +228,7 @@ components:
         email:
           type: string
           nullable: false
+          format: email
           description: Email address of user
           example: saul.goodman@gmail.com
         phone:
@@ -254,6 +255,15 @@ components:
               type: string
               description: The zip code of user's address
               example: '108'
+    UserSetResult:
+      type: object
+      properties:
+        links:
+          $ref: '#/components/schemas/SelfLink'
+        data: 
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResource'    
     UserResult: 
       type: object
       properties:
