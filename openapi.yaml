@@ -75,8 +75,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSetResult'
-        '400':
-          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -97,8 +95,6 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/UserResult'
-        '400':
-          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -162,9 +158,6 @@ paths:
       tags:
         - events
       operationId: getEvents
-      parameters:
-        - $ref: '#/components/parameters/filterClientIds'
-        - $ref: '#/components/parameters/filterAgentIds'
       responses:
         '200':
           description: Successful response
@@ -172,8 +165,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventSetResult'
-        '400':
-          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -194,8 +185,6 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/EventResult'
-        '400':
-          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -323,8 +312,6 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/CaseResult'
-        '400':
-          $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
         '500':
@@ -474,7 +461,7 @@ components:
   schemas:
     UserType:
       type: string
-      enum: [user]
+      enum: [users]
     EventType:
       type: string
       enum: [events]
@@ -630,8 +617,6 @@ components:
       type: object
       required:
         - name
-        - clientId
-        - oppositeClientId
     EventAttributes: 
       type: object
       additionalProperties: false
@@ -641,16 +626,6 @@ components:
           nullable: false
           description: Event name between client and opposite client
           example: 甲與乙間臺北市東興路房地拆屋還地事件
-        clientId: 
-          type: string
-          nullable: false
-          description: Identify which client was involved in this event
-          example: '213'
-        oppositeClientId:
-          type: string
-          nullable: false
-          description: Identify which opposite client was involved in this event
-          example: '121'
     EventSetResult:
       type: object
       properties:
@@ -719,8 +694,8 @@ components:
       required:
         - category
         - eventId
-        - clientId
-        - agentId
+        - clientIds
+        - agentIds
     CaseAttributes: 
       type: object
       additionalProperties: false
@@ -769,26 +744,34 @@ components:
           nullable: true
           description: Indicating which court is handling the case
           example: '5'
-        clientId: 
-          type: string
+        clientIds: 
+          type: array
+          items:
+            type: string
+            example: '1113'
           nullable: false
-          description: Identify which client was involved in the case
-          example: '1113'
-        agentId: 
-          type: string
+          description: Identify which clients were involved in the case
+        agentIds: 
+          type: array
+          items:
+            type: string
+            example: '1113'
           nullable: false
-          description: Identify which client was involved in the case
-          example: '1113'
-        oppositeClientId:
-          type: string
+          description: Identify which agents in law firm were involved in the case 
+        oppositeClientIds:
+          type: array
+          items:
+            type: string
+            example: '90'
           nullable: true
-          description: Identify which opposite client was involved in the case
-          example: '90'
-        oppositeAgentId:
-          type: string
+          description: Identify which opposite clients were involved in the case     
+        oppositeAgentIds:
+          type: array
+          items:
+            type: string
+            example: '4'
           nullable: true
-          description: Identify which opposite agent was involved in the case
-          example: '4'
+          description: Identify which opposite agents were involved in the case  
     CaseSetResult:
       type: object
       properties:
