@@ -860,7 +860,7 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-  /paper-files/{paperFilesId}: 
+  /paper-files/{paperFileId}: 
     get:
       description: Get a paper file by ID
       summary: Get a paper file by ID
