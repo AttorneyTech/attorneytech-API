@@ -77,8 +77,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserSetResult'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /users/{userId}:
@@ -127,8 +125,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /events:
@@ -169,8 +165,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventSetResult'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /events/{eventId}:
@@ -219,8 +213,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /cases:
@@ -308,8 +300,6 @@ paths:
                 $ref: '#/components/schemas/CaseSetResult'
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /cases/{caseId}: 
@@ -358,8 +348,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /courts:
@@ -433,8 +421,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /section-in-charges: 
@@ -479,8 +465,6 @@ paths:
                 $ref: '#/components/schemas/SectionInChargeSetResult'
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /section-in-charges/{sectionInChargeId}:
@@ -529,8 +513,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /opposite-clients: 
@@ -573,8 +555,6 @@ paths:
                 $ref: '#/components/schemas/OppositeClientSetResult'
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500' 
   /opposite-clients/{oppositeClientId}: 
@@ -623,8 +603,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /opposite-agents: 
@@ -648,8 +626,6 @@ paths:
                 $ref: '#/components/schemas/OppositeAgentResult'  
         '400':
           $ref: '#/components/responses/400'
-        '409':
-          $ref: '#/components/responses/409Post'
         '500':
           $ref: '#/components/responses/500'
     get:
@@ -669,8 +645,6 @@ paths:
                 $ref: '#/components/schemas/OppositeAgentSetResult'
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /opposite-agents/{oppositeAgentId}: 
@@ -719,8 +693,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /papers: 
@@ -774,8 +746,6 @@ paths:
                 $ref: '#/components/schemas/PaperSetResult'
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /papers/{paperId}:
@@ -824,8 +794,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /paper-files: 
@@ -870,8 +838,6 @@ paths:
                 $ref: '#/components/schemas/PaperFileSetResult'
         '400':
           $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
   /paper-files/{paperFileId}: 
@@ -920,8 +886,6 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
 components:
@@ -1106,14 +1070,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResult'
-    '409Patch':
-      description: >-
-        The request body resource object had an invalid type, invalid ID, or violated a uniqueness
-        constraint
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResult'
     '500':
       description: Internal server error
       content:
@@ -1148,16 +1104,16 @@ components:
     PaperFileType:
       type: string
       enum: [paperFiles]
-    UserPostAttributes:
-      additionalProperties: false
-      allOf:
-        - $ref: '#/components/schemas/UserAttributes'
-        - properties: 
-            password:
+    UserSecurityAttributes:
+      type: object
+      required:
+        - password
+      properties:
+        password:
               type: string
               format: password
               nullable: false
-              description: Password of user's account     
+              description: Password of user's account           
     UserAttributes: 
       type: object
       required:
@@ -1271,9 +1227,7 @@ components:
         links:
           $ref: '#/components/schemas/SelfLink'
         attributes:
-          allOf:
-            - $ref: '#/components/schemas/UserPostAttributes'
-            - $ref: '#/components/schemas/UserAttributes'
+          $ref: '#/components/schemas/UserAttributes'
     UserPostBody:
       type: object
       required:
@@ -1290,7 +1244,9 @@ components:
             type:
               $ref: '#/components/schemas/UserType'
             attributes:
-              $ref: '#/components/schemas/UserPostAttributes'
+              allOf:
+                - $ref: '#/components/schemas/UserAttributes'
+                - $ref: '#/components/schemas/UserSecurityAttributes'
     UserPatchBody:
       type: object
       required:
