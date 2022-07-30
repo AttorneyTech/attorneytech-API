@@ -125,6 +125,8 @@ paths:
                 $ref: '#/components/schemas/UserResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -215,6 +217,8 @@ paths:
                 $ref: '#/components/schemas/EventResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -352,6 +356,8 @@ paths:
                 $ref: '#/components/schemas/CaseResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -425,6 +431,8 @@ paths:
                 $ref: '#/components/schemas/CourtResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -519,6 +527,8 @@ paths:
                 $ref: '#/components/schemas/SectionInChargeResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -544,8 +554,6 @@ paths:
                 $ref: '#/components/schemas/OppositeClientResult'  
         '400':
           $ref: '#/components/responses/400'
-        '409':
-          $ref: '#/components/responses/409Post'
         '500':
           $ref: '#/components/responses/500'
     get:
@@ -613,6 +621,8 @@ paths:
                 $ref: '#/components/schemas/OppositeClientResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -707,6 +717,8 @@ paths:
                 $ref: '#/components/schemas/OppositeAgentResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -810,6 +822,8 @@ paths:
                 $ref: '#/components/schemas/PaperResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -904,6 +918,8 @@ paths:
                 $ref: '#/components/schemas/PaperFileResult'  
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Patch'
         '500':
@@ -1239,6 +1255,10 @@ components:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/UserResource'
+    UserId:
+      type: string
+      description: Uniquely identifies a user
+      example: '19'
     UserResource:
       type: object
       properties:
@@ -1279,13 +1299,82 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/UserId'
             type:
               $ref: '#/components/schemas/UserType'
             attributes:
-              $ref: '#/components/schemas/UserPostAttributes' 
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  nullable: false
+                  description: First name of user
+                  example: 研介
+                middleName:
+                  type: string
+                  nullable: true
+                  description: Middle name of user
+                lastName:
+                  type: string
+                  nullable: false
+                  description: Last name of user
+                  example: 古美門
+                eventIds: 
+                  type: array
+                  items:
+                    type: string
+                  nullable: true
+                  description: Identify which events were associated with the user
+                  example: ['231', '478']
+                caseIds: 
+                  type: array
+                  items:
+                    type: string
+                  nullable: true
+                  description: Identify which cases were associated with the user
+                  example: ['47', '30']
+                email:
+                  type: string
+                  nullable: false
+                  format: email
+                  description: Email address of user
+                  example: saul.goodman@gmail.com
+                phone:
+                  type: string
+                  nullable: true
+                  description: Phone number of user
+                  example: '0911123456'
+                address: 
+                  type: object
+                  nullable: true
+                  properties:
+                    addressLine1:
+                      type: string
+                      description: The street name, section, and house number of user's address
+                      example: '西園路一段 200 號 8 樓'
+                    addressLine2:
+                      type: string
+                      description: The district or township or city of country name of user's address
+                      example: 萬華區
+                    city:
+                      type: string
+                      enum: *cityEnums
+                      description: The city name of user's address
+                      example: 臺北市
+                    zipCode:
+                      type: string
+                      description: The zip code of user's address
+                      example: '108' 
+                    password:
+                      type: string
+                      format: password
+                      nullable: false
+                      description: Password of user's account
     EventAttributes: 
       type: object
       additionalProperties: false
@@ -1313,6 +1402,10 @@ components:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/EventResource'
+    EventId:
+      type: string
+      description: Uniquely identifies a event
+      example: '213'
     EventResource:
       type: object
       properties:
@@ -1351,9 +1444,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id: 
+              $ref: '#/components/schemas/EventId'
             type:
               $ref: '#/components/schemas/EventType'
             attributes:
@@ -1405,9 +1501,9 @@ components:
         courtDate:
           type: string
           format: date-time
-          description: Next court date and time. Here with an offset of +08:00 from UTC
+          description: Next court date and time. Here is the time zone of Taiwan 
           nullable: true
-          example: '2022-10-31T16:30:00+08:00'
+          example: '2022-10-31T16:30:00Z'
         eventId: 
           type: string
           nullable: false
@@ -1467,6 +1563,10 @@ components:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/CaseResource'
+    CaseId:
+      type: string
+      description: Uniquely identifies a case
+      example: '3'
     CaseResource:
       type: object
       properties:
@@ -1505,9 +1605,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id: 
+              $ref: '#/components/schemas/CaseId'
             type:
               $ref: '#/components/schemas/CaseType'
             attributes:
@@ -1557,6 +1660,10 @@ components:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/CourtResource'
+    CourtId:
+      type: string
+      description: Uniquely identifies a court
+      example: '7'
     CourtResource:
       type: object
       properties:
@@ -1595,9 +1702,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/CourtId'
             type:
               $ref: '#/components/schemas/CourtType'
             attributes:
@@ -1655,6 +1765,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SectionInChargeResource'
+    SectionInChargeId:
+      type: string
+      description: Uniquely identifies a section in charge
+      example: '13'
     SectionInChargeResource:
       type: object
       properties:
@@ -1693,9 +1807,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/SectionInChargeId'
             type:
               $ref: '#/components/schemas/SectionInChargeType'
             attributes:
@@ -1769,6 +1886,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OppositeClientResource'
+    OppositeClientId:
+      type: string
+      description: Uniquely identifies a opposite client
+      example: '74'
     OppositeClientResource:
       type: object
       properties:
@@ -1807,9 +1928,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/OppositeClientId'
             type:
               $ref: '#/components/schemas/OppositeClientType'
             attributes:
@@ -1889,6 +2013,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OppositeAgentResource'
+    OppositeAgentId:
+      type: string
+      description: Uniquely identifies a opposite agent
+      example: '20'
     OppositeAgentResource:
       type: object
       properties:
@@ -1927,9 +2055,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/OppositeAgentId'
             type:
               $ref: '#/components/schemas/OppositeAgentType'
             attributes:
@@ -1961,36 +2092,41 @@ components:
           description: The paper's title
           nullable: false
           example: 被告李若男針對起訴狀論點之答辯
-        sentDate:
-          type: string
-          format: date
-          description: The paper when send from law firm
+        date: 
+          type: object
           nullable: true
-          example: '2020-02-10'
-        arrivalDate:
-          type: string
-          format: date
-          description: The paper send from law firm and it's arrival date
-          nullable: true
-          example: '2020-03-14'
-        receivedDate:
-          type: string
-          format: date
-          description: When the paper received from opposite
-          nullable: true
-          example: '2020-04-01'
-        deadlineDate:
-          type: string
-          format: date
-          description: The deadline that if paper law firm received has something need to do
-          nullable: true
-          example: '2020-11-01'
-        courtDate:
-          type: string
-          format: date-time
-          description: Next court date and time. Here with an offset of +08:00 from UTC
-          nullable: true
-          example: '2022-10-31T16:30:00+08:00'
+          description: The information of date for a paper
+          properties:
+            sentDate:
+              type: string
+              format: date
+              description: The paper when send from law firm
+              nullable: true
+              example: '2020-02-10'
+            arrivalDate:
+              type: string
+              format: date
+              description: The paper send from law firm and it's arrival date
+              nullable: true
+              example: '2020-03-14'
+            receivedDate:
+              type: string
+              format: date
+              description: When the paper received from opposite
+              nullable: true
+              example: '2020-04-01'
+            deadlineDate:
+              type: string
+              format: date
+              description: The deadline that if paper law firm received has something need to do
+              nullable: true
+              example: '2020-11-01'
+            courtDateTime:
+              type: string
+              format: date-time
+              description: Next court date and time. Here with an offset of +08:00 from UTC
+              nullable: true
+              example: '2022-10-31T16:30:00+08:00'
         paperType:
           type: string
           description: The paper's type
@@ -2001,6 +2137,11 @@ components:
           nullable: false
           description: Identify which case the paper is belong to
           example: '22'
+        paperFileId:
+          type: string
+          nullable: false
+          description: Identify which case the paper file is belong to
+          example: '36'
     PaperResult: 
       type: object
       properties:
@@ -2017,6 +2158,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaperResource'
+    PaperId:
+      type: string
+      description: Uniquely identifies a paper
+      example: '9'
     PaperResource:
       type: object
       properties:
@@ -2055,9 +2200,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/PaperId'
             type:
               $ref: '#/components/schemas/PaperType'
             attributes:
@@ -2098,6 +2246,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaperFileResource'
+    PaperFileId:
+      type: string
+      description: Uniquely identifies a paper file
+      example: '7'
     PaperFileResource:
       type: object
       properties:
@@ -2136,9 +2288,12 @@ components:
         data:
           type: object
           required:
+            - id
             - type
           additionalProperties: false
           properties:
+            id:
+              $ref: '#/components/schemas/PaperFileId'
             type:
               $ref: '#/components/schemas/PaperFileType'
             attributes:
