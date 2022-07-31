@@ -125,6 +125,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /events:
@@ -213,6 +215,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /cases:
@@ -348,6 +352,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /courts:
@@ -421,6 +427,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /section-in-charges: 
@@ -513,6 +521,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /opposite-clients: 
@@ -603,6 +613,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /opposite-agents: 
@@ -693,6 +705,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /papers: 
@@ -794,6 +808,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
   /paper-files: 
@@ -886,6 +902,8 @@ paths:
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
+        '409':
+          $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
 components:
@@ -1063,9 +1081,15 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResult'
     '409Post':
-      description: >-
-        The request body resource object's type was invalid or, if a client-generated ID was used, a
-        resource already exists with this ID
+      description:
+        The request body resource object already exists 
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResult'
+    '409Patch':
+      description:
+        The request body resource object conflicts with an existing resource
       content:
         application/json:
           schema:
@@ -1110,10 +1134,10 @@ components:
         - password
       properties:
         password:
-              type: string
-              format: password
-              nullable: false
-              description: Password of user's account           
+          type: string
+          format: password
+          nullable: false
+          description: Password of user's account           
     UserAttributes: 
       type: object
       required:
