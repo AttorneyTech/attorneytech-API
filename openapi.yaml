@@ -951,13 +951,6 @@ components:
       description: ID of a paper
       schema: 
         type: string
-    # paperFileId:
-    #   name: paperFileId
-    #   in: path
-    #   required: true
-    #   description: ID of a paper file
-    #   schema: 
-    #     type: string  
     filterClientIds:
       name: filter[clientIds][oneOf]
       in: query
