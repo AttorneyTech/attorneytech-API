@@ -27,6 +27,7 @@ paths:
         - users
       operationId: postUser
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -108,12 +109,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/userId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPatchBody'
-        description: Patch body for a user
-        required: true
       responses:  
         '200':
           description: User record successfully updated
@@ -137,6 +137,7 @@ paths:
         - events
       operationId: postEvent
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -198,12 +199,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/eventId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/EventPatchBody'
-        description: Patch body for a event
-        required: true
       responses:  
         '200':
           description: Event record successfully updated
@@ -227,6 +227,7 @@ paths:
         - cases
       operationId: postCase
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -335,12 +336,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/caseId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CasePatchBody'
-        description: Patch body for a case
-        required: true
       responses:  
         '200':
           description: Case record successfully updated
@@ -364,6 +364,7 @@ paths:
         - courts
       operationId: postCourt
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -410,12 +411,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/courtId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CourtPatchBody'
-        description: Patch body for a court
-        required: true
       responses:  
         '200':
           description: Case record successfully updated
@@ -439,6 +439,7 @@ paths:
         - sectionInCharges
       operationId: postSectionInCharge
       requestBody:
+        required: true
         content:
           application/json:
             schema: 
@@ -504,12 +505,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/sectionInChargeId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SectionInChargePatchBody'
-        description: Patch body for a section in charge
-        required: true
       responses:  
         '200':
           description: Section in charge record successfully updated
@@ -533,6 +533,7 @@ paths:
         - oppositeClients
       operationId: postOppositeClient
       requestBody:
+        required: true
         content:
           application/json:
             schema: 
@@ -596,12 +597,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/oppositeClientId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/OppositeClientPatchBody'
-        description: Patch body for a opposite client
-        required: true
       responses:  
         '200':
           description: Opposite client record successfully updated
@@ -625,6 +625,7 @@ paths:
         - oppositeAgents
       operationId: postOppositeAgent
       requestBody:
+        required: true
         content:
           application/json:
             schema: 
@@ -688,12 +689,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/oppositeAgentId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/OppositeAgentPatchBody'
-        description: Patch body for a opposite agent
-        required: true
       responses:  
         '200':
           description: Opposite agent record successfully updated
@@ -717,6 +717,7 @@ paths:
         - papers
       operationId: postPaper
       requestBody:
+        required: true
         content:
           application/json:
             schema: 
@@ -791,12 +792,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/paperId'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/PaperPatchBody'
-        description: Patch body for a paper
-        required: true
       responses:  
         '200':
           description: Paper record successfully updated
@@ -812,98 +812,85 @@ paths:
           $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
-  /paper-files: 
-    post: 
-      description: Create a paper file
-      summary: Create a paper file
+  /papers/{paperId}/paper-file:
+    post:
+      description: Upload file of a paper
+      summary: Upload file of a paper
       tags:
-        - paperFiles
+        - paperFile
       operationId: postPaperFile
-      requestBody:
+      parameters:
+        - $ref: '#/components/parameters/paperId'
+      requestBody: 
+        required: true
         content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PaperFilePostBody'
+          application/pdf:
+            schema: 
+              type: string
+              format: binary
       responses:
         '201':
-          description: Paper file record successfully created
+          description: A paper file successfully Upload
           content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaperFileResult'  
+            application/pdf:
+              schema: 
+                type: string
+                format: binary
         '400':
           $ref: '#/components/responses/400'
+        '404':
+          $ref: '#/components/responses/404'
         '409':
           $ref: '#/components/responses/409Post'
         '500':
           $ref: '#/components/responses/500'
-    get:
-      description: Get list of paper files
-      summary: Get list of paper files
-      tags:
-        - paperFiles
-      operationId: getPaperFiles
-      parameters:
-        - $ref: '#/components/parameters/filterCaseIds'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            multipart/form-data:
-              schema:
-                $ref: '#/components/schemas/PaperFileSetResult'
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /paper-files/{paperFileId}: 
-    get:
-      description: Get a paper file by ID
-      summary: Get a paper file by ID
-      tags:
-        - paperFiles
-      operationId: getPaperFileById
-      parameters:
-        - $ref: '#/components/parameters/paperFileId'       
-      responses:
-        '200':
-          description: Successful response
-          content:
-            multipart/form-data:
-              schema: 
-                $ref: '#/components/schemas/PaperFileResult'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
     patch: 
-      description: Update information and file for a paper file by ID
-      summary: Update information and file for a paper file by ID
+      description: Update file of a paper
+      summary: Update file of a paper
       tags:
-        - paperFiles
-      operationId: patchPaperFileById
+        - paperFile
+      operationId: patchPaperFile
       parameters:
-        - $ref: '#/components/parameters/paperFileId'
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PaperFilePatchBody'
-        description: Patch body for a paper file
+        - $ref: '#/components/parameters/paperId'
+      requestBody: 
         required: true
-      responses:  
+        content:
+          application/pdf:
+            schema: 
+              type: string
+              format: binary
+      responses:
         '200':
-          description: Paper file record successfully updated
+          description: Updated file of a paper successfully 
           content:
-            multipart/form-data:
-              schema:
-                $ref: '#/components/schemas/PaperFileResult'  
+            application/pdf:
+              schema: 
+                type: string
+                format: binary
         '400':
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
+        '500':
+          $ref: '#/components/responses/500'
+    get:
+      description: Get file of a paper
+      summary: Get file of a paper
+      tags:
+        - paperFile
+      operationId: getPaperFile
+      parameters:
+        - $ref: '#/components/parameters/paperId'
+      responses: 
+        '200':
+          description: Successful response
+          content:
+            application/pdf:
+              schema: 
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
 components:
@@ -964,13 +951,13 @@ components:
       description: ID of a paper
       schema: 
         type: string
-    paperFileId:
-      name: paperFileId
-      in: path
-      required: true
-      description: ID of a paper file
-      schema: 
-        type: string  
+    # paperFileId:
+    #   name: paperFileId
+    #   in: path
+    #   required: true
+    #   description: ID of a paper file
+    #   schema: 
+    #     type: string  
     filterClientIds:
       name: filter[clientIds][oneOf]
       in: query
@@ -2054,7 +2041,6 @@ components:
         - subject
         - paperType
         - caseId
-        - paperFileId
       properties:
         category:
           type: string
@@ -2117,11 +2103,6 @@ components:
           nullable: false
           description: Identify which case the paper is belong to
           example: '22'
-        paperFileId:
-          type: string
-          nullable: false
-          description: Identify which case the paper file is belong to
-          example: '36'
     PaperResult: 
       type: object
       properties:
@@ -2210,74 +2191,6 @@ components:
           nullable: false
           description: Identify which case the paper file is belong to
           example: '22'
-    PaperFileResult: 
-      type: object
-      properties:
-        links:
-          $ref: '#/components/schemas/SelfLink'
-        data:
-          $ref: '#/components/schemas/PaperFileResource'
-    PaperFileSetResult: 
-      type: object
-      properties:
-        links:
-          $ref: '#/components/schemas/SelfLink'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaperFileResource'
-    PaperFileId:
-      type: string
-      description: Uniquely identifies a paper file
-      example: '7'
-    PaperFileResource:
-      type: object
-      properties:
-        id: 
-          type: string
-          description: ID of a paper file
-          example: '133'
-        type:
-          $ref: '#/components/schemas/PaperFileType'
-        links:
-          $ref: '#/components/schemas/SelfLink'
-        attributes:
-          $ref: '#/components/schemas/PaperFileAttributes'
-    PaperFilePostBody:
-      type: object
-      required:
-        - data
-      additionalProperties: false
-      properties:
-        data:
-          type: object
-          required:
-            - type
-            - attributes
-          additionalProperties: false
-          properties:
-            type:
-              $ref: '#/components/schemas/PaperFileType'
-            attributes:
-              $ref: '#/components/schemas/PaperFileAttributes'
-    PaperFilePatchBody:
-      type: object
-      required:
-        - data
-      properties:
-        data:
-          type: object
-          required:
-            - id
-            - type
-          additionalProperties: false
-          properties:
-            id:
-              $ref: '#/components/schemas/PaperFileId'
-            type:
-              $ref: '#/components/schemas/PaperFileType'
-            attributes:
-              $ref: '#/components/schemas/PaperFileAttributes'
     SelfLink:
       type: object
       properties:
