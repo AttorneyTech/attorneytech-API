@@ -831,11 +831,6 @@ paths:
       responses:
         '201':
           description: A paper file successfully Upload
-          content:
-            application/pdf:
-              schema: 
-                type: string
-                format: binary
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -862,11 +857,6 @@ paths:
       responses:
         '200':
           description: Updated file of a paper successfully 
-          content:
-            application/pdf:
-              schema: 
-                type: string
-                format: binary
         '400':
           $ref: '#/components/responses/400'
         '404':
