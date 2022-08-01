@@ -855,7 +855,7 @@ paths:
               type: string
               format: binary
       responses:
-        '200':
+        '204':
           description: Updated file of a paper successfully 
         '400':
           $ref: '#/components/responses/400'
