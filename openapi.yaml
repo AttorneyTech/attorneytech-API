@@ -863,6 +863,21 @@ paths:
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
+    head: 
+      description: Check if the file of paper has been created 
+      summary: Check if the file of paper has been created
+      tags:
+        - paperFile
+      operationId: headPaperFile
+      parameters:
+        - $ref: '#/components/parameters/paperId'
+      responses:
+        '200': 
+          description: Successful response
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
     get:
       description: Get file of a paper
       summary: Get file of a paper
