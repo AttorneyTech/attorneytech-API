@@ -16,8 +16,7 @@ externalDocs:
   description: GitHub Repository
   url: https://github.com/AttorneyTech/attorneytech-API
 security:
-  - OAuth2:
-    - full
+  - BasicAuth: []
 paths:
   /users:
     post:
@@ -2219,10 +2218,6 @@ components:
           items:
             $ref: '#/components/schemas/ErrorObject'
   securitySchemes:
-    OAuth2:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: 'https://localhost/oauth/token'
-          scopes:
-            full: Full access to the API
+    BasicAuth:
+      type: http
+      scheme: basic

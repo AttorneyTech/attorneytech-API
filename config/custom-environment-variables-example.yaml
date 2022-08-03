@@ -1,0 +1,14 @@
+server:
+  hostname: 'API_HOSTNAME'
+  port: 'PORT'
+  adminPort: 'ADMIN_PORT'
+
+authentication:
+  username: 'USERNAME'
+  password: 'PASSWORD'
+
+dataSources:
+  postgresql:
+    connectString: 'DB_URL'
+    user: 'DB_USERNAME'
+    password: 'DB_PASSWORD'
