@@ -1,3 +1,8 @@
+# The file of macOS system 
 .DS_Store
-.venv
-.env
+
+# Configuration file of attorneytech-API
+config.json
+
+# pycache
+__pycache__
