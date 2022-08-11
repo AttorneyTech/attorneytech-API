@@ -1,8 +1,8 @@
-from config import read_config
+import psycopg2
 from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource
-import psycopg2
-
+from config import read_config
+from logs.log import create_logger
 
 # Initialize the flask framework
 app = Flask(__name__)
@@ -12,12 +12,12 @@ api = Api(app)
 
 # Set the constants
 config = read_config()
-API_PORT = config['API']['PORT']
-DB_HOST = config['DATABASE']['DB_HOST']
-DB_PORT = config['DATABASE']['PORT']
-DB_NAME = config['DATABASE']['DB_NAME']
-DB_USERNAME = config['DATABASE']['DB_USERNAME']
-DB_PASSWORD = config['DATABASE']['DB_PASSWORD']
+API_PORT = config['api']['port']
+DB_HOST = config['database']['db_host']
+DB_PORT = config['database']['port']
+DB_NAME = config['database']['db_name']
+DB_USERNAME = config['database']['db_username']
+DB_PASSWORD = config['database']['db_password']
 
 
 # Construct the connection to database
@@ -32,8 +32,26 @@ def get_db_connection():
     return conn
 
 
+# class Users(Resource):
+#     def get(self):
+#         '''
+#         Get the list of users
+#         '''
+#         conn = get_db_connection()
+#         cur = conn.cursor()
+#         cur.execute('SELECT * FROM users;')
+#         response = cur.fetchall()
+#         cur.close()
+#         conn.close()
+#         if response:
+
+
+
 class User(Resource):
     def get(self, userId):
+        '''
+        Get the specific user by user ID
+        '''
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute(f'''
@@ -92,6 +110,7 @@ class User(Resource):
                             },
                         },
                     })
+            api_logger.info('Successful response')
             return make_response(response, 200)
         else:
             response = jsonify({
@@ -103,11 +122,14 @@ class User(Resource):
                             }
                         ]
                     })
+            api_logger.info('Resource not found')
             return make_response(response, 404)
 
 
+api.add_resource(Users, '/users')
 api.add_resource(User, '/users/<string:userId>')
 
 
 if __name__ == '__main__':
-    app.run(port=API_PORT, debug=True)
+    api_logger = create_logger()
+    app.run(port=API_PORT)
