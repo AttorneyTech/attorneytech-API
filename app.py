@@ -1,5 +1,5 @@
 from config import read_config
-from flask import abort, Flask, jsonify
+from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource
 import psycopg2
 
@@ -41,8 +41,8 @@ class User(Resource):
                     users.id, users.role, users.username,
                     users.first_name, users.middle_name,
                     users.last_name,
-                    events.id as event_id,
-                    cases.id as cases_id,
+                    events.id AS event_id,
+                    cases.id AS cases_id,
                     users.email, users.phone, users.street_name,
                     users.district, users.city, users.zip_code
                     FROM users
@@ -64,16 +64,15 @@ class User(Resource):
                     if str(row[6]) not in events:
                         events.append(str(row[6]))
                     cases.append(str(row[7]))
-            return jsonify({
+            response = jsonify({
                         "links": {
                             "self": f"http://127.0.0.1:5000/users/{userId}"
-                            },
+                        },
                         "data": {
                             "id": f"{userId}", "type": "users",
                             "links": {
-                                "self":
-                                    f"http://127.0.0.1:5000/users/{userId}"
-                                },
+                                "self": f"http://127.0.0.1:5000/users/{userId}"
+                            },
                             "attributes": {
                                 "role": response[0][1],
                                 "username": response[0][2],
@@ -89,16 +88,26 @@ class User(Resource):
                                     "addressLine2": response[0][11],
                                     "city": response[0][12],
                                     "zipCode": response[0][13]
-                                    }
-                                },
+                                }
                             },
-                        })
+                        },
+                    })
+            return make_response(response, 200)
         else:
-            return abort(404)
+            response = jsonify({
+                        "errors": [
+                            {
+                                "status": "404",
+                                "title": "Not Found",
+                                "detail": "Resource not found"
+                            }
+                        ]
+                    })
+            return make_response(response, 404)
 
 
 api.add_resource(User, '/users/<string:userId>')
 
 
 if __name__ == '__main__':
-    app.run(port=API_PORT)
+    app.run(port=API_PORT, debug=True)
