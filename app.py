@@ -1,5 +1,5 @@
 import psycopg2
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, request
 from flask_restful import Api, Resource
 from config import read_config
 from logs.log import create_logger
@@ -33,6 +33,15 @@ def get_db_connection():
 
 
 class Users(Resource):
+    @staticmethod
+    def get_filter():
+        role = request.args.get('filter[role]')
+        city = request.args.get('filter[city]')
+        eventIds = request.args.get('filter[eventIds]')
+        caseIds = request.args.get('filter[caseIds]')
+        query_params = {'role': role, 'city': city, 'eventIds': eventIds, 'caseIds': caseIds}
+        return query_params
+
     def get(self):
         '''
         Get the list of users
@@ -61,7 +70,6 @@ class Users(Resource):
         users_id_list = []
         for row in range(len(response)):
             users_id_list.append(response[row][0])
-
         # Create data list of users
         users_data = []
         for userId in users_id_list:
@@ -76,9 +84,9 @@ class Users(Resource):
                         users.email, users.phone, users.street_name,
                         users.district, users.city, users.zip_code
                         FROM users
-                        JOIN cases
-                        ON users.id=cases.client_id
-                        JOIN events
+                        LEFT JOIN cases
+                        ON users.id=cases.client_id or users.id=cases.agent_id
+                        LEFT JOIN events
                         ON cases.event_id=events.id
                         WHERE users.id={userId};
                         '''
@@ -115,7 +123,12 @@ class Users(Resource):
                                     }
                                 },
                             }
-                users_data.append(user_dict)
+                
+                for key, value in Users.get_filter().items():
+                    if user_dict['attributes'][key] != value:
+                        continue
+                    else:
+                        users_data.append(user_dict)
         response = jsonify({
                         "links": {
                             "self": "http://127.0.0.1:5000/users"
@@ -156,9 +169,9 @@ class User(Resource):
                     users.email, users.phone, users.street_name,
                     users.district, users.city, users.zip_code
                     FROM users
-                    JOIN cases
-                    ON users.id=cases.client_id
-                    JOIN events
+                    LEFT JOIN cases
+                    ON users.id=cases.client_id or users.id=cases.agent_id
+                    LEFT JOIN events
                     ON cases.event_id=events.id
                     WHERE users.id={userId};
                     '''
