@@ -39,7 +39,12 @@ class Users(Resource):
         city = request.args.get('filter[city]')
         eventIds = request.args.get('filter[eventIds]')
         caseIds = request.args.get('filter[caseIds]')
-        query_params = {'role': role, 'city': city, 'eventIds': eventIds, 'caseIds': caseIds}
+        query_params = {
+
+            'role': role, 'city': city,
+            'eventIds': eventIds, 'caseIds': caseIds
+
+            }
         return query_params
 
     def get(self):
@@ -123,12 +128,33 @@ class Users(Resource):
                                     }
                                 },
                             }
-                
-                for key, value in Users.get_filter().items():
-                    if user_dict['attributes'][key] != value:
+                query_params = Users.get_filter()
+                is_target_data = True
+                for key, value in query_params.items():
+                    if not value:
                         continue
-                    else:
-                        users_data.append(user_dict)
+                    elif (
+                            key == 'role' and
+                            user_dict['attributes'][key] != value
+                            ):
+                        is_target_data = False
+                    elif (
+                            key == 'city' and
+                            user_dict['attributes']['address'][key] != value
+                            ):
+                        is_target_data = False
+                    elif (
+                            key == 'eventIds'
+                            and value not in user_dict['attributes'][key]
+                            ):
+                        is_target_data = False
+                    elif (
+                            key == 'caseIds' and
+                            value not in user_dict['attributes'][key]
+                            ):
+                        is_target_data = False
+                if is_target_data:
+                    users_data.append(user_dict)
         response = jsonify({
                         "links": {
                             "self": "http://127.0.0.1:5000/users"
