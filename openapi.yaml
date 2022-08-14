@@ -69,8 +69,8 @@ paths:
               &cityEnums [臺北市, 新北市, 桃園市, 臺中市, 臺南市, 高雄市, 新竹縣,
               苗栗縣, 彰化縣, 南投縣, 雲林縣, 嘉義縣, 屏東縣, 宜蘭縣, 花蓮縣, 臺東縣,
               澎湖縣, 金門縣, 連江縣, 基隆市, 新竹市, 嘉義市]
-        - $ref: '#/components/parameters/filterEventIds'
-        - $ref: '#/components/parameters/filterCaseIds'
+        - $ref: '#/components/parameters/filterEventId'
+        - $ref: '#/components/parameters/filterCaseId'
       responses:
         '200':
           description: Successful response
@@ -288,13 +288,13 @@ paths:
           schema:
             type: string
             example: 拆屋還地
-        - $ref: '#/components/parameters/filterEventIds'
-        - $ref: '#/components/parameters/filterClientIds'
-        - $ref: '#/components/parameters/filterAgentIds'
-        - $ref: '#/components/parameters/filterOppositeAgentIds'
-        - $ref: '#/components/parameters/filterOppositeClientIds'
-        - $ref: '#/components/parameters/filterSectionInChargeIds'
-        - $ref: '#/components/parameters/filterCourtIds'
+        - $ref: '#/components/parameters/filterEventId'
+        - $ref: '#/components/parameters/filterClientId'
+        - $ref: '#/components/parameters/filterAgentId'
+        - $ref: '#/components/parameters/filterOppositeAgentId'
+        - $ref: '#/components/parameters/filterOppositeClientId'
+        - $ref: '#/components/parameters/filterSectionInChargeId'
+        - $ref: '#/components/parameters/filterCourtId'
         - $ref: '#/components/parameters/filterCourtDate'
       responses:
         '200':
@@ -464,7 +464,7 @@ paths:
         - sectionInCharges
       operationId: getSectionInCharges
       parameters:
-        - $ref: '#/components/parameters/filterCourtIds'
+        - $ref: '#/components/parameters/filterCourtId'
       responses:
         '200':
           description: Successful response
@@ -556,7 +556,7 @@ paths:
         - oppositeClients
       operationId: getOppositeClients
       parameters:
-        - $ref: '#/components/parameters/filterCaseIds'
+        - $ref: '#/components/parameters/filterCaseId'
       responses:
         '200':
           description: Successful response
@@ -648,7 +648,7 @@ paths:
         - oppositeAgents
       operationId: getOppositeAgents
       parameters:
-        - $ref: '#/components/parameters/filterCaseIds'
+        - $ref: '#/components/parameters/filterCaseId'
       responses:
         '200':
           description: Successful response
@@ -742,14 +742,14 @@ paths:
         - papers
       operationId: getPapers
       parameters:
-        - $ref: '#/components/parameters/filterCaseIds'
-        - $ref: '#/components/parameters/filterEventIds'
-        - $ref: '#/components/parameters/filterClientIds'
-        - $ref: '#/components/parameters/filterAgentIds'
-        - $ref: '#/components/parameters/filterOppositeAgentIds'
-        - $ref: '#/components/parameters/filterOppositeClientIds'
-        - $ref: '#/components/parameters/filterSectionInChargeIds'
-        - $ref: '#/components/parameters/filterCourtIds'
+        - $ref: '#/components/parameters/filterCaseId'
+        - $ref: '#/components/parameters/filterEventId'
+        - $ref: '#/components/parameters/filterClientId'
+        - $ref: '#/components/parameters/filterAgentId'
+        - $ref: '#/components/parameters/filterOppositeAgentId'
+        - $ref: '#/components/parameters/filterOppositeClientId'
+        - $ref: '#/components/parameters/filterSectionInChargeId'
+        - $ref: '#/components/parameters/filterCourtId'
         - $ref: '#/components/parameters/filterCourtDate'
         - $ref: '#/components/parameters/filterDeadlineDate'
       responses:
@@ -956,86 +956,62 @@ components:
       description: ID of a paper
       schema: 
         type: string
-    filterClientIds:
-      name: filter[clientIds][oneOf]
+    filterClientId:
+      name: filter[clientId]
       in: query
       required: false
-      description: Filter result by clientIds
+      description: Filter result by clientId
       schema: 
-        type: array
-        items:
-          type: string
-        minItems: 1
-    filterAgentIds:
-      name: filter[agentIds][oneOf]
+        type: string
+    filterAgentId:
+      name: filter[agentId]
       in: query
       required: false
-      description: Filter result by agentIds
+      description: Filter result by agentId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1
-    filterOppositeClientIds:
-      name: filter[oppositeClientIds][oneOf]
+        type: string
+    filterOppositeClientId:
+      name: filter[oppositeClientId]
       in: query
       required: false
-      description: Filter result by oppositeClientIds
+      description: Filter result by oppositeClientId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1
-    filterOppositeAgentIds:
-      name: filter[oppositeAgentIds][oneOf]
+        type: string
+    filterOppositeAgentId:
+      name: filter[oppositeAgentId]
       in: query
       required: false
-      description: Filter result by oppositeAgentIds
+      description: Filter result by oppositeAgentId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1 
-    filterEventIds:
-      name: filter[eventIds][oneOf]
+        type: string
+    filterEventId:
+      name: filter[eventId]
       in: query
       required: false
-      description: Filter result by eventIds
+      description: Filter result by eventId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1
-    filterCaseIds:
-      name: filter[caseIds][oneOf]
+        type: string
+    filterCaseId:
+      name: filter[caseId]
       in: query
       required: false
-      description: Filter result by caseIds
+      description: Filter result by caseId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1
-    filterCourtIds:
-      name: filter[courtIds][oneOf]
+        type: string
+    filterCourtId:
+      name: filter[courtId]
       in: query
       required: false
-      description: Filter result by courtIds
+      description: Filter result by courtId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1
-    filterSectionInChargeIds:
-      name: filter[sectionInChargeIds][oneOf]
+        type: string
+    filterSectionInChargeId:
+      name: filter[sectionInChargeId]
       in: query
       required: false
-      description: Filter result by sectionInChargeIds
+      description: Filter result by sectionInChargeId
       schema: 
-        type: array
-        items: 
-          type: string
-        minItems: 1
+        type: string
     filterCourtDate:
       name: filter[courtDate][lte]
       in: query
