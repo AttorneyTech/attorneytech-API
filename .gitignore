@@ -4,5 +4,8 @@
 # Configuration file of attorneytech-API
 config.json
 
-# pycache
-__pycache__
+# Pycache
+__pycache__/
+
+# Logs
+logs/

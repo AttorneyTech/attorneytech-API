@@ -1,4 +1,0 @@
-2022/08/15 01:22:45 - werkzeug - WARNING -  * Debugger is active!
-2022/08/15 01:22:45 - werkzeug - INFO -  * Debugger PIN: 472-280-551
-2022/08/15 01:22:47 - root - INFO - Successful response
-2022/08/15 01:22:47 - werkzeug - INFO - 127.0.0.1 - - [15/Aug/2022 01:22:47] "GET /users?filter[role]=agent&filter[city]=臺北市&filter[eventIds]= HTTP/1.1" 200 -

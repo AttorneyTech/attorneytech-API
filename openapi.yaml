@@ -16,7 +16,7 @@ externalDocs:
   description: GitHub Repository
   url: https://github.com/AttorneyTech/attorneytech-API
 security:
-  - OAuth2: 
+  - OAuth2:
     - full
 paths:
   /users:
@@ -32,13 +32,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPostBody'
-      responses:  
+      responses:
         '201':
           description: User record successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'  
+                $ref: '#/components/schemas/UserResult'
         '400':
           $ref: '#/components/responses/400'
         '409':
@@ -88,19 +88,19 @@ paths:
         - users
       operationId: getUserById
       parameters:
-        - $ref: '#/components/parameters/userId'       
+        - $ref: '#/components/parameters/userId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/UserResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a user by ID
       summary: Update information for a user by ID
       tags:
@@ -114,13 +114,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserPatchBody'
-      responses:  
+      responses:
         '200':
           description: User record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'  
+                $ref: '#/components/schemas/UserResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -142,13 +142,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventPostBody'
-      responses:  
+      responses:
         '201':
           description: User record successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventResult'  
+                $ref: '#/components/schemas/EventResult'
         '400':
           $ref: '#/components/responses/400'
         '409':
@@ -178,19 +178,19 @@ paths:
         - events
       operationId: getEventById
       parameters:
-        - $ref: '#/components/parameters/eventId'       
+        - $ref: '#/components/parameters/eventId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/EventResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a event by ID
       summary: Update information for a event by ID
       tags:
@@ -204,13 +204,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EventPatchBody'
-      responses:  
+      responses:
         '200':
           description: Event record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventResult'  
+                $ref: '#/components/schemas/EventResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -232,13 +232,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CasePostBody'
-      responses:  
+      responses:
         '201':
           description: Case record successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseResult'  
+                $ref: '#/components/schemas/CaseResult'
         '400':
           $ref: '#/components/responses/400'
         '409':
@@ -256,7 +256,7 @@ paths:
           in: query
           required: false
           description: Filter results by case closed or not. If true, means that the case has been closed.
-          schema: 
+          schema:
             type: boolean
         - name: filter[category]
           in: query
@@ -307,7 +307,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  /cases/{caseId}: 
+  /cases/{caseId}:
     get:
       description: Get information of a case by ID
       summary: Get information of a case by ID
@@ -315,19 +315,19 @@ paths:
         - cases
       operationId: getCaseById
       parameters:
-        - $ref: '#/components/parameters/caseId'       
+        - $ref: '#/components/parameters/caseId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/CaseResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a case by ID
       summary: Update information for a case by ID
       tags:
@@ -341,13 +341,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CasePatchBody'
-      responses:  
+      responses:
         '200':
           description: Case record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CaseResult'  
+                $ref: '#/components/schemas/CaseResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -369,20 +369,20 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourtPostBody'
-      responses:  
+      responses:
         '201':
           description: User record successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourtResult'  
+                $ref: '#/components/schemas/CourtResult'
         '400':
           $ref: '#/components/responses/400'
         '409':
           $ref: '#/components/responses/409Post'
         '500':
           $ref: '#/components/responses/500'
-  /courts/{courtId}: 
+  /courts/{courtId}:
     get:
       description: Get information of a court by ID
       summary: Get information of a court by ID
@@ -390,13 +390,13 @@ paths:
         - courts
       operationId: getCourtById
       parameters:
-        - $ref: '#/components/parameters/courtId'       
+        - $ref: '#/components/parameters/courtId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/CourtResult'
         '404':
           $ref: '#/components/responses/404'
@@ -416,13 +416,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CourtPatchBody'
-      responses:  
+      responses:
         '200':
           description: Case record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CourtResult'  
+                $ref: '#/components/schemas/CourtResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -431,8 +431,8 @@ paths:
           $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
-  /section-in-charges: 
-    post: 
+  /section-in-charges:
+    post:
       description: Create a section in charge
       summary: Create a section in charge
       tags:
@@ -442,7 +442,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/SectionInChargePostBody'
       responses:
         '201':
@@ -450,7 +450,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SectionInChargeResult'  
+                $ref: '#/components/schemas/SectionInChargeResult'
         '400':
           $ref: '#/components/responses/400'
         '409':
@@ -477,26 +477,26 @@ paths:
         '500':
           $ref: '#/components/responses/500'
   /section-in-charges/{sectionInChargeId}:
-    get: 
+    get:
       description: Get information of a section in charge by ID
       summary: Get information of a section in charge by ID
       tags:
         - sectionInCharges
       operationId: getSectionInChargeById
       parameters:
-        - $ref: '#/components/parameters/sectionInChargeId'       
+        - $ref: '#/components/parameters/sectionInChargeId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/SectionInChargeResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a section in charge by ID
       summary: Update information for a section in charge by ID
       tags:
@@ -510,13 +510,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SectionInChargePatchBody'
-      responses:  
+      responses:
         '200':
           description: Section in charge record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SectionInChargeResult'  
+                $ref: '#/components/schemas/SectionInChargeResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -525,8 +525,8 @@ paths:
           $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
-  /opposite-clients: 
-    post: 
+  /opposite-clients:
+    post:
       description: Create a opposite client
       summary: Create a opposite client
       tags:
@@ -536,7 +536,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/OppositeClientPostBody'
       responses:
         '201':
@@ -544,7 +544,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeClientResult'  
+                $ref: '#/components/schemas/OppositeClientResult'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -567,8 +567,8 @@ paths:
         '400':
           $ref: '#/components/responses/400'
         '500':
-          $ref: '#/components/responses/500' 
-  /opposite-clients/{oppositeClientId}: 
+          $ref: '#/components/responses/500'
+  /opposite-clients/{oppositeClientId}:
     get:
       description: Get information of a opposite client by ID
       summary: Get information of a opposite client by ID
@@ -576,19 +576,19 @@ paths:
         - oppositeClients
       operationId: getOppositeClientsById
       parameters:
-        - $ref: '#/components/parameters/oppositeClientId'       
+        - $ref: '#/components/parameters/oppositeClientId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/OppositeClientResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a opposite client by ID
       summary: Update information for a opposite client by ID
       tags:
@@ -602,13 +602,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OppositeClientPatchBody'
-      responses:  
+      responses:
         '200':
           description: Opposite client record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeClientResult'  
+                $ref: '#/components/schemas/OppositeClientResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -617,8 +617,8 @@ paths:
           $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
-  /opposite-agents: 
-    post: 
+  /opposite-agents:
+    post:
       description: Create a opposite agent
       summary: Create a opposite agent
       tags:
@@ -628,7 +628,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/OppositeAgentPostBody'
       responses:
         '201':
@@ -636,7 +636,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeAgentResult'  
+                $ref: '#/components/schemas/OppositeAgentResult'
         '400':
           $ref: '#/components/responses/400'
         '500':
@@ -660,7 +660,7 @@ paths:
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  /opposite-agents/{oppositeAgentId}: 
+  /opposite-agents/{oppositeAgentId}:
     get:
       description: Get information of a opposite agent by ID
       summary: Get information of a opposite agent by ID
@@ -668,19 +668,19 @@ paths:
         - oppositeAgents
       operationId: getOppositeAgentsById
       parameters:
-        - $ref: '#/components/parameters/oppositeAgentId'       
+        - $ref: '#/components/parameters/oppositeAgentId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/OppositeAgentResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a opposite agent by ID
       summary: Update information for a opposite agent by ID
       tags:
@@ -694,13 +694,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/OppositeAgentPatchBody'
-      responses:  
+      responses:
         '200':
           description: Opposite agent record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeAgentResult'  
+                $ref: '#/components/schemas/OppositeAgentResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -709,8 +709,8 @@ paths:
           $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
-  /papers: 
-    post: 
+  /papers:
+    post:
       description: Create a paper
       summary: Create a paper
       tags:
@@ -720,7 +720,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: 
+            schema:
               $ref: '#/components/schemas/PaperPostBody'
       responses:
         '201':
@@ -728,7 +728,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaperResult'  
+                $ref: '#/components/schemas/PaperResult'
         '400':
           $ref: '#/components/responses/400'
         '409':
@@ -771,19 +771,19 @@ paths:
         - papers
       operationId: getPaperById
       parameters:
-        - $ref: '#/components/parameters/paperId'       
+        - $ref: '#/components/parameters/paperId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: '#/components/schemas/PaperResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update information for a paper by ID
       summary: Update information for a paper by ID
       tags:
@@ -797,13 +797,13 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PaperPatchBody'
-      responses:  
+      responses:
         '200':
           description: Paper record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaperResult'  
+                $ref: '#/components/schemas/PaperResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -821,11 +821,11 @@ paths:
       operationId: postPaperFile
       parameters:
         - $ref: '#/components/parameters/paperId'
-      requestBody: 
+      requestBody:
         required: true
         content:
           application/pdf:
-            schema: 
+            schema:
               type: string
               format: binary
       responses:
@@ -839,7 +839,7 @@ paths:
           $ref: '#/components/responses/409Post'
         '500':
           $ref: '#/components/responses/500'
-    patch: 
+    patch:
       description: Update file of a paper
       summary: Update file of a paper
       tags:
@@ -847,24 +847,24 @@ paths:
       operationId: patchPaperFile
       parameters:
         - $ref: '#/components/parameters/paperId'
-      requestBody: 
+      requestBody:
         required: true
         content:
           application/pdf:
-            schema: 
+            schema:
               type: string
               format: binary
       responses:
         '204':
-          description: Updated file of a paper successfully 
+          description: Updated file of a paper successfully
         '400':
           $ref: '#/components/responses/400'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
-    head: 
-      description: Check if the file of paper has been created 
+    head:
+      description: Check if the file of paper has been created
       summary: Check if the file of paper has been created
       tags:
         - paperFile
@@ -872,7 +872,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/paperId'
       responses:
-        '200': 
+        '200':
           description: Successful response
         '404':
           $ref: '#/components/responses/404'
@@ -886,12 +886,12 @@ paths:
       operationId: getPaperFile
       parameters:
         - $ref: '#/components/parameters/paperId'
-      responses: 
+      responses:
         '200':
           description: Successful response
           content:
             application/pdf:
-              schema: 
+              schema:
                 type: string
                 format: binary
         '404':
@@ -907,61 +907,61 @@ components:
       description: ID of a user
       schema:
         type: string
-    eventId: 
+    eventId:
       name: eventId
       in: path
       required: true
       description: ID of a event
-      schema: 
+      schema:
         type: string
-    caseId: 
+    caseId:
       name: caseId
       in: path
       required: true
       description: ID of a case
-      schema: 
+      schema:
         type: string
-    courtId: 
+    courtId:
       name: courtId
       in: path
       required: true
       description: ID of a court
-      schema: 
-        type: string 
+      schema:
+        type: string
     sectionInChargeId:
       name: sectionInChargeId
       in: path
       required: true
       description: ID of a section in charge
-      schema: 
+      schema:
         type: string
     oppositeClientId:
       name: oppositeClientId
       in: path
       required: true
       description: ID of a opposite client
-      schema: 
+      schema:
         type: string
     oppositeAgentId:
       name: oppositeAgentId
       in: path
       required: true
       description: ID of a opposite agent
-      schema: 
+      schema:
         type: string
     paperId:
       name: paperId
       in: path
       required: true
       description: ID of a paper
-      schema: 
+      schema:
         type: string
     filterClientIds:
       name: filter[clientIds][oneOf]
       in: query
       required: false
       description: Filter result by clientIds
-      schema: 
+      schema:
         type: array
         items:
           type: string
@@ -971,9 +971,9 @@ components:
       in: query
       required: false
       description: Filter result by agentIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
         minItems: 1
     filterOppositeClientIds:
@@ -981,9 +981,9 @@ components:
       in: query
       required: false
       description: Filter result by oppositeClientIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
         minItems: 1
     filterOppositeAgentIds:
@@ -991,19 +991,19 @@ components:
       in: query
       required: false
       description: Filter result by oppositeAgentIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
-        minItems: 1 
+        minItems: 1
     filterEventIds:
       name: filter[eventIds][oneOf]
       in: query
       required: false
       description: Filter result by eventIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
         minItems: 1
     filterCaseIds:
@@ -1011,9 +1011,9 @@ components:
       in: query
       required: false
       description: Filter result by caseIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
         minItems: 1
     filterCourtIds:
@@ -1021,9 +1021,9 @@ components:
       in: query
       required: false
       description: Filter result by courtIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
         minItems: 1
     filterSectionInChargeIds:
@@ -1031,9 +1031,9 @@ components:
       in: query
       required: false
       description: Filter result by sectionInChargeIds
-      schema: 
+      schema:
         type: array
-        items: 
+        items:
           type: string
         minItems: 1
     filterCourtDate:
@@ -1067,7 +1067,7 @@ components:
             $ref: '#/components/schemas/ErrorResult'
     '409Post':
       description:
-        The request body resource object already exists 
+        The request body resource object already exists
       content:
         application/json:
           schema:
@@ -1122,8 +1122,8 @@ components:
           type: string
           format: password
           nullable: false
-          description: Password of user's account           
-    UserAttributes: 
+          description: Password of user's account
+    UserAttributes:
       type: object
       required:
         - role
@@ -1158,14 +1158,14 @@ components:
           nullable: false
           description: Last name of user
           example: 古美門
-        eventIds: 
+        eventIds:
           type: array
           items:
             type: string
           nullable: true
           description: Identify which events were associated with the user
           example: ['231', '478']
-        caseIds: 
+        caseIds:
           type: array
           items:
             type: string
@@ -1183,7 +1183,7 @@ components:
           nullable: true
           description: Phone number of user
           example: '0911123456'
-        address: 
+        address:
           type: object
           nullable: true
           properties:
@@ -1209,11 +1209,11 @@ components:
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
-        data: 
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/UserResource'    
-    UserResult: 
+            $ref: '#/components/schemas/UserResource'
+    UserResult:
       type: object
       properties:
         links:
@@ -1227,7 +1227,7 @@ components:
     UserResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a user
           example: '323'
@@ -1289,14 +1289,14 @@ components:
                   nullable: false
                   description: Last name of user
                   example: 古美門
-                eventIds: 
+                eventIds:
                   type: array
                   items:
                     type: string
                   nullable: true
                   description: Identify which events were associated with the user
                   example: ['231', '478']
-                caseIds: 
+                caseIds:
                   type: array
                   items:
                     type: string
@@ -1314,7 +1314,7 @@ components:
                   nullable: true
                   description: Phone number of user
                   example: '0911123456'
-                address: 
+                address:
                   type: object
                   nullable: true
                   properties:
@@ -1334,13 +1334,13 @@ components:
                     zipCode:
                       type: string
                       description: The zip code of user's address
-                      example: '108' 
+                      example: '108'
                     password:
                       type: string
                       format: password
                       nullable: false
                       description: Password of user's account
-    EventAttributes: 
+    EventAttributes:
       type: object
       additionalProperties: false
       required:
@@ -1356,11 +1356,11 @@ components:
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
-        data: 
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/EventResource'    
-    EventResult: 
+            $ref: '#/components/schemas/EventResource'
+    EventResult:
       type: object
       properties:
         links:
@@ -1374,7 +1374,7 @@ components:
     EventResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a event
           example: '23'
@@ -1413,13 +1413,13 @@ components:
             - type
           additionalProperties: false
           properties:
-            id: 
+            id:
               $ref: '#/components/schemas/EventId'
             type:
               $ref: '#/components/schemas/EventType'
             attributes:
-              $ref: '#/components/schemas/EventAttributes'     
-    CaseAttributes: 
+              $ref: '#/components/schemas/EventAttributes'
+    CaseAttributes:
       type: object
       additionalProperties: false
       required:
@@ -1429,7 +1429,7 @@ components:
         - clientIds
         - agentIds
       properties:
-        caseClosed: 
+        caseClosed:
           type: boolean
           nullable: false
           description: Describe the case has been closed or not
@@ -1439,21 +1439,21 @@ components:
           nullable: false
           description: The category of case, means “案件類別” in Chinese
           enum: *categoryEnums
-        year: 
+        year:
           type: integer
           nullable: true
           format: int32
           description: >-
-            The year of the case, Taiwan's legal system is 
-            mainly calculated from the years of the Republic of China. 
+            The year of the case, Taiwan's legal system is
+            mainly calculated from the years of the Republic of China.
             For example, 2022 year is equal to 111 year in Taiwan.
           example: '111'
-        caseType: 
+        caseType:
           type: string
           nullable: true
           description: The type of case, means “案號字別” in Chinese
           example: 訴
-        number: 
+        number:
           type: string
           nullable: true
           description: Number of case
@@ -1466,10 +1466,10 @@ components:
         courtDate:
           type: string
           format: date-time
-          description: Next court date and time. Here is the time zone of Taiwan 
+          description: Next court date and time. Here is the time zone of Taiwan
           nullable: true
           example: '2022-10-31T16:30:00Z'
-        eventId: 
+        eventId:
           type: string
           nullable: false
           description: Indicating which event the case belongs
@@ -1484,19 +1484,19 @@ components:
           nullable: true
           description: Indicating which court is handling the case
           example: '5'
-        clientIds: 
+        clientIds:
           type: array
           items:
             type: string
           nullable: false
           description: Identify which clients were involved in the case
           example: ['1113', '4829']
-        agentIds: 
+        agentIds:
           type: array
           items:
             type: string
           nullable: false
-          description: Identify which agents in law firm were involved in the case 
+          description: Identify which agents in law firm were involved in the case
           example: ['942', '29384']
         oppositeClientIds:
           type: array
@@ -1517,11 +1517,11 @@ components:
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
-        data:  
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/CaseResource'    
-    CaseResult: 
+            $ref: '#/components/schemas/CaseResource'
+    CaseResult:
       type: object
       properties:
         links:
@@ -1535,7 +1535,7 @@ components:
     CaseResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a case
           example: '23'
@@ -1574,13 +1574,13 @@ components:
             - type
           additionalProperties: false
           properties:
-            id: 
+            id:
               $ref: '#/components/schemas/CaseId'
             type:
               $ref: '#/components/schemas/CaseType'
             attributes:
-              $ref: '#/components/schemas/CaseAttributes'     
-    CourtAttributes: 
+              $ref: '#/components/schemas/CaseAttributes'
+    CourtAttributes:
       type: object
       additionalProperties: false
       required:
@@ -1597,7 +1597,7 @@ components:
           nullable: false
           description: The phone number of a court
           example: '02-23146871'
-        address: 
+        address:
           type: object
           nullable: true
           properties:
@@ -1618,7 +1618,7 @@ components:
               type: string
               description: The zip code of court's address
               example: '100'
-    CourtResult: 
+    CourtResult:
       type: object
       properties:
         links:
@@ -1632,7 +1632,7 @@ components:
     CourtResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a court
           example: '133'
@@ -1676,8 +1676,8 @@ components:
             type:
               $ref: '#/components/schemas/CourtType'
             attributes:
-              $ref: '#/components/schemas/CourtAttributes'    
-    SectionInChargeAttributes: 
+              $ref: '#/components/schemas/CourtAttributes'
+    SectionInChargeAttributes:
       type: object
       additionalProperties: false
       required:
@@ -1709,19 +1709,19 @@ components:
           nullable: false
           description: Section in charge's extension number
           example: '2341'
-        courtId: 
+        courtId:
           type: string
           nullable: false
           description: Associated court ID with the section in charge
           example: '712'
-    SectionInChargeResult: 
+    SectionInChargeResult:
       type: object
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/SectionInChargeResource'
-    SectionInChargeSetResult: 
+    SectionInChargeSetResult:
       type: object
       properties:
         links:
@@ -1737,7 +1737,7 @@ components:
     SectionInChargeResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a section in charge
           example: '133'
@@ -1781,8 +1781,8 @@ components:
             type:
               $ref: '#/components/schemas/SectionInChargeType'
             attributes:
-              $ref: '#/components/schemas/SectionInChargeAttributes' 
-    OppositeClientAttributes: 
+              $ref: '#/components/schemas/SectionInChargeAttributes'
+    OppositeClientAttributes:
       type: object
       additionalProperties: false
       required:
@@ -1807,7 +1807,7 @@ components:
           nullable: true
           description: The last name of opposite client
           example: 李
-        address: 
+        address:
           type: object
           nullable: true
           properties:
@@ -1828,21 +1828,21 @@ components:
               type: string
               description: The zip code of opposite client's address
               example: '104'
-        caseIds: 
+        caseIds:
           type: array
           items:
             type: string
           nullable: false
           description: Identify which cases were associated with the opposite client
           example: ['22', '78']
-    OppositeClientResult: 
+    OppositeClientResult:
       type: object
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/OppositeClientResource'
-    OppositeClientSetResult: 
+    OppositeClientSetResult:
       type: object
       properties:
         links:
@@ -1858,7 +1858,7 @@ components:
     OppositeClientResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a opposite client
           example: '133'
@@ -1903,7 +1903,7 @@ components:
               $ref: '#/components/schemas/OppositeClientType'
             attributes:
               $ref: '#/components/schemas/OppositeClientAttributes'
-    OppositeAgentAttributes: 
+    OppositeAgentAttributes:
       type: object
       additionalProperties: false
       required:
@@ -1934,7 +1934,7 @@ components:
           type: string
           nullable: true
           description: Phone number of opposite agent
-        address: 
+        address:
           type: object
           nullable: true
           properties:
@@ -1955,21 +1955,21 @@ components:
               type: string
               description: The zip code of opposite agent's address
               example: '220'
-        caseIds: 
+        caseIds:
           type: array
           items:
             type: string
           nullable: false
           description: Identify which cases were associated with the opposite agent
           example: ['22', '78']
-    OppositeAgentResult: 
+    OppositeAgentResult:
       type: object
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/OppositeAgentResource'
-    OppositeAgentSetResult: 
+    OppositeAgentSetResult:
       type: object
       properties:
         links:
@@ -1985,7 +1985,7 @@ components:
     OppositeAgentResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a opposite agent
           example: '133'
@@ -2029,13 +2029,13 @@ components:
             type:
               $ref: '#/components/schemas/OppositeAgentType'
             attributes:
-              $ref: '#/components/schemas/OppositeAgentAttributes' 
-    PaperAttributes: 
+              $ref: '#/components/schemas/OppositeAgentAttributes'
+    PaperAttributes:
       type: object
       additionalProperties: false
       required:
         - category
-        - title 
+        - title
         - subject
         - paperType
         - caseId
@@ -2051,12 +2051,12 @@ components:
           description: The paper's title
           nullable: false
           example: 民事答辯狀
-        subject: 
+        subject:
           type: string
           description: The paper's title
           nullable: false
           example: 被告李若男針對起訴狀論點之答辯
-        date: 
+        date:
           type: object
           nullable: true
           description: The information of date for a paper
@@ -2096,19 +2096,19 @@ components:
           description: The paper's type
           nullable: false
           example: 答辯狀
-        caseId: 
+        caseId:
           type: string
           nullable: false
           description: Identify which case the paper is belong to
           example: '22'
-    PaperResult: 
+    PaperResult:
       type: object
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
         data:
           $ref: '#/components/schemas/PaperResource'
-    PaperSetResult: 
+    PaperSetResult:
       type: object
       properties:
         links:
@@ -2124,7 +2124,7 @@ components:
     PaperResource:
       type: object
       properties:
-        id: 
+        id:
           type: string
           description: ID of a opposite agent
           example: '133'
@@ -2169,7 +2169,7 @@ components:
               $ref: '#/components/schemas/PaperType'
             attributes:
               $ref: '#/components/schemas/PaperAttributes'
-    PaperFileAttributes: 
+    PaperFileAttributes:
       type: object
       additionalProperties: false
       required:
@@ -2184,7 +2184,7 @@ components:
         file:
           type: string
           format: binary
-        caseId: 
+        caseId:
           type: string
           nullable: false
           description: Identify which case the paper file is belong to
@@ -2220,9 +2220,9 @@ components:
             $ref: '#/components/schemas/ErrorObject'
   securitySchemes:
     OAuth2:
-       type: oauth2
-       flows:
-         clientCredentials:
-           tokenUrl: 'https://localhost/oauth/token'
-           scopes:
-             full: Full access to the API
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://localhost/oauth/token'
+          scopes:
+            full: Full access to the API
