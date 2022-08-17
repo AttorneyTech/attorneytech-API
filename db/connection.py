@@ -1,13 +1,14 @@
 import psycopg2
-from common.config import read_config
+from common.config import read_config_of_db
 
 
-config = read_config()
-db_host = config['database']['db_host']
-db_port = config['database']['port']
-db_name = config['database']['db_name']
-db_username = config['database']['db_username']
-db_password = config['database']['db_password']
+config = read_config_of_db()
+
+db_host = config['db_host']
+db_port = config['port']
+db_name = config['db_name']
+db_username = config['db_username']
+db_password = config['db_password']
 
 
 # Construct the connection to database

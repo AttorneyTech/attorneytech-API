@@ -3,15 +3,15 @@ import os
 import sys
 from datetime import datetime
 
-from .config import read_config
+from .config import read_config_of_logger
 
 sys.path.append("..")
 
 
-config = read_config()
-file_path = config['logging']['file_path']
-folder_rotation = config['logging']['folder_rotation']
-filename_rotation = config['logging']['filename_rotation']
+config = read_config_of_logger()
+file_path = config['file_path']
+folder_rotation = config['folder_rotation']
+filename_rotation = config['filename_rotation']
 
 log_folder = folder_rotation.format(datetime.now())
 log_filename = filename_rotation.format(datetime.now())
