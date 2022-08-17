@@ -3,42 +3,45 @@ import os
 import sys
 from datetime import datetime
 
-from .config import read_config_of_logger
+from .config import read_config
 
 sys.path.append("..")
 
 
-config = read_config_of_logger()
-file_path = config['file_path']
-folder_rotation = config['folder_rotation']
-filename_rotation = config['filename_rotation']
+class Logger:
+    '''
+    Construct the logger
+    '''
+    def __init__(self):
+        __config = read_config("logger")
+        self.file_path = __config['file_path']
+        self.folder_rotation = __config['folder_rotation']
+        self.filename_rotation = __config['filename_rotation']
+        self.log_folder = self.folder_rotation.format(datetime.now())
+        self.log_filename = self.filename_rotation.format(datetime.now())
 
-log_folder = folder_rotation.format(datetime.now())
-log_filename = filename_rotation.format(datetime.now())
-
-
-def create_logger():
-    formatter = logging.Formatter(
+    def create_logger(self):
+        formatter = logging.Formatter(
                     '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%y/%m/%d %h:%m:%s'
                 )
-    api_logger = logging.getLogger()
-    api_logger.setLevel(logging.DEBUG)
+        api_logger = logging.getLogger()
+        api_logger.setLevel(logging.DEBUG)
 
-    if not os.path.exists(file_path + log_folder):
-        os.makedirs(file_path + log_folder)
+        if not os.path.exists(self.file_path + self.log_folder):
+            os.makedirs(self.file_path + self.log_folder)
 
-    file_handler = logging.FileHandler(
-                        f'{file_path}{log_folder}/{log_filename}',
-                        'w', 'utf-8'
-                    )
-    file_handler.setFormatter(formatter)
-    api_logger.addHandler(file_handler)
+        file_handler = logging.FileHandler(
+                            f'{self.file_path}{self.log_folder}/{self.log_filename}',
+                            'w', 'utf-8'
+                        )
+        file_handler.setFormatter(formatter)
+        api_logger.addHandler(file_handler)
 
-    # console handler
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
-    console_handler.setFormatter(formatter)
-    api_logger.addHandler(console_handler)
+        # console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
+        api_logger.addHandler(console_handler)
 
-    return api_logger
+        return api_logger

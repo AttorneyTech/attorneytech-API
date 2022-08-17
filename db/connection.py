@@ -1,23 +1,25 @@
 import psycopg2
-from common.config import read_config_of_db
+from common.config import read_config
 
 
-config = read_config_of_db()
+class DbConnection:
+    '''
+    Construct the connection of database
+    '''
+    def __init__(self):
+        __config = read_config("database")
+        self.__db_host = __config['db_host']
+        self.__db_port = __config['port']
+        self.__db_name = __config['db_name']
+        self.__db_username = __config['db_username']
+        self.__db_password = __config['db_password']
 
-db_host = config['db_host']
-db_port = config['port']
-db_name = config['db_name']
-db_username = config['db_username']
-db_password = config['db_password']
-
-
-# Construct the connection to database
-def get_db_connection():
-    conn = psycopg2.connect(
-        host=db_host,
-        port=db_port,
-        dbname=db_name,
-        user=db_username,
-        password=db_password
-    )
-    return conn
+    def connection(self):
+        conn = psycopg2.connect(
+                    host=self.__db_host,
+                    port=self.__db_port,
+                    dbname=self.__db_name,
+                    user=self.__db_username,
+                    password=self.__db_password
+                )
+        return conn
