@@ -3,7 +3,7 @@ import os
 import sys
 from datetime import datetime
 
-from config import read_config
+from .config import read_config
 
 sys.path.append("..")
 
@@ -18,17 +18,17 @@ log_filename = filename_rotation.format(datetime.now())
 
 
 def create_logger():
-    formatter = logging.formatter(
+    formatter = logging.Formatter(
                     '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     datefmt='%y/%m/%d %h:%m:%s'
                 )
-    api_logger = logging.getlogger()
-    api_logger.setlevel(logging.debug)
+    api_logger = logging.getLogger()
+    api_logger.setLevel(logging.DEBUG)
 
     if not os.path.exists(file_path + log_folder):
         os.makedirs(file_path + log_folder)
 
-    file_handler = logging.filehandler(
+    file_handler = logging.FileHandler(
                         f'{file_path}{log_folder}/{log_filename}',
                         'w', 'utf-8'
                     )
