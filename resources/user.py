@@ -2,7 +2,7 @@ from flask import jsonify, make_response
 from flask_restful import Resource
 
 from common.logger import Logger
-from common.error_handler import NotFound
+from common.error_handler import NotFound, InternalServerError
 from db.connection import DbConnection
 from db.user_dao import UserDao
 
@@ -10,50 +10,27 @@ api_logger = Logger().create_logger()
 connection = DbConnection()
 
 
-
 class User(Resource):
     def get(self, userId):
         '''
         Get the specific user by user ID
         '''
+        # Access data by UserDao
         user_dao = UserDao(userId)
-        response = user_dao.get_data_from_db()
 
-        # try:
-        #     conn = connection.connection()
-        # except Exception as e:
-        #     error_message = str(e)
-        #     error = InternalServerError(error_message)
-        #     api_logger.info(error_message)
-        #     return make_response(error.error_response(), 500)
-        # cur = conn.cursor()
-        # cur.execute(f'''
-        #             SELECT
-        #             users.id AS user_id,
-        #             users.role,
-        #             users.username,
-        #             users.first_name,
-        #             users.middle_name,
-        #             users.last_name,
-        #             events.id AS event_id,
-        #             cases.id AS cases_id,
-        #             users.email,
-        #             users.phone,
-        #             users.street_name,
-        #             users.district,
-        #             users.city,
-        #             users.zip_code
-        #             FROM users
-        #             LEFT JOIN cases
-        #             ON users.id=cases.client_id or users.id=cases.agent_id
-        #             LEFT JOIN events
-        #             ON cases.event_id=events.id
-        #             WHERE users.id={userId};
-        #             '''
-        #             )
-        # response = cur.fetchall()
-        # cur.close()
-        # conn.close()
+        try:
+            response = user_dao.get_data_from_db()
+        except Exception as e:
+            error_message_raw = str(e).split()
+            error_message = ' '.join(
+                    error_message_raw[:3] +
+                    error_message_raw[8:9] +
+                    error_message_raw[10:13]
+                )
+            error = InternalServerError(error_message)
+            api_logger.error(error_message)
+            return make_response(error.error_response(), 500)
+
         if response:
             events, cases = [], []
             for row in response:

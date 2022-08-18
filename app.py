@@ -5,7 +5,6 @@ from common.config import read_config
 from resources.user import User
 
 
-
 app = Flask(__name__)
 api = Api(app)
 app.config['JSON_SORT_KEYS'] = False
