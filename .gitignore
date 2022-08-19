@@ -2,7 +2,7 @@
 .DS_Store
 
 # Configuration file of attorneytech-API
-config.json
+common/config.json
 
 # Pycache
 __pycache__/
@@ -11,4 +11,4 @@ __pycache__/
 logs/
 
 # SQL Query module
-sql_query.py
+db/sql_query.py
