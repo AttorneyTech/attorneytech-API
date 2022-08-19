@@ -67,13 +67,19 @@ class UserModel(UserAddress, UserAttribute, UserData, UserTopLevel):
         super(UserTopLevel, self).__init__()
 
     @staticmethod
-    def get_user_by_id(response, userId):
+    def serialize_user_data(user_raw_data, userId):
+        '''
+        Using JSON-API serializer to serialize raw data
+        from the objects which were created above
+        '''
         events, cases = [], []
-        row = response[0]
+        row = user_raw_data[0]
 
         if str(row[6]) not in events:
             events.append(str(row[6]))
         cases.append(str(row[7]))
+
+        # Construct the objects of user
 
         user_address = UserAddress(
                             address_line_1=row[10],
@@ -111,6 +117,6 @@ class UserModel(UserAddress, UserAttribute, UserData, UserTopLevel):
                                 data=user_data
                             )
 
-        result = UserSchema().dump(user_top_level)
+        user_response_json_api = UserSchema().dump(user_top_level)
 
-        return result
+        return user_response_json_api

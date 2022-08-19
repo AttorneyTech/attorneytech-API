@@ -17,30 +17,36 @@ class User(Resource):
         '''
         Get the specific user by user ID
         '''
-        # Access data by UserDao
+        # Access data by user data access object
+
         user_dao = UserDao(userId)
 
         try:
-            response = user_dao.get_data_from_db()
+            user_raw_data = user_dao.get_data_from_db()
 
         except Exception as e:
+            # Parse error as string
+
             error_message_raw = str(e).split()
             error_message = ' '.join(
                     error_message_raw[:3] +
                     error_message_raw[8:9] +
                     error_message_raw[10:13]
                 )
+
             error = InternalServerError(error_message)
             api_logger.error(error_message)
 
             return make_response(error.error_response(), 500)
 
         else:
-            if response:
-                response = UserModel.get_user_by_id(response, userId)
+            if user_raw_data:
+                user_response_json_api = UserModel.serialize_user_data(
+                                                user_raw_data, userId
+                                            )
                 api_logger.info('Successful response')
 
-                return make_response(response, 200)
+                return make_response(user_response_json_api, 200)
             else:
                 error = NotFound()
                 api_logger.error('Resource not found')
