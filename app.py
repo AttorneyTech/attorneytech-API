@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_httpauth import HTTPBasicAuth
 from flask_restful import Api
 
 from common.config import read_config
@@ -7,6 +8,7 @@ from resources.user import User
 
 app = Flask(__name__)
 api = Api(app)
+auth = HTTPBasicAuth()
 app.config['JSON_SORT_KEYS'] = False
 
 

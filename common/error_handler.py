@@ -37,3 +37,22 @@ class NotFound:
                             ]
                         })
         return error
+
+
+class UnauthorizedLogin:
+    def __init__(self):
+        self.status = '401'
+        self.title = 'Unauthorized'
+        self.detail = 'Unauthorized, invalid username or password'
+
+    def error_response(self):
+        error = jsonify({
+                        "errors": [
+                                {
+                                    "status": self.status,
+                                    "title": self.title,
+                                    "detail": self.detail
+                                }
+                            ]
+                        })
+        return error

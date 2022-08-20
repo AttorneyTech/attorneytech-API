@@ -1,8 +1,13 @@
 from flask import make_response
+from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
+from werkzeug.security import check_password_hash
+from db.user_verify_dao import UserVerifyDao
 
+from common.error_handler import (
+    NotFound, InternalServerError, UnauthorizedLogin
+    )
 from common.logger import Logger
-from common.error_handler import NotFound, InternalServerError
 from db.connection import DbConnection
 from db.user_dao import UserDao
 from models.user_model import UserModel
@@ -10,9 +15,31 @@ from models.user_model import UserModel
 
 api_logger = Logger().create_logger()
 connection = DbConnection()
+auth = HTTPBasicAuth()
+
+
+@auth.verify_password
+def verify_password(username, password):
+    user_login = UserVerifyDao(username)
+    user_login_data = user_login.get_data_from_db()
+
+    if (user_login_data and
+        username in user_login_data and
+            check_password_hash(user_login_data.get(username), password)):
+
+        return username
+
+
+@auth.error_handler
+def auth_error():
+    error = UnauthorizedLogin()
+    api_logger.error(error.detail)
+
+    return make_response(error.error_response(), 401)
 
 
 class User(Resource):
+    @auth.login_required
     def get(self, userId):
         '''
         Get the specific user by user ID

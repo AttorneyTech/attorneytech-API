@@ -11,7 +11,7 @@ def read_config(key):
         try:
             config = config[key]
         except KeyError as e:
-            print(f'The key {e} in config file not found')
+            print(f'KeyError: The key {e} in config file not found')
             sys.exit()
 
     return config
