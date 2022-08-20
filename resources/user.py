@@ -2,7 +2,7 @@ from flask import make_response
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 from werkzeug.security import check_password_hash
-from db.user_verify_dao import UserVerifyDao
+
 
 from common.error_handler import (
     NotFound, InternalServerError, UnauthorizedLogin
@@ -10,6 +10,7 @@ from common.error_handler import (
 from common.logger import Logger
 from db.connection import DbConnection
 from db.user_dao import UserDao
+from db.user_verify_dao import UserVerifyDao
 from models.user_model import UserModel
 
 
