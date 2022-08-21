@@ -1,11 +1,10 @@
 import logging
 import os
 import sys
+
 from datetime import datetime
 
 from .config import read_config
-
-sys.path.append("..")
 
 
 class Logger:
@@ -13,10 +12,18 @@ class Logger:
     Construct the logger
     '''
     def __init__(self):
-        __config = read_config("logger")
-        self.file_path = __config['file_path']
-        self.folder_rotation = __config['folder_rotation']
-        self.filename_rotation = __config['filename_rotation']
+        try:
+            __config = read_config("logger")
+            __file_path = __config['file_path']
+            __folder_rotation = __config['folder_rotation']
+            __filename_rotation = __config['filename_rotation']
+        except KeyError as e:
+            print(f'KeyError: The key {e} in config file not found')
+            sys.exit()
+
+        self.file_path = __file_path
+        self.folder_rotation = __folder_rotation
+        self.filename_rotation = __filename_rotation
         self.log_folder = self.folder_rotation.format(datetime.now())
         self.log_filename = self.filename_rotation.format(datetime.now())
 
@@ -32,7 +39,8 @@ class Logger:
             os.makedirs(self.file_path + self.log_folder)
 
         file_handler = logging.FileHandler(
-                            f'{self.file_path}{self.log_folder}/{self.log_filename}',
+                            f'{self.file_path}{self.log_folder}'
+                            f'/{self.log_filename}',
                             'w', 'utf-8'
                         )
         file_handler.setFormatter(formatter)

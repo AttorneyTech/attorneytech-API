@@ -1,4 +1,8 @@
 from schemas.user_schema import UserSchema
+from common.uri_builder import uri_builder
+
+
+user_resource_type = 'users'
 
 
 class UserAddress:
@@ -105,14 +109,18 @@ class UserModel(UserAddress, UserAttribute, UserData, UserTopLevel):
                             id=userId,
                             type="users",
                             links={
-                                    "self": f"http://127.0.0.1:5000/users/{userId}"
+                                    "self": uri_builder(
+                                            f'{user_resource_type}/{userId}'
+                                        )
                                 },
                             attributes=user_attributes
                         )
 
         user_top_level = UserTopLevel(
                                 links={
-                                        "self": f"http://127.0.0.1:5000/users/{userId}"
+                                        "self": uri_builder(
+                                            f'{user_resource_type}/{userId}'
+                                        )
                                     },
                                 data=user_data
                             )

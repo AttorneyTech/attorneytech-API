@@ -16,7 +16,7 @@ config = read_config("api")
 api_port = config['port']
 
 
-api.add_resource(User, '/users/<string:userId>')
+api.add_resource(User, '/v1/users/<string:userId>')
 
 
 if __name__ == '__main__':
