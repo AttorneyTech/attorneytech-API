@@ -56,7 +56,7 @@ class UserTopLevel:
         self.data = data
 
 
-class UserModel(UserAddress, UserAttribute, UserData, UserTopLevel):
+class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     '''
     This is a multiple inheritance class to combine with the classes
     (UserAddress, UserAttribute, UserData and UserTopLevel)
