@@ -48,29 +48,14 @@ class User(Resource):
         # Access data by user data access object
 
         user_dao = UserDao(userId)
-        result = user_dao.get_data_from_db()
 
-        if result and type(result) == list:
-            user_raw_data = result
-        else:
-            error_data = result
+        try:
+            user_raw_data = user_dao.get_data_from_db()
 
-        if user_raw_data:
-            user_response_json_api = UserSerializer.serialize_user_data(
-                                                user_raw_data, userId
-                                            )
-            api_logger.info('Successful response')
+        except Exception as e:
+            # Parse error as string
 
-            return make_response(user_response_json_api, 200)
-
-        elif not user_raw_data:
-            error = NotFound()
-            api_logger.error('Resource not found')
-
-            return make_response(error.error_response(), 404)
-
-        else:
-            error_message_raw = str(error_data).split()
+            error_message_raw = str(e).split()
             error_message = ' '.join(
                     error_message_raw[:3] +
                     error_message_raw[8:9] +
@@ -81,3 +66,17 @@ class User(Resource):
             api_logger.error(error_message)
 
             return make_response(error.error_response(), 500)
+
+        else:
+            if user_raw_data:
+                user_response_json_api = UserSerializer.serialize_user_data(
+                                                user_raw_data, userId
+                                            )
+                api_logger.info('Successful response')
+
+                return make_response(user_response_json_api, 200)
+            else:
+                error = NotFound()
+                api_logger.error('Resource not found')
+
+                return make_response(error.error_response(), 404)
