@@ -11,20 +11,42 @@ class UserVerifyDao:
     def __init__(self, username):
         self.username = username
 
-    # Getting raw data from database
+    # Get the user raw data from database
+    # If the connection failed, return the error message
 
-    def get_data_from_db(self):
-        conn = connection.connection()
-        cur = conn.cursor()
-        cur.execute(user_verify_query(self.username))
-        user_login_raw_data = cur.fetchall()
+    def verify_user_from_db(self):
+        conn = connection.get_connection()
+        try:
+            cur = conn.cursor()
+        except Exception:
+            err = conn
 
-        cur.close()
-        conn.close()
+            return err
 
-        if user_login_raw_data:
-            login_username = user_login_raw_data[0][0]
-            login_password = generate_password_hash(user_login_raw_data[0][1])
-            user_login_data = {login_username: login_password}
+        # If the get the raw user data failed
+        # return the message of syntax error at SQL query
 
-            return user_login_data
+        try:
+            cur.execute(user_verify_query(self.username))
+        except Exception as err:
+            err = 'Syntax error at SQL query'
+
+            return err
+
+        # If get the raw user data successfully
+        # return the user_login_data
+
+        else:
+            user_login_raw_data = cur.fetchall()
+            if user_login_raw_data:
+                login_username = user_login_raw_data[0][0]
+                login_password = generate_password_hash(
+                        user_login_raw_data[0][1]
+                    )
+                user_login_data = {login_username: login_password}
+
+                return user_login_data
+
+        finally:
+            cur.close()
+            conn.close()

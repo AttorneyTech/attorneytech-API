@@ -9,33 +9,36 @@ class InternalServerError:
 
     def error_response(self):
         error = jsonify({
-                        "errors": [
-                                {
-                                    "status": self.status,
-                                    "title": self.title,
-                                    "detail": self.detail
-                                }
-                            ]
-                        })
+                    "errors": [
+                            {
+                                "status": self.status,
+                                "title": self.title,
+                                "detail": self.detail
+                            }
+                        ]
+                    })
         return error
 
 
 class NotFound:
-    def __init__(self):
+    def __init__(self, detail):
         self.status = '404'
         self.title = 'Not Found'
-        self.detail = 'Resource not found'
+        self.detail = detail
 
     def error_response(self):
         error = jsonify({
-                        "errors": [
-                                {
-                                    "status": self.status,
-                                    "title": self.title,
-                                    "detail": self.detail
-                                }
-                            ]
-                        })
+                    "errors": [
+                            {
+                                "status": self.status,
+                                "title": self.title,
+                                "detail": (
+                                        f'Resource of user id:'
+                                        f'{self.detail} not found'
+                                    )
+                            }
+                        ]
+                    })
         return error
 
 
@@ -47,12 +50,12 @@ class UnauthorizedLogin:
 
     def error_response(self):
         error = jsonify({
-                        "errors": [
-                                {
-                                    "status": self.status,
-                                    "title": self.title,
-                                    "detail": self.detail
-                                }
-                            ]
-                        })
+                    "errors": [
+                            {
+                                "status": self.status,
+                                "title": self.title,
+                                "detail": self.detail
+                            }
+                        ]
+                    })
         return error

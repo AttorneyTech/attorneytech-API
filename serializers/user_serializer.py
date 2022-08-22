@@ -7,7 +7,7 @@ user_resource_type = 'users'
 
 class UserAddress:
     '''
-    This is a class for a user's address.
+    Construct address object of a user
     '''
     def __init__(self, address_line_1, address_line_2, city, zipCode):
         self.addressLine1 = address_line_1
@@ -18,7 +18,7 @@ class UserAddress:
 
 class UserAttribute:
     '''
-    This is a class for a user's attributes.
+    Construct attributes object of a user
     '''
     def __init__(
                 self, role, username, first_name, middle_name, last_name,
@@ -38,7 +38,7 @@ class UserAttribute:
 
 class UserData:
     '''
-    This is a class to construct a user data object for JSON API.
+    Construct data object of a user
     '''
     def __init__(self, id, type, links, attributes):
         self.id = id
@@ -49,7 +49,7 @@ class UserData:
 
 class UserTopLevel:
     '''
-    This is a class to construct a top level of resource of User for JSON API.
+    Construct top level object of a user in JSON:API format
     '''
     def __init__(self, links, data):
         self.links = links
@@ -58,10 +58,8 @@ class UserTopLevel:
 
 class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     '''
-    This is a multiple inheritance class to combine with the classes
-    (UserAddress, UserAttribute, UserData and UserTopLevel)
-    And implement the http methods, serializing or unserializing
-    the response from the resource of User
+    Combine with the objects of Users and
+    construct the serializer for user resource
     '''
     def __init__(self):
         super().__init__()
@@ -73,8 +71,7 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     @staticmethod
     def serialize_user_data(user_raw_data, userId):
         '''
-        Using JSON-API serializer to serialize raw data
-        from the objects which were created above
+        Serializes raw user data from user resource
         '''
         events, cases = [], []
         row = user_raw_data[0]

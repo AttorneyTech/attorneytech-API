@@ -22,10 +22,24 @@ auth = HTTPBasicAuth()
 @auth.verify_password
 def verify_password(username, password):
     user_login = UserVerifyDao(username)
-    user_login_data = user_login.get_data_from_db()
+    user_login_data = user_login.verify_user_from_db()
 
-    if (user_login_data and
-        username in user_login_data and
+    # Set the variable 'login_internal_error'
+    # for the use of auth_error() function
+
+    global login_internal_error
+    login_internal_error = None
+
+    # If the user_login_data is a error message,
+    # put it into a 'login_internal_error' variable
+
+    if type(user_login_data) is str:
+        login_internal_error = user_login_data
+
+    # Check if the login data is valid
+
+    elif (user_login_data and
+            username in user_login_data and
             check_password_hash(user_login_data.get(username), password)):
 
         return username
@@ -33,50 +47,46 @@ def verify_password(username, password):
 
 @auth.error_handler
 def auth_error():
-    error = UnauthorizedLogin()
-    api_logger.error(error.detail)
+    if login_internal_error:
+        err = login_internal_error
+        error = InternalServerError(err)
+        api_logger.error(err)
 
-    return make_response(error.error_response(), 401)
+        return make_response(error.error_response(), 500)
+    else:
+        error = UnauthorizedLogin()
+        api_logger.error(error.detail)
+
+        return make_response(error.error_response(), 401)
 
 
 class User(Resource):
     @auth.login_required
     def get(self, userId):
         '''
-        Get the specific user by user ID
+        Get the specific user data by user ID
         '''
-        # Access data by user data access object
-
         user_dao = UserDao(userId)
+        user_raw_data = user_dao.get_user_by_id()
 
-        try:
-            user_raw_data = user_dao.get_data_from_db()
-
-        except Exception as e:
-            # Parse error as string
-
-            error_message_raw = str(e).split()
-            error_message = ' '.join(
-                    error_message_raw[:3] +
-                    error_message_raw[8:9] +
-                    error_message_raw[10:13]
-                )
-
-            error = InternalServerError(error_message)
-            api_logger.error(error_message)
+        # If user_raw_data
+        if type(user_raw_data) is str:
+            err = user_raw_data
+            error = InternalServerError(err)
+            api_logger.error(err)
 
             return make_response(error.error_response(), 500)
 
-        else:
-            if user_raw_data:
-                user_response_json_api = UserSerializer.serialize_user_data(
+        elif user_raw_data:
+            user_response_json_api = UserSerializer.serialize_user_data(
                                                 user_raw_data, userId
                                             )
-                api_logger.info('Successful response')
+            api_logger.info('Successful response')
 
-                return make_response(user_response_json_api, 200)
-            else:
-                error = NotFound()
-                api_logger.error('Resource not found')
+            return make_response(user_response_json_api, 200)
 
-                return make_response(error.error_response(), 404)
+        else:
+            error = NotFound(userId)
+            api_logger.error('Resource not found')
+
+            return make_response(error.error_response(), 404)

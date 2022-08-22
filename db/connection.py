@@ -26,7 +26,9 @@ class DbConnection:
         self.__db_username = __db_username
         self.__db_password = __db_password
 
-    def connection(self):
+    # Get the connection to postgreSQL
+    # If failed, return the error message
+    def get_connection(self):
         try:
             conn = psycopg2.connect(
                         host=self.__db_host,
@@ -35,8 +37,11 @@ class DbConnection:
                         user=self.__db_username,
                         password=self.__db_password
                     )
-        except Exception as e:
-            return e
+        except Exception as err:
+            err = str(err)
+            err = err.replace('\"', '')
+            err = err.replace('\n', '')
 
+            return err
         else:
             return conn

@@ -9,7 +9,7 @@ from .config import read_config
 
 class Logger:
     '''
-    Construct the logger
+    Construct the logger object
     '''
     def __init__(self):
         try:
@@ -47,6 +47,7 @@ class Logger:
         api_logger.addHandler(file_handler)
 
         # console handler
+
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(formatter)
