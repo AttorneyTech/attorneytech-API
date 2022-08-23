@@ -13,7 +13,7 @@ class Logger:
     '''
     def __init__(self):
         try:
-            __config = read_config("logger")
+            __config = read_config('logger')
             __file_path = __config['file_path']
             __folder_rotation = __config['folder_rotation']
             __filename_rotation = __config['filename_rotation']
@@ -29,20 +29,21 @@ class Logger:
 
     def create_logger(self):
         formatter = logging.Formatter(
-                    '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    datefmt='%y/%m/%d %h:%m:%s'
-                )
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            datefmt='%y/%m/%d %h:%m:%s'
+        )
         api_logger = logging.getLogger()
         api_logger.setLevel(logging.DEBUG)
 
-        if not os.path.exists(self.file_path + self.log_folder):
-            os.makedirs(self.file_path + self.log_folder)
+        if not os.path.exists(f'{self.file_path}{self.log_folder}'):
+            os.makedirs(f'{self.file_path}{self.log_folder}')
 
         file_handler = logging.FileHandler(
-                            f'{self.file_path}{self.log_folder}'
-                            f'/{self.log_filename}',
-                            'w', 'utf-8'
-                        )
+            f'{self.file_path}{self.log_folder}'
+            f'/{self.log_filename}',
+            'w',
+            'utf-8'
+        )
         file_handler.setFormatter(formatter)
         api_logger.addHandler(file_handler)
 

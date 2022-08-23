@@ -23,7 +23,7 @@ class UserAttribute:
     def __init__(
                 self, role, username, first_name, middle_name, last_name,
                 event_ids, case_ids, email, phone, address
-            ):
+                ):
         self.role = role
         self.username = username
         self.firstName = first_name
@@ -83,44 +83,40 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         # Construct the objects of user
 
         user_address = UserAddress(
-                            address_line_1=row[10],
-                            address_line_2=row[11],
-                            city=row[12],
-                            zipCode=row[13]
-                        )
+            address_line_1=row[10],
+            address_line_2=row[11],
+            city=row[12],
+            zipCode=row[13]
+        )
 
         user_attributes = UserAttribute(
-                                role=row[1],
-                                username=row[2],
-                                first_name=row[3],
-                                middle_name=row[4],
-                                last_name=row[5],
-                                event_ids=events,
-                                case_ids=cases,
-                                email=row[8],
-                                phone=row[9],
-                                address=user_address
-                            )
+            role=row[1],
+            username=row[2],
+            first_name=row[3],
+            middle_name=row[4],
+            last_name=row[5],
+            event_ids=events,
+            case_ids=cases,
+            email=row[8],
+            phone=row[9],
+            address=user_address
+        )
 
         user_data = UserData(
-                            id=userId,
-                            type="users",
-                            links={
-                                    "self": uri_builder(
-                                            f'{user_resource_type}/{userId}'
-                                        )
-                                },
-                            attributes=user_attributes
-                        )
+            id=userId,
+            type='users',
+            links={
+                "self": uri_builder(f'{user_resource_type}/{userId}')
+            },
+            attributes=user_attributes
+        )
 
         user_top_level = UserTopLevel(
-                                links={
-                                        "self": uri_builder(
-                                            f'{user_resource_type}/{userId}'
-                                        )
-                                    },
-                                data=user_data
-                            )
+            links={
+                "self": uri_builder(f'{user_resource_type}/{userId}')
+            },
+            data=user_data
+        )
 
         user_response_json_api = UserSchema().dump(user_top_level)
 

@@ -9,6 +9,3 @@ __pycache__/
 
 # Logs
 logs/
-
-# SQL Query module
-db/sql_query.py

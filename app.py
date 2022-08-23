@@ -23,7 +23,4 @@ except KeyError as e:
     sys.exit()
 
 api.add_resource(User, '/v1/users/<string:userId>')
-
-
-if __name__ == '__main__':
-    app.run(port=api_port, debug=True)
+app.run(port=api_port, debug=True)

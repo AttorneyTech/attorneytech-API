@@ -8,15 +8,18 @@ class InternalServerError:
         self.detail = detail
 
     def error_response(self):
-        error = jsonify({
-                    "errors": [
-                            {
-                                "status": self.status,
-                                "title": self.title,
-                                "detail": self.detail
-                            }
-                        ]
-                    })
+        error = jsonify(
+            {
+                "errors": [
+                    {
+                        "status": self.status,
+                        "title": self.title,
+                        "detail": self.detail
+                    }
+                ]
+            }
+        )
+
         return error
 
 
@@ -27,18 +30,20 @@ class NotFound:
         self.detail = detail
 
     def error_response(self):
-        error = jsonify({
-                    "errors": [
-                            {
-                                "status": self.status,
-                                "title": self.title,
-                                "detail": (
-                                        f'Resource of user id:'
-                                        f'{self.detail} not found'
-                                    )
-                            }
-                        ]
-                    })
+        error = jsonify(
+            {
+                "errors": [
+                    {
+                        "status": self.status,
+                        "title": self.title,
+                        "detail": (
+                            f'Resource of user id:'
+                            f'{self.detail} not found'
+                        )
+                    }
+                ]
+            }
+        )
         return error
 
 
@@ -51,11 +56,12 @@ class UnauthorizedLogin:
     def error_response(self):
         error = jsonify({
                     "errors": [
-                            {
-                                "status": self.status,
-                                "title": self.title,
-                                "detail": self.detail
-                            }
-                        ]
-                    })
+                        {
+                            "status": self.status,
+                            "title": self.title,
+                            "detail": self.detail
+                        }
+                    ]
+                }
+        )
         return error

@@ -2,19 +2,17 @@ from db.connection import DbConnection
 from db.sql_query import user_query
 
 
-connection = DbConnection()
-
-
 class UserDao:
     def __init__(self, userId):
         self.userId = userId
+        self.connection = DbConnection()
 
     # Get the raw user data by user id from database
     # If the connection failed, return the error message
 
     def get_user_by_id(self):
-        conn = connection.get_connection()
         try:
+            conn = self.connection.get_connection()
             cur = conn.cursor()
         except Exception:
             err = conn
