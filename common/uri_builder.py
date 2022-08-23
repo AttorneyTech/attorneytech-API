@@ -1,18 +1,9 @@
-#  apiBaseUrl, resourcePathLink, paramsLink
-import sys
-
-from .config import read_config
+from common.config import config
 
 
-config = read_config('api')
-
-try:
-    hostname = config['host']
-    port = config['port']
-    version = 'v1'
-except KeyError as e:
-    print(f'KeyError: The key {e} in config file not found')
-    sys.exit()
+hostname = config.api_host
+port = config.api_port
+version = 'v1'
 
 
 def uri_builder(resource_path):

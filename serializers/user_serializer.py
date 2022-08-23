@@ -74,14 +74,15 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         Serializes raw user data from user resource
         '''
         events, cases = [], []
+        for row in user_raw_data:
+            # Deal with the duplicate events in each row
+            if str(row[6]) not in events:
+                events.append(str(row[6]))
+            cases.append(str(row[7]))
+
         row = user_raw_data[0]
 
-        if str(row[6]) not in events:
-            events.append(str(row[6]))
-        cases.append(str(row[7]))
-
         # Construct the objects of user
-
         user_address = UserAddress(
             address_line_1=row[10],
             address_line_2=row[11],

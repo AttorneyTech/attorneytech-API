@@ -1,10 +1,8 @@
 import logging
 import os
-import sys
-
 from datetime import datetime
 
-from .config import read_config
+from common.config import config
 
 
 class Logger:
@@ -12,20 +10,9 @@ class Logger:
     Construct the logger object
     '''
     def __init__(self):
-        try:
-            __config = read_config('logger')
-            __file_path = __config['file_path']
-            __folder_rotation = __config['folder_rotation']
-            __filename_rotation = __config['filename_rotation']
-        except KeyError as e:
-            print(f'KeyError: The key {e} in config file not found')
-            sys.exit()
-
-        self.file_path = __file_path
-        self.folder_rotation = __folder_rotation
-        self.filename_rotation = __filename_rotation
-        self.log_folder = self.folder_rotation.format(datetime.now())
-        self.log_filename = self.filename_rotation.format(datetime.now())
+        self.file_path = config.logger_file_path
+        self.folder_name = config.logger_folder_name.format(datetime.now())
+        self.file_name = config.logger_file_name.format(datetime.now())
 
     def create_logger(self):
         formatter = logging.Formatter(
@@ -35,12 +22,13 @@ class Logger:
         api_logger = logging.getLogger()
         api_logger.setLevel(logging.DEBUG)
 
-        if not os.path.exists(f'{self.file_path}{self.log_folder}'):
-            os.makedirs(f'{self.file_path}{self.log_folder}')
+        if not os.path.exists(f'{self.file_path}{self.folder_name}'):
+            os.makedirs(f'{self.file_path}{self.folder_name}')
 
+        # file handler
         file_handler = logging.FileHandler(
-            f'{self.file_path}{self.log_folder}'
-            f'/{self.log_filename}',
+            f'{self.file_path}{self.folder_name}'
+            f'/{self.file_name}',
             'w',
             'utf-8'
         )
@@ -48,7 +36,6 @@ class Logger:
         api_logger.addHandler(file_handler)
 
         # console handler
-
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(formatter)

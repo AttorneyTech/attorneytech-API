@@ -1,5 +1,4 @@
 from flask import make_response
-from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource
 
 
@@ -15,11 +14,9 @@ from serializers.user_serializer import UserSerializer
 
 api_logger = Logger().create_logger()
 connection = DbConnection()
-auth = HTTPBasicAuth()
 
 
 class User(Resource):
-    @auth.login_required
     def get(self, userId):
         '''
         Get the specific user data by user ID
