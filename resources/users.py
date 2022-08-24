@@ -6,12 +6,9 @@ from common.error_handler import (
     NotFound,
     InternalServerError
 )
-from common.logger import Logger
+from common.logger import logger
 from db.user_dao import UserDao
 from serializers.user_serializer import UserSerializer
-
-
-api_logger = Logger().create_logger()
 
 
 class User(Resource):
@@ -27,17 +24,17 @@ class User(Resource):
                     user_raw_data,
                     userId
                 )
-                api_logger.info('Successful response')
+                logger.info('Successful response')
 
                 return make_response(user_response_json_api, 200)
             else:
                 error = NotFound(userId)
-                api_logger.error('Resource not found')
+                logger.error('Resource not found')
 
                 return make_response(error.error_response(), 404)
         except Exception as err:
             error = InternalServerError(
                 str(err).replace('\"', '').replace('\n', '')
             )
-            api_logger.error(err)
+            logger.error(err)
             return make_response(error.error_response(), 500)

@@ -19,8 +19,8 @@ class Logger:
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             datefmt='%y/%m/%d %h:%m:%s'
         )
-        api_logger = logging.getLogger()
-        api_logger.setLevel(logging.DEBUG)
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
 
         if not os.path.exists(f'{self.file_path}{self.folder_name}'):
             os.makedirs(f'{self.file_path}{self.folder_name}')
@@ -33,12 +33,15 @@ class Logger:
             'utf-8'
         )
         file_handler.setFormatter(formatter)
-        api_logger.addHandler(file_handler)
+        logger.addHandler(file_handler)
 
         # console handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(formatter)
-        api_logger.addHandler(console_handler)
+        logger.addHandler(console_handler)
 
-        return api_logger
+        return logger
+
+
+logger = Logger().create_logger()
