@@ -7,7 +7,7 @@ from common.error_handler import (
     InternalServerError
 )
 from common.logger import logger
-from db.user_dao import UserDao
+from db.users_dao import UserDao
 from serializers.user_serializer import UserSerializer
 
 

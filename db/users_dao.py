@@ -2,7 +2,7 @@ from db.connection import DbConnection
 from db.sql_query import user_query
 
 
-class UserDao:
+class UsersDao:
     def __init__(self):
         self.connection = DbConnection()
 

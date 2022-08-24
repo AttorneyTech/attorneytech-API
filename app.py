@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 
 from common.config import config
-from resources.users import User
+from resources.user import User
 
 
 app = Flask(__name__)
