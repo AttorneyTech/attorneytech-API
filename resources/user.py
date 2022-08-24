@@ -7,13 +7,11 @@ from common.error_handler import (
     InternalServerError
 )
 from common.logger import Logger
-from db.connection import DbConnection
 from db.user_dao import UserDao
 from serializers.user_serializer import UserSerializer
 
 
 api_logger = Logger().create_logger()
-connection = DbConnection()
 
 
 class User(Resource):
@@ -21,26 +19,25 @@ class User(Resource):
         '''
         Get the specific user data by user ID
         '''
-        user_dao = UserDao(userId)
-        user_raw_data = user_dao.get_user_by_id()
+        user_dao = UserDao()
+        try:
+            user_raw_data = user_dao.get_user_by_id(userId)
+            if user_raw_data:
+                user_response_json_api = UserSerializer.serialize_user_data(
+                    user_raw_data,
+                    userId
+                )
+                api_logger.info('Successful response')
 
-        # If user_raw_data
-        if type(user_raw_data) is str:
-            err = user_raw_data
-            error = InternalServerError(err)
-            api_logger.error(err)
+                return make_response(user_response_json_api, 200)
+            else:
+                error = NotFound(userId)
+                api_logger.error('Resource not found')
 
-            return make_response(error.error_response(), 500)
-        elif user_raw_data:
-            user_response_json_api = UserSerializer.serialize_user_data(
-                user_raw_data,
-                userId
+                return make_response(error.error_response(), 404)
+        except Exception as err:
+            error = InternalServerError(
+                str(err).replace('\"', '').replace('\n', '')
             )
-            api_logger.info('Successful response')
-
-            return make_response(user_response_json_api, 200)
-        else:
-            error = NotFound(userId)
-            api_logger.error('Resource not found')
-
-            return make_response(error.error_response(), 404)
+            api_logger.error(err)
+            return make_response(error.error_response(), 500)

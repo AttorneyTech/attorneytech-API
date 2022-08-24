@@ -25,7 +25,9 @@ class DbConnection:
                 user=self.db_username,
                 password=self.db_password
             )
+
             return conn
+
         except Exception as err:
 
-            return str(err).replace('\"', '').replace('\n', '')
+            raise err
