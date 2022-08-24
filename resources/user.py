@@ -7,7 +7,7 @@ from common.error_handler import (
     InternalServerError
 )
 from common.logger import logger
-from db.users_dao import UserDao
+from db.users_dao import UsersDao
 from serializers.user_serializer import UserSerializer
 
 
@@ -16,7 +16,7 @@ class User(Resource):
         '''
         Get the specific user data by user ID
         '''
-        user_dao = UserDao()
+        user_dao = UsersDao()
         try:
             user_raw_data = user_dao.get_user_by_id(userId)
             if user_raw_data:

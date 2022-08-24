@@ -1,5 +1,6 @@
 import json
 import sys
+import traceback
 
 
 try:
@@ -22,8 +23,8 @@ try:
         logger_file_path = logger_config['file_path']
         logger_folder_name = logger_config['folder_name']
         logger_file_name = logger_config['file_name']
-except Exception as e:
-    print(e)
+except Exception:
+    traceback.print_exc()
     sys.exit()
 
 
