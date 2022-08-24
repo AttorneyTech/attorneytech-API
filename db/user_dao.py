@@ -6,19 +6,23 @@ class UserDao:
     def __init__(self):
         self.connection = DbConnection()
 
-    # Get the raw user data by user id from database
-    # If the connection failed, return the error message
-
+    # Connect to database and create the cursor
+    # to execute SQL query
+    # If failed in the progress above,
+    # raise the error
     def get_user_by_id(self, userId):
+        conn, cur = None, None
         try:
             conn = self.connection.get_connection()
             cur = conn.cursor()
             cur.execute(user_query(userId))
             user_raw_data = cur.fetchall()
+
+            return user_raw_data
         except Exception as err:
 
             raise err
-        else:
-            cur.close()
-            conn.close()
-            return user_raw_data
+        finally:
+            if cur and conn:
+                cur.close()
+                conn.close()

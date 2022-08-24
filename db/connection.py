@@ -15,7 +15,7 @@ class DbConnection:
         self.db_password = config.db_password
 
     # Get the connection to postgreSQL
-    # If failed, return the error message
+    # If failed, raise the error
     def get_connection(self):
         try:
             conn = psycopg2.connect(
