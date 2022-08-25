@@ -28,7 +28,7 @@ class User(Resource):
 
                 return make_response(user_response_json_api, 200)
             else:
-                error = NotFound(userId)
+                error = NotFound(f'Resource of user id: {userId} not found')
                 logger.error('Resource not found')
 
                 return make_response(error.error_response(), 404)
