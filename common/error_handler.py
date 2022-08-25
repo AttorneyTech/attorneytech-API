@@ -2,9 +2,6 @@ from flask import jsonify
 
 
 class ErrorHandler:
-    def __init__(self):
-        pass
-
     def error_response(self):
         error = jsonify(
             {
@@ -27,6 +24,9 @@ class InternalServerError(ErrorHandler):
         self.title = 'Internal Server Error'
         self.detail = detail
 
+    def error_response(self):
+        return super().error_response()
+
 
 class NotFound(ErrorHandler):
     def __init__(self, detail):
@@ -34,9 +34,15 @@ class NotFound(ErrorHandler):
         self.title = 'Not Found'
         self.detail = detail
 
+    def error_response(self):
+        return super().error_response()
+
 
 class UnauthorizedLogin(ErrorHandler):
     def __init__(self):
         self.status = '401'
         self.title = 'Unauthorized'
         self.detail = 'Unauthorized, invalid username or password'
+
+    def error_response(self):
+        return super().error_response()
