@@ -1,5 +1,6 @@
 {
     "api":{
+        "hostname": "127.0.0.1",
         "port": 5000
     },
 
@@ -12,9 +13,13 @@
     },
 
     "logger":{
+        "utc_offset": 8.0,
+        "level": "DEBUG",
         "file_path": "logs/",
-        "folder_rotation": "{:%Y-%m}",
-        "filename_rotation": "{:%Y-%m-%d}"
+        "folder_name": "{:%Y-%m}",
+        "file_name": "{:%Y-%m-%d}",
+        "file_size_bytes": 20971520,
+        "file_backup_count": 5
     }
 
 }
