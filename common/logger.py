@@ -1,7 +1,7 @@
 import logging
 import logging.handlers
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from common.config import config
 
@@ -10,11 +10,20 @@ class Logger:
     '''
     Construct the logger object
     '''
+    custom_tz = (
+        datetime.utcnow() +
+        timedelta(hours=config.logger_utc_offset)
+    )
+
     def __init__(self):
         self.level = config.logger_level
         self.file_path = config.logger_file_path
-        self.folder_name = config.logger_folder_name.format(datetime.now())
-        self.file_name = config.logger_file_name.format(datetime.now())
+        self.folder_name = config.logger_folder_name.format(
+            Logger.custom_tz
+        )
+        self.file_name = config.logger_file_name.format(
+            Logger.custom_tz
+        )
         self.file_size_bytes = config.logger_file_size_bytes
         self.file_backup_count = config.logger_file_backup_count
 
@@ -26,6 +35,13 @@ class Logger:
         format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         datefmt = '%Y/%m/%d %H:%M:%S'
 
+        # Basic config of logging
+        logging.basicConfig(
+            level=f'{self.level}',
+            format=format,
+            datefmt=datefmt
+        )
+
         # Set file handler
         file_handler = logging.handlers.RotatingFileHandler(
             f'{self.file_path}{self.folder_name}'
@@ -35,19 +51,24 @@ class Logger:
             maxBytes=self.file_size_bytes,
             backupCount=self.file_backup_count
         )
-        formatter = logging.Formatter(format)
-        file_handler.setFormatter(formatter)
 
-        # Basic config of logging
-        logging.basicConfig(
-            level=f'{self.level}',
-            format=format,
-            datefmt=datefmt
-        )
-
-        # Set handler of console
+        # Set console handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
+
+        # Custom the timezone of logger
+        def custom_timezone(*args):
+            tz = Logger.custom_tz
+
+            return tz.timetuple()
+
+        # Replace the default converter to custom converter
+        logging.Formatter.converter = custom_timezone
+
+        # Set the formatter
+        formatter = logging.Formatter(format)
+        file_handler.setFormatter(formatter)
+        console_handler.setFormatter(formatter)
 
         # Initialize the logger and add the handlers to it
         logger = logging.getLogger()
