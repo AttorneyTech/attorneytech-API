@@ -1,4 +1,4 @@
-import psycopg2
+# import psycopg2
 from psycopg2 import pool
 
 from common.config import config
@@ -32,20 +32,6 @@ class DbConnection:
 
             raise err
 
-    # Get the connection to postgreSQL
-    # If failed, raise the error
-    def get_connection(self):
-        try:
-            conn = psycopg2.connect(
-                host=self.db_host,
-                port=self.db_port,
-                dbname=self.db_name,
-                user=self.db_username,
-                password=self.db_password
-            )
 
-            return conn
-
-        except Exception as err:
-
-            raise err
+connection = DbConnection()
+conn_pool = connection.create_conn_pool()

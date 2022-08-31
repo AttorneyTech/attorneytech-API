@@ -1,10 +1,11 @@
-from db.connection import DbConnection
+# from db.connection import DbConnection
+from db.connection import conn_pool
 from db.sql_query import user_query
 
 
 class UsersDao:
     def __init__(self):
-        self.connection = DbConnection()
+        self.conn_pool = conn_pool
 
     # Connect to database and create the cursor
     # to execute SQL query
@@ -13,7 +14,7 @@ class UsersDao:
     def get_user_by_id(self, userId):
         conn, cur = None, None
         try:
-            conn = self.connection.get_connection()
+            conn = self.conn_pool.getconn()
             cur = conn.cursor()
             cur.execute(user_query(userId))
             user_raw_data = cur.fetchall()
@@ -25,4 +26,4 @@ class UsersDao:
         finally:
             if cur and conn:
                 cur.close()
-                conn.close()
+                self.conn_pool.putconn(conn=conn)
