@@ -1,5 +1,6 @@
-def user_query(userId):
-    user_query = f'''
+def prepare_user_query():
+    prepare_statement = '''
+        PREPARE get_user_by_id(integer) AS
         SELECT
             users.id AS user_id,
             users.role,
@@ -20,19 +21,19 @@ def user_query(userId):
         ON users.id = cases.client_id OR users.id = cases.agent_id
         LEFT JOIN events
         ON cases.event_id = events.id
-        WHERE users.id = {userId};
+        WHERE users.id = $1;
     '''
 
-    return user_query
+    return prepare_statement
 
 
-def user_verify_query(username):
-    user_verify_query = f'''
-        SELECT
-            users.username,
-            users.password
-        FROM users
-        WHERE users.username = '{username}';
-    '''
+# def user_verify_query(username):
+#     user_verify_query = f'''
+#         SELECT
+#             users.username,
+#             users.password
+#         FROM users
+#         WHERE users.username = '{username}';
+#     '''
 
-    return user_verify_query
+#     return user_verify_query
