@@ -6,13 +6,15 @@ import traceback
 try:
     with open('common/config.json', 'r') as config_f:
         config = json.load(config_f)
-        api_config = config['api']
+        server_config = config['server']
         db_config = config['database']
         logger_config = config['logger']
 
-        # Load config of api
-        api_host = api_config['hostname']
-        api_port = api_config['port']
+        # Load config of server
+        server_host = server_config['hostname']
+        server_port = server_config['port']
+        server_key = server_config['key_path']
+        server_cert = server_config['cert_path']
 
         # Load config of database
         db_port = db_config['port']
@@ -36,9 +38,11 @@ except Exception:
 
 class Config:
     def __init__(self):
-        # api config
-        self.api_host = api_host
-        self.api_port = api_port
+        # server config
+        self.server_host = server_host
+        self.server_port = server_port
+        self.server_key = server_key
+        self.server_cert = server_cert
 
         # db config
         self.db_port = db_port

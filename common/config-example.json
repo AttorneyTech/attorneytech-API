@@ -1,7 +1,9 @@
 {
-    "api":{
+    "server":{
         "hostname": "127.0.0.1",
-        "port": 5000
+        "port": 5000,
+        "key_path": "path/to/key.pem",
+        "cert_path": "path/to/server.crt"
     },
 
     "database":{

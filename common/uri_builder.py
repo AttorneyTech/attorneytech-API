@@ -1,8 +1,8 @@
 from common.config import config
 
 
-hostname = config.api_host
-port = config.api_port
+hostname = config.server_host
+port = config.server_port
 version = 'v1'
 
 
