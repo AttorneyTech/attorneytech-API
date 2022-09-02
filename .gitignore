@@ -11,4 +11,4 @@ __pycache__/
 logs/
 
 # SSL/TLS key and ca files
-./auth
+auth/
