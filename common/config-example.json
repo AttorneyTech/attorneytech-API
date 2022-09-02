@@ -1,17 +1,19 @@
 {
     "server":{
-        "hostname": "127.0.0.1",
-        "port": 5000,
+        "hostname": "hostname",
+        "port": "port",
         "key_path": "path/to/key.pem",
         "cert_path": "path/to/server.crt"
     },
 
     "database":{
-        "port": 5432,
-        "db_host": "localhost",
+        "port": "port",
+        "db_host": "hostname",
         "db_name": "postgres",
         "db_username": "username",
-        "db_password": "password"
+        "db_password": "password",
+        "poolmin": 5,
+        "poolmax": 20
     },
 
     "logger":{

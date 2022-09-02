@@ -22,6 +22,8 @@ try:
         db_name = db_config['db_name']
         db_username = db_config['username']
         db_password = db_config['password']
+        db_poolmin = db_config['poolmin']
+        db_poolmax = db_config['poolmax']
 
         # Load config of logger
         logger_utc_offset = logger_config['utc_offset']
@@ -50,6 +52,8 @@ class Config:
         self.db_name = db_name
         self.db_username = db_username
         self.db_password = db_password
+        self.db_poolmin = db_poolmin
+        self.db_poolmax = db_poolmax
 
         # logger config
         self.logger_level = logger_level

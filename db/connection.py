@@ -13,12 +13,14 @@ class DbConnection:
         self.db_name = config.db_name
         self.db_username = config.db_username
         self.db_password = config.db_password
+        self.db_poolmin = config.db_poolmin
+        self.db_poolmax = config.db_poolmax
 
     def create_conn_pool(self):
         try:
             conn_pool = pool.ThreadedConnectionPool(
-                minconn=5,
-                maxconn=20,
+                minconn=self.db_poolmin,
+                maxconn=self.db_poolmax,
                 user=self.db_username,
                 password=self.db_password,
                 host=self.db_host,
