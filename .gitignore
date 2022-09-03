@@ -1,6 +1,9 @@
 # The file of macOS system
 .DS_Store
 
+# Python venv
+.venv
+
 # Configuration file of attorneytech-API
 config.json
 
