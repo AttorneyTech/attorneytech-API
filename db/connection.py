@@ -27,7 +27,6 @@ class DbConnection:
                 port=self.db_port,
                 database=self.db_name
             )
-
             return conn_pool
         except Exception as err:
             raise err

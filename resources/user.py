@@ -17,11 +17,10 @@ class User(Resource):
         Get the specific user data by user ID
         '''
         try:
-            user_raw_data = users_dao.get_user_by_id(userId)
-            if user_raw_data:
+            raw_user = users_dao.get_user_by_id(userId)
+            if raw_user:
                 user_response_json = UserSerializer.serialize_raw_user(
-                    user_raw_data,
-                    userId
+                    raw_user
                 )
                 logger.info('Successful response')
 
@@ -29,12 +28,10 @@ class User(Resource):
             else:
                 error = NotFound(f'Resource of user id: {userId} not found')
                 logger.error('Resource not found')
-
                 return make_response(error.error_response(), 404)
         except Exception as err:
             error = InternalServerError(
                 str(err).replace('\"', '').replace('\n', '')
             )
             logger.error(err)
-
             return make_response(error.error_response(), 500)

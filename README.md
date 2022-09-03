@@ -9,16 +9,7 @@ API definition is contained in the [OpenAPI specification](./openapi.yaml).
 
 ### Prerequisites
 
-1. This API uses the packages of Python as below:
-
-    | Package Name | Version |
-    | :----------- | :------ |
-    | Flask | 2.2.2 |
-    | Flask-RESTful | 0.3.9 |
-    | marshmallow | 3.17.0 |
-    | psycopg2 | 2.9.3 |
-
-2. Installing the packages with the [requirements.txt](./requirements.txt) file.
+1. Installing the packages with the [requirements.txt](./requirements.txt) file.
 
     ```shell
     $ pip install -r requirements.txt

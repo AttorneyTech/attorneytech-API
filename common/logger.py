@@ -59,7 +59,6 @@ class Logger:
         # Custom the timezone of logger
         def custom_timezone(*args):
             tz = Logger.custom_tz
-
             return tz.timetuple()
 
         # Replace the default converter to custom converter
@@ -74,7 +73,6 @@ class Logger:
         logger = logging.getLogger()
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
-
         return logger
 
 

@@ -23,17 +23,4 @@ def prepare_user_query():
         ON cases.event_id = events.id
         WHERE users.id = $1;
     '''
-
     return prepare_statement
-
-
-# def user_verify_query(username):
-#     user_verify_query = f'''
-#         SELECT
-#             users.username,
-#             users.password
-#         FROM users
-#         WHERE users.username = '{username}';
-#     '''
-
-#     return user_verify_query

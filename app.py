@@ -15,5 +15,6 @@ app.config['JSON_SORT_KEYS'] = False
 api.add_resource(User, '/v1/users/<string:userId>')
 app.run(
     port=config.server_port,
-    ssl_context=(config.server_cert, config.server_key)
+    ssl_context=(config.server_cert, config.server_key),
+    debug=True
 )

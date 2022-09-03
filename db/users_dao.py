@@ -25,7 +25,6 @@ class UsersDao:
             cur = conn.cursor(cursor_factory=RealDictCursor)
             cur.execute(f'EXECUTE get_user_by_id({userId});')
             raw_user = cur.fetchall()
-
             return raw_user
         except Exception as err:
             raise err

@@ -90,7 +90,7 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         super(UserTopLevel, self).__init__()
 
     @staticmethod
-    def serialize_raw_user(raw_user, userId):
+    def serialize_raw_user(raw_user):
         '''
         Serializes raw user data from user resource
         '''
@@ -99,9 +99,9 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         # Compose the events and cases list
         # and deal with the duplicate events in each row
         for row in raw_user:
-            if str(row['event_id']) not in events:
-                events.append(str(row['event_id']))
-            cases.append(str(row['cases_id']))
+            if row['event_id'] not in events:
+                events.append(row['event_id'])
+            cases.append(row['cases_id'])
 
         # Compose the rest part of user data
         # and here use the first dict of raw user
@@ -127,17 +127,17 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         )
 
         user_data_object = UserData(
-            id=userId,
+            id=row['user_id'],
             type=user_resource_type,
             links={
-                'self': uri_builder(f'{user_resource_type}/{userId}')
+                'self': uri_builder(f'{user_resource_type}/{row["user_id"]}')
             },
             attributes=user_attributes_object
         )
 
         user_response = UserTopLevel(
             links={
-                'self': uri_builder(f'{user_resource_type}/{userId}')
+                'self': uri_builder(f'{user_resource_type}/{row["user_id"]}')
             },
             data=user_data_object
         )
