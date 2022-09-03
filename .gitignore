@@ -2,7 +2,7 @@
 .DS_Store
 
 # Configuration file of attorneytech-API
-common/config.json
+config.json
 
 # Pycache
 __pycache__/
