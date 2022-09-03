@@ -1,9 +1,17 @@
+import sys
+import traceback
 from common.config import config
 
 
-hostname = config.server_host
-port = config.server_port
-version = 'v1'
+# Get the configurations of server
+try:
+    config_server = config['server']
+    hostname = config_server['hostname']
+    port = config_server['port']
+    version = 'v1'
+except Exception:
+    traceback.print_exc()
+    sys.exit()
 
 
 def uri_builder(resource_path):
