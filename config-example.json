@@ -8,7 +8,7 @@
 
     "database":{
         "port": "port",
-        "db_host": "hostname",
+        "host": "hostname",
         "db_name": "postgres",
         "db_username": "username",
         "db_password": "password",

@@ -15,7 +15,7 @@ API definition is contained in the [OpenAPI specification](./openapi.yaml).
     $ pip install -r requirements.txt
     ```
 
-3. Copy [config-example.json](./common/config-example.json) to `common/config.json`. If necessary, modify it according to your needs and being careful to avoid committing sensitive data.
+2. Copy [config-example.json](config-example.json) to the root of your project folder. If necessary, modify it according to your needs and being careful to avoid committing sensitive data.
 
 ## Getting data source from the PostgreSQL Database
 
@@ -23,13 +23,13 @@ The following instructions show you how to connect the API to a PostgreSQL datab
 
 1. Install PostgreSQL on local or on docker according to your needs, you can follow this [guide](/attorneytech-database/README.md) to complete your installation.
 
-2. Define the part of `common/config.json` to be like:
+2. Define the part of `config.json` to be like:
 
     ```json
     {
         "database":{
             "port": "port",
-            "db_host": "hostname",
+            "host": "hostname",
             "db_name": "postgres",
             "db_username": "username",
             "db_password": "password",
@@ -42,7 +42,7 @@ The following instructions show you how to connect the API to a PostgreSQL datab
     | JSON key | Description |
     | :----------- | :------ |
     | port | Your postgreSQL port |
-    | db_host | Your postgreSQL host |
+    | host | Your postgreSQL host |
     | db_name | Your database name |
     | db_username | Your PostgreSQL username |
     | db_password | Your PostgreSQL user password |
