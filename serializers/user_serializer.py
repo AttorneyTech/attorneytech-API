@@ -82,15 +82,15 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
 
         row = user_raw_data[0]
 
-        # Construct the objects of user
-        user_address = UserAddress(
+        # Construct response of user
+        user_address_object = UserAddress(
             address_line_1=row[10],
             address_line_2=row[11],
             city=row[12],
             zipCode=row[13]
         )
 
-        user_attributes = UserAttribute(
+        user_attributes_object = UserAttribute(
             role=row[1],
             username=row[2],
             first_name=row[3],
@@ -100,25 +100,25 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
             case_ids=cases,
             email=row[8],
             phone=row[9],
-            address=user_address
+            address=user_address_object
         )
 
-        user_data = UserData(
+        user_data_object = UserData(
             id=userId,
-            type='users',
+            type=user_resource_type,
             links={
                 "self": uri_builder(f'{user_resource_type}/{userId}')
             },
-            attributes=user_attributes
+            attributes=user_attributes_object
         )
 
-        user_top_level = UserTopLevel(
+        user_response = UserTopLevel(
             links={
                 "self": uri_builder(f'{user_resource_type}/{userId}')
             },
-            data=user_data
+            data=user_data_object
         )
 
-        user_response_json_api = UserSchema().dump(user_top_level)
+        user_response_json = UserSchema().dump(user_response)
 
-        return user_response_json_api
+        return user_response_json

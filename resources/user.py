@@ -20,13 +20,13 @@ class User(Resource):
         try:
             user_raw_data = users_dao.get_user_by_id(userId)
             if user_raw_data:
-                user_response_json_api = UserSerializer.serialize_user_data(
+                user_response_json = UserSerializer.serialize_user_data(
                     user_raw_data,
                     userId
                 )
                 logger.info('Successful response')
 
-                return make_response(user_response_json_api, 200)
+                return make_response(user_response_json, 200)
             else:
                 error = NotFound(f'Resource of user id: {userId} not found')
                 logger.error('Resource not found')
@@ -37,4 +37,5 @@ class User(Resource):
                 str(err).replace('\"', '').replace('\n', '')
             )
             logger.error(err)
+
             return make_response(error.error_response(), 500)
