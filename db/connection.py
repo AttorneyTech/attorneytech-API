@@ -30,7 +30,6 @@ class DbConnection:
 
             return conn_pool
         except Exception as err:
-
             raise err
 
 

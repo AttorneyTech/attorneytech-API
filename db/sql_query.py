@@ -8,14 +8,14 @@ def prepare_user_query():
             users.first_name,
             users.middle_name,
             users.last_name,
-            events.id AS event_id,
-            cases.id AS cases_id,
             users.email,
             users.phone,
             users.street_name,
             users.district,
             users.city,
-            users.zip_code
+            users.zip_code,
+            events.id AS event_id,
+            cases.id AS cases_id
         FROM users
         LEFT JOIN cases
         ON users.id = cases.client_id OR users.id = cases.agent_id

@@ -9,7 +9,13 @@ class UserAddress:
     '''
     Construct address object of a user
     '''
-    def __init__(self, address_line_1, address_line_2, city, zipCode):
+    def __init__(
+        self,
+        address_line_1,
+        address_line_2,
+        city,
+        zipCode
+    ):
         self.addressLine1 = address_line_1
         self.addressLine2 = address_line_2
         self.city = city
@@ -21,9 +27,18 @@ class UserAttribute:
     Construct attributes object of a user
     '''
     def __init__(
-                self, role, username, first_name, middle_name, last_name,
-                event_ids, case_ids, email, phone, address
-                ):
+        self,
+        role,
+        username,
+        first_name,
+        middle_name,
+        last_name,
+        event_ids,
+        case_ids,
+        email,
+        phone,
+        address
+    ):
         self.role = role
         self.username = username
         self.firstName = first_name
@@ -40,7 +55,13 @@ class UserData:
     '''
     Construct data object of a user
     '''
-    def __init__(self, id, type, links, attributes):
+    def __init__(
+        self,
+        id,
+        type,
+        links,
+        attributes
+    ):
         self.id = id
         self.type = type
         self.links = links
@@ -69,37 +90,39 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         super(UserTopLevel, self).__init__()
 
     @staticmethod
-    def serialize_user_data(user_raw_data, userId):
+    def serialize_raw_user(raw_user, userId):
         '''
         Serializes raw user data from user resource
         '''
         events, cases = [], []
-        for row in user_raw_data:
-            # Deal with the duplicate events in each row
-            if str(row[6]) not in events:
-                events.append(str(row[6]))
-            cases.append(str(row[7]))
 
-        row = user_raw_data[0]
+        # Compose the events and cases list
+        # and deal with the duplicate events in each row
+        for row in raw_user:
+            if str(row['event_id']) not in events:
+                events.append(str(row['event_id']))
+            cases.append(str(row['cases_id']))
 
-        # Construct response of user
+        # Compose the rest part of user data
+        # and here use the first dict of raw user
+        row = raw_user[0]
         user_address_object = UserAddress(
-            address_line_1=row[10],
-            address_line_2=row[11],
-            city=row[12],
-            zipCode=row[13]
+            address_line_1=row['street_name'],
+            address_line_2=row['district'],
+            city=row['city'],
+            zipCode=row['zip_code']
         )
 
         user_attributes_object = UserAttribute(
-            role=row[1],
-            username=row[2],
-            first_name=row[3],
-            middle_name=row[4],
-            last_name=row[5],
+            role=row['role'],
+            username=row['username'],
+            first_name=row['first_name'],
+            middle_name=row['middle_name'],
+            last_name=row['last_name'],
             event_ids=events,
             case_ids=cases,
-            email=row[8],
-            phone=row[9],
+            email=row['email'],
+            phone=row['phone'],
             address=user_address_object
         )
 
@@ -107,14 +130,14 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
             id=userId,
             type=user_resource_type,
             links={
-                "self": uri_builder(f'{user_resource_type}/{userId}')
+                'self': uri_builder(f'{user_resource_type}/{userId}')
             },
             attributes=user_attributes_object
         )
 
         user_response = UserTopLevel(
             links={
-                "self": uri_builder(f'{user_resource_type}/{userId}')
+                'self': uri_builder(f'{user_resource_type}/{userId}')
             },
             data=user_data_object
         )
