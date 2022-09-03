@@ -22,12 +22,14 @@ class User(Resource):
                 user_response_json = UserSerializer.serialize_raw_user(
                     raw_user
                 )
-                logger.info('Successful response')
-
                 return make_response(user_response_json, 200)
             else:
-                error = NotFound(f'Resource of user id: {userId} not found')
-                logger.error('Resource not found')
+                error = NotFound(
+                    f'The resource requested (user ID:{userId}) was not found.'
+                )
+                logger.error(
+                    f'The resource requested (user ID:{userId}) was not found.'
+                )
                 return make_response(error.error_response(), 404)
         except Exception as err:
             error = InternalServerError(
