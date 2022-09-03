@@ -9,6 +9,3 @@ __pycache__/
 
 # Logs
 logs/
-
-# SSL/TLS key and ca files
-auth/
