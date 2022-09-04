@@ -2,41 +2,32 @@ from datetime import datetime, timedelta
 import logging
 import logging.handlers
 import os
-import sys
-import traceback
 
-from common.config import config
-
-
-# Get the configurations of logger
-try:
-    config_logger = config['logger']
-    custom_tz = (
-        datetime.utcnow() +
-        timedelta(hours=config_logger['utc_offset'])
-    )
-    level = config_logger['level']
-    file_path = config_logger['file_path']
-    folder_name = config_logger['folder_name'].format(custom_tz)
-    file_name = config_logger['file_name'].format(custom_tz)
-    file_size_bytes = config_logger['file_size_bytes']
-    file_backup_count = config_logger['file_backup_count']
-except Exception:
-    traceback.print_exc()
-    sys.exit()
+from common.config import config_logger
 
 
 class Logger:
     '''
     Construct the logger object
     '''
+    custom_tz = (
+        datetime.utcnow() +
+        timedelta(hours=config_logger['utc_offset'])
+    )
+
     def create_logger(self):
         '''
         Create a logger and definite its format, config,
         handlers and formatter.
         '''
-        if not os.path.exists(f'{file_path}{folder_name}'):
-            os.makedirs(f'{file_path}{folder_name}')
+        if not os.path.exists(
+            f'{config_logger["file_path"]}/'
+            f'{config_logger["folder_name"].format(Logger.custom_tz)}'
+        ):
+            os.makedirs(
+                f'{config_logger["file_path"]}/'
+                f'{config_logger["folder_name"].format(Logger.custom_tz)}'
+            )
 
         # Logger format
         format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -44,18 +35,20 @@ class Logger:
 
         # Basic config of logging
         logging.basicConfig(
-            level=f'{level}',
+            level=f'{config_logger["level"]}',
             format=format,
             datefmt=datefmt
         )
 
         # Set file handler
         file_handler = logging.handlers.RotatingFileHandler(
-            f'{file_path}{folder_name}/{file_name}',
+            f'{config_logger["file_path"]}/'
+            f'{config_logger["folder_name"].format(Logger.custom_tz)}/'
+            f'{config_logger["file_name"].format(Logger.custom_tz)}',
             mode='w',
             encoding='utf-8',
-            maxBytes=file_size_bytes,
-            backupCount=file_backup_count
+            maxBytes=config_logger['file_size_bytes'],
+            backupCount=config_logger['file_backup_count']
         )
 
         # Set console handler
@@ -64,7 +57,7 @@ class Logger:
 
         # Custom the timezone of logger
         def custom_timezone(*args):
-            tz = custom_tz
+            tz = Logger.custom_tz
             return tz.timetuple()
 
         # Replace the default converter to custom converter
@@ -79,6 +72,7 @@ class Logger:
         logger = logging.getLogger('API')
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
+
         return logger
 
 

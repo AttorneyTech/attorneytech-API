@@ -1,5 +1,6 @@
 {
     "server": {
+        "api_version": "v1",
         "hostname": "hostname",
         "port": "port",
         "key_path": "path/to/key.pem",
@@ -17,7 +18,7 @@
     "logger": {
         "utc_offset": 8.0,
         "level": "DEBUG",
-        "file_path": "logs/",
+        "file_path": "logs",
         "folder_name": "{:%Y-%m}",
         "file_name": "{:%Y-%m-%d}",
         "file_size_bytes": 20971520,

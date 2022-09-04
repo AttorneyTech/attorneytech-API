@@ -1,21 +1,12 @@
-import sys
-import traceback
-from common.config import config
-
-
-# Get the configurations of server
-try:
-    config_server = config['server']
-    hostname = config_server['hostname']
-    port = config_server['port']
-    version = 'v1'
-except Exception:
-    traceback.print_exc()
-    sys.exit()
+from common.config import config_server
 
 
 def uri_builder(resource_path):
-    api_base_url = f'https://{hostname}:{port}/{version}'
+    api_base_url = (
+        f'https://{config_server["hostname"]}:'
+        f'{config_server["port"]}/'
+        f'{config_server["api_version"]}'
+    )
     uri = f'{api_base_url}/{resource_path}'
 
     return uri

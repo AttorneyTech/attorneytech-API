@@ -1,27 +1,10 @@
 import atexit
-import sys
-import traceback
 
 from psycopg2 import pool
 
-from common.config import config
+from common.config import config_db
 from common.logger import logger
 from db.sql_query import prepare_sql_query
-
-
-# Get the configurations of database
-try:
-    config_db = config['database']
-    host = config_db['host']
-    port = config_db['port']
-    db_name = config_db['db_name']
-    username = config_db['username']
-    password = config_db['password']
-    poolmin = config_db['poolmin']
-    poolmax = config_db['poolmax']
-except Exception:
-    traceback.print_exc()
-    sys.exit()
 
 
 class DbConnection:
@@ -35,13 +18,13 @@ class DbConnection:
         '''
         try:
             conn_pool = pool.ThreadedConnectionPool(
-                minconn=poolmin,
-                maxconn=poolmax,
-                user=username,
-                password=password,
-                host=host,
-                port=port,
-                database=db_name
+                minconn=config_db['poolmin'],
+                maxconn=config_db['poolmax'],
+                user=config_db['username'],
+                password=config_db['password'],
+                host=config_db['host'],
+                port=config_db['port'],
+                database=config_db['db_name']
             )
             return conn_pool
         except Exception as err:
