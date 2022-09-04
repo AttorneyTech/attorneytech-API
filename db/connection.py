@@ -5,6 +5,8 @@ import traceback
 from psycopg2 import pool
 
 from common.config import config
+from common.logger import logger
+from db.sql_query import prepare_sql_query
 
 
 # Get the configurations of database
@@ -23,10 +25,12 @@ except Exception:
 
 
 class DbConnection:
-    '''
-    Construct the connection of database
-    '''
-    def create_conn_pool(self):
+    def __init__(self):
+        self.conn = None
+        self.cur = None
+
+    # Create a pool of connection
+    def create_pool(self):
         try:
             conn_pool = pool.ThreadedConnectionPool(
                 minconn=poolmin,
@@ -41,12 +45,30 @@ class DbConnection:
         except Exception as err:
             raise err
 
+    # Validate database connection
+    # If validated, run the PREPARE statements or raise an error
+    def db_validate_and_prepare(self):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor()
+            self.cur.execute('SELECT 1;')
+            self.cur.execute(prepare_sql_query())
+        except Exception as err:
+            logger.error(err)
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
 
 # Close the pool when application is stopped
 @atexit.register
 def close_pool():
-    conn_pool.closeall()
+    pool.closeall()
 
 
-connection = DbConnection()
-conn_pool = connection.create_conn_pool()
+db_connection = DbConnection()
+conn_pool = db_connection.create_pool()
+db_connection.db_validate_and_prepare()

@@ -1,4 +1,4 @@
-def prepare_user_query():
+def prepare_sql_query():
     prepare_statement = '''
         PREPARE get_user_by_id(integer) AS
         SELECT

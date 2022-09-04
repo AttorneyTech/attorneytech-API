@@ -1,7 +1,8 @@
-from schemas.user_schema import UserSchema
 from common.uri_builder import uri_builder
+from schemas.user_schema import UserSchema
 
 
+# Type of user resource
 user_resource_type = 'users'
 
 
