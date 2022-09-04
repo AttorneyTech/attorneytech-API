@@ -4,34 +4,36 @@ from psycopg2.extras import RealDictCursor
 
 
 class UsersDao:
+    def __init__(self):
+        self.conn = None
+        self.cur = None
     def prepare_query(self):
-        conn, cur = None, None
         try:
-            conn = conn_pool.getconn(key='users')
-            cur = conn.cursor()
-            cur.execute(prepare_user_query())
+            self.conn = conn_pool.getconn(key='users')
+            self.cur = self.conn.cursor()
+            self.cur.execute(prepare_user_query())
         except Exception as err:
-
             raise err
         finally:
-            if cur and conn:
-                cur.close()
-                conn_pool.putconn(conn=conn, key='users')
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn, key='users')
 
     def get_user_by_id(self, userId):
-        conn, cur = None, None
         try:
-            conn = conn_pool.getconn(key='users')
-            cur = conn.cursor(cursor_factory=RealDictCursor)
-            cur.execute(f'EXECUTE get_user_by_id({userId});')
-            raw_user = cur.fetchall()
+            self.conn = conn_pool.getconn(key='users')
+            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(f'EXECUTE get_user_by_id({userId});')
+            raw_user = self.cur.fetchall()
             return raw_user
         except Exception as err:
             raise err
         finally:
-            if cur and conn:
-                cur.close()
-                conn_pool.putconn(conn=conn, key='users')
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn, key='users')
 
 
 # Initializing the users_dao object and preload the prepare statements
