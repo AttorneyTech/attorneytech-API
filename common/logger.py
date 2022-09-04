@@ -31,6 +31,10 @@ class Logger:
     Construct the logger object
     '''
     def create_logger(self):
+        '''
+        Create a logger and definite its format, config,
+        handlers and formatter.
+        '''
         if not os.path.exists(f'{file_path}{folder_name}'):
             os.makedirs(f'{file_path}{folder_name}')
 

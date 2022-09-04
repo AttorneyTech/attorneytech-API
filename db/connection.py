@@ -29,8 +29,10 @@ class DbConnection:
         self.conn = None
         self.cur = None
 
-    # Create a pool of connection
     def create_pool(self):
+        '''
+        Create a pool of connection to PostgreSQL
+        '''
         try:
             conn_pool = pool.ThreadedConnectionPool(
                 minconn=poolmin,
@@ -45,9 +47,11 @@ class DbConnection:
         except Exception as err:
             raise err
 
-    # Validate database connection
-    # If validated, run the PREPARE statements or raise an error
     def db_validate_and_prepare(self):
+        '''
+        Validate database connection. If validated,
+        run the PREPARE statements or raise an error
+        '''
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
@@ -63,9 +67,11 @@ class DbConnection:
                 conn_pool.putconn(conn=self.conn)
 
 
-# Close the pool when application is stopped
 @atexit.register
 def close_pool():
+    '''
+    Close the pool when application is stopped
+    '''
     conn_pool.closeall()
 
 

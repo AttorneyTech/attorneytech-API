@@ -3,6 +3,9 @@ from flask import jsonify
 
 class ErrorHandler:
     def error_response(self):
+        '''
+        Serialize the error response
+        '''
         error = jsonify(
             {
                 "errors": [
