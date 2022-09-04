@@ -1,3 +1,4 @@
+import atexit
 import sys
 import traceback
 
@@ -39,6 +40,12 @@ class DbConnection:
             return conn_pool
         except Exception as err:
             raise err
+
+
+# Close the pool when application is stopped
+@atexit.register
+def close_pool():
+    conn_pool.closeall()
 
 
 connection = DbConnection()
