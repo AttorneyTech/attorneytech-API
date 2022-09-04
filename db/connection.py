@@ -66,7 +66,7 @@ class DbConnection:
 # Close the pool when application is stopped
 @atexit.register
 def close_pool():
-    pool.closeall()
+    conn_pool.closeall()
 
 
 db_connection = DbConnection()
