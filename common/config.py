@@ -14,13 +14,12 @@ except Exception:
     sys.exit()
 
 
-# Validate the keys in config file
+# Validate the top-level keys in config file.
+# If the top-level keys in config file is different from example config file,
+# append it into list of diff_keys or keep checking the sub-level keys.
 diff_keys = []
 top_keys_diff = set(config_ex).difference(set(config))
 
-# If the top-level keys in config file is different from example config file,
-# append it into list of diff_keys.
-# If the top-level keys is validate, keep checking the sub-level keys.
 if top_keys_diff:
     diff_keys.append(top_keys_diff)
 else:
@@ -41,5 +40,6 @@ if diff_keys:
     )
 
 config_server = config['server']
+config_auth = config['authentication']
 config_db = config['database']
 config_logger = config['logger']

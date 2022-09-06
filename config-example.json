@@ -6,6 +6,10 @@
         "key_path": "path/to/key.pem",
         "cert_path": "path/to/server.crt"
     },
+    "authentication": {
+        "username": "attorneytech",
+        "password": "zooleon4730"
+    },
     "database": {
         "port": "port",
         "host": "hostname",

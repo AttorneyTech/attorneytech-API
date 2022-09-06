@@ -40,11 +40,11 @@ class NotFound(ErrorHandler):
         return super().error_response()
 
 
-class UnauthorizedLogin(ErrorHandler):
-    def __init__(self):
+class Unauthorized(ErrorHandler):
+    def __init__(self, detail):
         self.status = '401'
         self.title = 'Unauthorized'
-        self.detail = 'Unauthorized, invalid username or password'
+        self.detail = detail
 
     def error_response(self):
         return super().error_response()
