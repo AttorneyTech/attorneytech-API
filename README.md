@@ -27,16 +27,15 @@ The following instructions show you how to connect the API to a PostgreSQL datab
 
     ```json
     {
-        "database":{
+        "database": {
             "port": "port",
             "host": "hostname",
             "db_name": "postgres",
-            "db_username": "username",
-            "db_password": "password",
+            "username": "username",
+            "password": "password",
             "poolmin": 5,
             "poolmax": 20
         }
-    }
     ```
 
     | JSON key | Description |
@@ -44,7 +43,7 @@ The following instructions show you how to connect the API to a PostgreSQL datab
     | port | Your postgreSQL port |
     | host | Your postgreSQL host |
     | db_name | Your database name |
-    | db_username | Your PostgreSQL username |
-    | db_password | Your PostgreSQL user password |
+    | username | Your PostgreSQL username |
+    | password | Your PostgreSQL user password |
     | poolmin | The minimum number of connections a connection pool maintains, even when there is no activity to the target database |
     | poolmax | The maximum number of connections that can be open in the connection pool |
