@@ -22,7 +22,9 @@
     "logger": {
         "utc_offset": 8.0,
         "level": "DEBUG",
-        "file_path": "logs",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "date_format": "%Y/%m/%d %H:%M:%S",
+        "file_path": "logs/",
         "folder_name": "{:%Y-%m}",
         "file_name": "{:%Y-%m-%d}",
         "file_size_bytes": 20971520,

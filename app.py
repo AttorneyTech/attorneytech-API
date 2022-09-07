@@ -4,7 +4,6 @@ from flask_restful import Api
 from common.config import config_server
 from resources.user import User
 
-
 app = Flask(__name__)
 api = Api(app)
 app.json.sort_keys = False

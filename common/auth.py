@@ -6,7 +6,6 @@ from common.config import config_auth
 from common.error_handler import Unauthorized
 from common.logger import logger
 
-
 auth = HTTPBasicAuth()
 
 

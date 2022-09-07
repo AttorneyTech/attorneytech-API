@@ -10,9 +10,19 @@ class Logger:
     '''
     Construct the logger object
     '''
+    # Custom your timezone
     custom_tz = (
         datetime.utcnow() +
         timedelta(hours=config_logger['utc_offset'])
+    )
+
+    log_path = (
+        config_logger["file_path"] +
+        config_logger["folder_name"].format(custom_tz) + '/'
+    )
+
+    log_file_name = (
+        config_logger["file_name"].format(custom_tz)
     )
 
     def create_logger(self):
@@ -20,31 +30,19 @@ class Logger:
         Create a logger and definite its format, config,
         handlers and formatter.
         '''
-        if not os.path.exists(
-            f'{config_logger["file_path"]}/'
-            f'{config_logger["folder_name"].format(Logger.custom_tz)}'
-        ):
-            os.makedirs(
-                f'{config_logger["file_path"]}/'
-                f'{config_logger["folder_name"].format(Logger.custom_tz)}'
-            )
-
-        # Logger format
-        format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        datefmt = '%Y/%m/%d %H:%M:%S'
+        if not os.path.exists(Logger.log_path):
+            os.makedirs(Logger.log_path)
 
         # Basic config of logging
         logging.basicConfig(
             level=config_logger["level"],
-            format=format,
-            datefmt=datefmt
+            format=config_logger['format'],
+            datefmt=config_logger['date_format']
         )
 
         # Set file handler
         file_handler = logging.handlers.RotatingFileHandler(
-            f'{config_logger["file_path"]}/'
-            f'{config_logger["folder_name"].format(Logger.custom_tz)}/'
-            f'{config_logger["file_name"].format(Logger.custom_tz)}',
+            Logger.log_path + Logger.log_file_name,
             mode='w',
             encoding='utf-8',
             maxBytes=config_logger['file_size_bytes'],
@@ -64,7 +62,7 @@ class Logger:
         logging.Formatter.converter = custom_timezone
 
         # Set the formatter
-        formatter = logging.Formatter(format)
+        formatter = logging.Formatter(config_logger['format'])
         file_handler.setFormatter(formatter)
         console_handler.setFormatter(formatter)
 
