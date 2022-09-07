@@ -1,0 +1,33 @@
+{
+    "server": {
+        "api_version": "v1",
+        "hostname": "hostname",
+        "port": "port",
+        "key_path": "path/to/key.pem",
+        "cert_path": "path/to/server.crt"
+    },
+    "authentication": {
+        "username": "username",
+        "password": "password"
+    },
+    "database": {
+        "port": "port",
+        "host": "hostname",
+        "db_name": "postgres",
+        "username": "username",
+        "password": "password",
+        "poolmin": 5,
+        "poolmax": 20
+    },
+    "logger": {
+        "utc_offset": 8.0,
+        "level": "DEBUG",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "date_format": "%Y/%m/%d %H:%M:%S",
+        "file_path": "logs/",
+        "folder_name": "{:%Y-%m}",
+        "file_name": "{:%Y-%m-%d}",
+        "file_size_bytes": 20971520,
+        "file_backup_count": 5
+    }
+}
