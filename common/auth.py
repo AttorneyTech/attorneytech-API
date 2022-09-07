@@ -13,8 +13,7 @@ auth = HTTPBasicAuth()
 @auth.verify_password
 def verify_password(username, password):
     '''
-    Verify that the username and password combination
-    provided by the client are valid.
+    Verify that the username and password combination.
     '''
     if (
         username == config_auth['username'] and
@@ -31,7 +30,10 @@ def auth_error():
     If failed authentication, send an authentication
     error back to the client.
     '''
-    detail = 'Unauthorized, invalid username or password'
+    detail = (
+        'Unauthorized. '
+        'Username and password not matched with the Basic Auth credentials.'
+    )
     error = Unauthorized(detail)
     logger.error(detail)
 

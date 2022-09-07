@@ -5,9 +5,11 @@ import traceback
 
 # Open the config file and validate it with config-example
 try:
-    with open('config.json', 'r') as config_f:
+    with (
+        open('config.json', 'r') as config_f,
+        open('config-example.json', 'r') as config_f_ex
+    ):
         config = json.load(config_f)
-    with open('config-example.json', 'r') as config_f_ex:
         config_ex = json.load(config_f_ex)
 except Exception:
     traceback.print_exc()
@@ -22,15 +24,14 @@ top_keys_diff = set(config_ex).difference(set(config))
 
 if top_keys_diff:
     diff_keys.append(top_keys_diff)
-else:
-    for key in config.keys():
-        for key_ex in config_ex.keys():
-            if key == key_ex:
-                sub_keys_diff = (
-                    set(config_ex[key_ex]).difference(set(config[key]))
-                )
-                if sub_keys_diff:
-                    diff_keys.append({key: sub_keys_diff})
+
+for key_ex in config_ex.keys():
+    if key_ex in config and type(config[key_ex]) is dict:
+        sub_keys_diff = (
+            set(config_ex[key_ex]).difference(set(config[key_ex]))
+        )
+        if sub_keys_diff:
+            diff_keys.append({key_ex: sub_keys_diff})
 
 # If any keys is setting wrong or missing, raise an error
 # and show the keys which just caught in diff_keys.

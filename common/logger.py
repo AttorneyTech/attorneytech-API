@@ -35,7 +35,7 @@ class Logger:
 
         # Basic config of logging
         logging.basicConfig(
-            level=f'{config_logger["level"]}',
+            level=config_logger["level"],
             format=format,
             datefmt=datefmt
         )
