@@ -17,12 +17,12 @@ class Logger:
     )
 
     log_path = (
-        config_logger["file_path"] +
-        config_logger["folder_name"].format(custom_tz) + '/'
+        f'{config_logger["file_path"]}'
+        f'{config_logger["folder_name"].format(custom_tz)}/'
     )
 
     log_file_name = (
-        config_logger["file_name"].format(custom_tz)
+        config_logger['file_name'].format(custom_tz)
     )
 
     def create_logger(self):
@@ -35,14 +35,14 @@ class Logger:
 
         # Basic config of logging
         logging.basicConfig(
-            level=config_logger["level"],
+            level=config_logger['level'],
             format=config_logger['format'],
             datefmt=config_logger['date_format']
         )
 
         # Set file handler
         file_handler = logging.handlers.RotatingFileHandler(
-            Logger.log_path + Logger.log_file_name,
+            f'{Logger.log_path}{Logger.log_file_name}',
             mode='w',
             encoding='utf-8',
             maxBytes=config_logger['file_size_bytes'],
