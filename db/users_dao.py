@@ -7,7 +7,14 @@ class UsersDao:
         self.conn = None
         self.cur = None
 
-    def get_user_by_id(self, userId):
+    def get_users(
+        self,
+        role='NULL',
+        city='NULL',
+        events_id='NULL',
+        cases_id='NULL',
+        userId='NULL'
+    ):
         '''
         Connect to PostgreSQL and get the raw data
         of a specific user by user ID
@@ -15,7 +22,17 @@ class UsersDao:
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
-            self.cur.execute(f'EXECUTE get_user_by_id({userId});')
+            self.cur.execute(
+                f'''
+                EXECUTE get_users(
+                    {role},
+                    {city},
+                    {events_id},
+                    {cases_id},
+                    {userId}
+                );
+                '''
+            )
             raw_user = self.cur.fetchall()
             return raw_user
         except Exception as err:

@@ -12,6 +12,9 @@ api.add_resource(
     User,
     f'/{config_server["api_version"]}/users/<string:userId>'
 )
+# api.add_resource(
+#     Users, f'/{config_server["api_version"]}/users'
+# )
 app.run(
     port=config_server['port'],
     ssl_context=(config_server['cert_path'], config_server['key_path']),

@@ -1,6 +1,6 @@
 def prepare_sql_query():
     prepare_statement = '''
-        PREPARE get_user_by_id(integer) AS
+        PREPARE get_users(varchar, varchar, integer, integer, integer) AS
         SELECT
             users.id AS user_id,
             users.role,
@@ -21,6 +21,30 @@ def prepare_sql_query():
         ON users.id = cases.client_id OR users.id = cases.agent_id
         LEFT JOIN events
         ON cases.event_id = events.id
-        WHERE users.id = $1;
+        WHERE
+        case
+            WHEN NULLIF($1, NULL) = $1 THEN users.role = $1
+            ELSE true
+        END
+        and
+        case
+            WHEN NULLIF($2, NULL) = $2 THEN users.city = $2
+            ELSE true
+        END
+        and
+        case
+            WHEN NULLIF($3, NULL) = $3 THEN events.id = $3
+            ELSE true
+        END
+        and
+        case
+            WHEN NULLIF($4, NULL) = $4 THEN cases.id = $4
+            ELSE true
+        END
+        and
+        case
+            WHEN NULLIF($5, NULL) = $5 THEN users.id = $5
+            ELSE true
+        END;
     '''
     return prepare_statement

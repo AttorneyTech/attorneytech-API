@@ -19,7 +19,9 @@ class User(Resource):
         Get the specific user data by user ID
         '''
         try:
-            raw_user = users_dao.get_user_by_id(userId)
+            raw_user = users_dao.get_users(
+                userId=userId
+            )
             if raw_user:
                 user_response_json = UserSerializer.serialize_raw_user(
                     raw_user
