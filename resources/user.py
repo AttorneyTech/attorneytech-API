@@ -9,7 +9,7 @@ from common.error_handler import (
 )
 from common.logger import logger
 from db.users_dao import users_dao
-from serializers.user_serializer import UserSerializer
+from serializers.users_serializer import UserSerializer
 
 
 class User(Resource):

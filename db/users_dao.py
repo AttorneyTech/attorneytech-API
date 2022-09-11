@@ -1,4 +1,5 @@
 from db.connection import conn_pool
+from flask import request
 from psycopg2.extras import RealDictCursor
 
 
@@ -7,13 +8,23 @@ class UsersDao:
         self.conn = None
         self.cur = None
 
+    def get_filters(self):
+        filters = {
+            'role': request.args.get('filter[role]'),
+            'city': request.args.get('filter[city]'),
+            'event_ids': request.args.get('filter[eventIds]'),
+            'case_ids': request.args.get('filter[caseIds]')
+        }
+
+        return filters
+
     def get_users(
         self,
-        role='NULL',
-        city='NULL',
-        events_id='NULL',
-        cases_id='NULL',
-        userId='NULL'
+        role=None,
+        city=None,
+        event_ids=None,
+        case_ids=None,
+        userId=None
     ):
         '''
         Connect to PostgreSQL and get the raw data
@@ -23,17 +34,25 @@ class UsersDao:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                f'''
-                EXECUTE get_users(
-                    {role},
-                    {city},
-                    {events_id},
-                    {cases_id},
-                    {userId}
-                );
-                '''
+                '''EXECUTE get_users(
+                    %(role)s,
+                    %(city)s,
+                    %(event_ids)s,
+                    %(case_ids)s,
+                    %(userId)s
+                );''',
+                {
+                    'role': role,
+                    'city': city,
+                    'event_ids': event_ids,
+                    'case_ids': case_ids,
+                    'userId': userId
+                }
             )
             raw_user = self.cur.fetchall()
+            print('***********')
+            print(raw_user)
+            print('***********')
             return raw_user
         except Exception as err:
             raise err

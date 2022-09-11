@@ -6,7 +6,7 @@ from common.auth import auth
 from common.error_handler import InternalServerError
 from common.logger import logger
 from db.users_dao import users_dao
-from serializers.user_serializer import UserSerializer
+from serializers.users_serializer import UserSerializer
 
 
 class Users(Resource):
@@ -15,12 +15,21 @@ class Users(Resource):
         '''
         Get the list of users
         '''
-        pass
-
-
-
-    # def get_filter():
-    #     role = request.args.get('filter[role]')
-    #     city = request.args.get('filter[city]')
-    #     eventIds = request.args.get('filter[eventIds]')
-    #     caseIds = request.args.get('filter[caseIds]')
+        try:
+            filters = users_dao.get_filters()
+            raw_user = users_dao.get_users(
+                role=filters['role'],
+                city=filters['city'],
+                event_ids=filters['event_ids'],
+                case_ids=filters['case_ids']
+            )
+            user_response_json = UserSerializer.serialize_raw_user(
+                raw_user
+            )
+            return make_response(user_response_json, 200)
+        except Exception as err:
+            error = InternalServerError(
+                str(err).replace('\"', '').replace('\n', '')
+            )
+            logger.error(err)
+            return make_response(error.error_response(), 500)

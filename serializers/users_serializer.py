@@ -1,5 +1,5 @@
 from common.uri_builder import uri_builder
-from schemas.user_schema import UserSchema
+from schemas.users_schema import UserSchema, UsersSchema
 
 
 # Type of user resource
@@ -54,9 +54,18 @@ class UserTopLevel:
         self.data = user_object['data']
 
 
+class UsersTopLevel:
+    '''
+    Construct top level object of a users in JSON:API format
+    '''
+    def __init__(self, user_object):
+        self.links = user_object['links']
+        self.data = []
+
+
 class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     '''
-    Combine with the objects of Users and
+    Combine with the objects of user and
     construct the serializer for user resource
     '''
     def __init__(self):
@@ -133,3 +142,16 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         user_response_json = UserSchema().dump(user_response)
 
         return user_response_json
+
+
+class UsersSerializer(UserAddress, UserAttribute, UserData, UsersTopLevel):
+    '''
+    Combine with the objects of users and
+    construct the serializer for users resource
+    '''
+    def __init__(self):
+        super().__init__()
+        super(UserAddress, self).__init__()
+        super(UserAttribute, self).__init__()
+        super(UserData, self).__init__()
+        super(UsersTopLevel, self).__init__()

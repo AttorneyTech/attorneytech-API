@@ -43,3 +43,11 @@ class UserSchema(Schema):
     '''
     links = fields.Dict(keys=fields.Str(), values=fields.Str())
     data = fields.Nested(UserDataSchema)
+
+
+class UsersSchema(Schema):
+    '''
+    Defines the top level object schema of users
+    '''
+    links = fields.Dict(keys=fields.Str(), values=fields.Str())
+    data = fields.List(UserDataSchema)
