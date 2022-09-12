@@ -50,9 +50,7 @@ class UsersDao:
                 }
             )
             raw_user = self.cur.fetchall()
-            print('***********')
-            print(raw_user)
-            print('***********')
+
             return raw_user
         except Exception as err:
             raise err
