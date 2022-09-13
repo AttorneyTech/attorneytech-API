@@ -54,7 +54,7 @@ class UserTopLevel:
         self.data = user_object['data']
 
 
-class UsersSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
+class UsersSerializer:
     '''
     Combine with the objects of users and construct the serializer for users
     resource:
@@ -68,13 +68,6 @@ class UsersSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     to user_data_object_list. Finally, return the user_data_object_list and
     call `users_response()`.
     '''
-    def __init__(self):
-        super().__init__()
-        super(UserAddress, self).__init__()
-        super(UserAttribute, self).__init__()
-        super(UserData, self).__init__()
-        super(UserTopLevel, self).__init__()
-
     @staticmethod
     def raw_users_serializer(raw_users):
         '''
