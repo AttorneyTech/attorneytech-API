@@ -2,9 +2,7 @@ from marshmallow import Schema, fields
 
 
 class UserAddressSchema(Schema):
-    '''
-    Defines the address object schema of user
-    '''
+    '''Defines the address object schema of user'''
     addressLine1 = fields.Str()
     addressLine2 = fields.Str()
     city = fields.Str()
@@ -12,9 +10,7 @@ class UserAddressSchema(Schema):
 
 
 class UserAttributeSchema(Schema):
-    '''
-    Defines the attribute object schema of user
-    '''
+    '''Defines the attribute object schema of user'''
     role = fields.Str()
     username = fields.Str()
     firstName = fields.Str()
@@ -28,9 +24,7 @@ class UserAttributeSchema(Schema):
 
 
 class UserDataSchema(Schema):
-    '''
-    Defines the data object schema of user
-    '''
+    '''Defines the data object schema of user'''
     id = fields.Str()
     type = fields.Str()
     links = fields.Dict(keys=fields.Str(), values=fields.Str())
@@ -38,16 +32,12 @@ class UserDataSchema(Schema):
 
 
 class UserSchema(Schema):
-    '''
-    Defines the top level object schema of user
-    '''
+    '''Defines the top level object schema of user'''
     links = fields.Dict(keys=fields.Str(), values=fields.Str())
     data = fields.Nested(UserDataSchema)
 
 
 class UsersSchema(Schema):
-    '''
-    Defines the top level object schema of users
-    '''
+    '''Defines the top level object schema of users'''
     links = fields.Dict(keys=fields.Str(), values=fields.Str())
     data = fields.List(fields.Nested(UserDataSchema))

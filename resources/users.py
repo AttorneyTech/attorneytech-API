@@ -12,9 +12,7 @@ from serializers.users_serializer import UsersSerializer
 class Users(Resource):
     @auth.login_required
     def get(self):
-        '''
-        Get the list of users
-        '''
+        '''Get the list of users'''
         try:
             filters = users_dao.get_filters()
             raw_users = users_dao.get_users(

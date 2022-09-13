@@ -15,9 +15,7 @@ from serializers.users_serializer import UsersSerializer
 class User(Resource):
     @auth.login_required
     def get(self, userId):
-        '''
-        Get the specific user data by user ID
-        '''
+        '''Get the specific user data by user ID'''
         try:
             raw_user = users_dao.get_users(
                 userId=userId

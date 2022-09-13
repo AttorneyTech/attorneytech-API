@@ -7,9 +7,7 @@ user_resource_type = 'users'
 
 
 class UserAddress:
-    '''
-    Construct address object of a user
-    '''
+    '''Construct address object of a user'''
     def __init__(self, user_address):
         self.addressLine1 = user_address['address_line_1']
         self.addressLine2 = user_address['address_line_2']
@@ -18,9 +16,7 @@ class UserAddress:
 
 
 class UserAttribute:
-    '''
-    Construct attributes object of a user
-    '''
+    '''Construct attributes object of a user'''
     def __init__(self, user_attributes):
         self.role = user_attributes['role']
         self.username = user_attributes['username']
@@ -35,9 +31,7 @@ class UserAttribute:
 
 
 class UserData:
-    '''
-    Construct data object of a user
-    '''
+    '''Construct data object of a user'''
     def __init__(self, user_data):
         self.id = user_data['id']
         self.type = user_data['type']
@@ -46,9 +40,7 @@ class UserData:
 
 
 class UserTopLevel:
-    '''
-    Construct top level object of a user in JSON:API format
-    '''
+    '''Construct top level object of a user in JSON:API format'''
     def __init__(self, user_object):
         self.links = user_object['links']
         self.data = user_object['data']
@@ -58,7 +50,6 @@ class UsersSerializer:
     '''
     Combine with the objects of users and construct the serializer for users
     resource:
-
     Depending on whether it is get /users or get /users/{userId}, if it is
     the latter, call `raw_user_serializer()` and `user_response()` directly.
     If the former, the database will return data in list of dict format.
@@ -71,10 +62,11 @@ class UsersSerializer:
     @staticmethod
     def raw_users_serializer(raw_users):
         '''
-        :var users_id_list: list of users id which returns from database.
-        :var raw_users_list: a group of rows user data to pass as parameters
+        Variables:
+        users_id_list -- list of users id which returns from database.
+        raw_users_list -- a group of rows user data to pass as parameters
         into raw_user_serializer func.
-        :var users_data_object_list: list of users data objects which are
+        users_data_object_list -- list of users data objects which are
         returned from raw_user_serializer func.
         '''
         users_id_set = set()
@@ -98,9 +90,7 @@ class UsersSerializer:
 
     @staticmethod
     def raw_user_serializer(raw_user):
-        '''
-        Serializes raw user data from user resource
-        '''
+        '''Serializes raw user data from user resource'''
         events, cases = [], []
 
         # Compose the events and cases list
@@ -113,7 +103,6 @@ class UsersSerializer:
         # Compose the rest part of user data
         # and here use the first dict of raw user
         row = raw_user[0]
-        # Compose the address object of user
         user_address = {
             'address_line_1': row['street_name'],
             'address_line_2': row['district'],
@@ -121,8 +110,6 @@ class UsersSerializer:
             'zip_code': row['zip_code']
         }
         user_address_object = UserAddress(user_address)
-
-        # Compose the attributes object of user
         user_attributes = {
             'role': row['role'],
             'username': row['username'],
@@ -136,8 +123,6 @@ class UsersSerializer:
             'address': user_address_object
         }
         user_attributes_object = UserAttribute(user_attributes)
-
-        # Compose the data object of user
         user_data = {
             'id': row['user_id'],
             'type': user_resource_type,
