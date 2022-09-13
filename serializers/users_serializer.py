@@ -54,15 +54,6 @@ class UserTopLevel:
         self.data = user_object['data']
 
 
-class UsersTopLevel:
-    '''
-    Construct top level object of a users in JSON:API format
-    '''
-    def __init__(self, user_object):
-        self.links = user_object['links']
-        self.data = user_object['data']
-
-
 class UsersSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     '''
     Combine with the objects of users and construct the serializer for users
@@ -185,13 +176,13 @@ class UsersSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     @staticmethod
     def users_response(user_attributes_object_list):
         '''Compose the top level object of JSON api for a users'''
-        user_object = {
+        users_object = {
             'links': {
                 'self': uri_builder(f'{user_resource_type}')
             },
             'data': user_attributes_object_list
         }
-        user_response = UsersTopLevel(user_object)
+        user_response = UserTopLevel(users_object)
         users_response_json = UsersSchema().dump(user_response)
 
         return users_response_json
