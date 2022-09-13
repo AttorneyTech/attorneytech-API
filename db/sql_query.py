@@ -1,4 +1,4 @@
-prepare_statement = [
+prepare_statements = [
     # Get /users and get /users/{userId}
     '''
     PREPARE get_users(varchar, varchar, integer, integer, integer) AS

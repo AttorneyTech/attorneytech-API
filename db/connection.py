@@ -4,7 +4,7 @@ from psycopg2 import pool
 
 from common.config import config_db
 from common.logger import logger
-from db.sql_query import prepare_statement
+from db.sql_query import prepare_statements
 
 
 class DbConnection:
@@ -39,7 +39,7 @@ class DbConnection:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
             self.cur.execute('SELECT 1;')
-            for statement in prepare_statement:
+            for statement in prepare_statements:
                 self.cur.execute(statement)
         except Exception as err:
             logger.error(err)
