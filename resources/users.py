@@ -23,11 +23,11 @@ class Users(Resource):
                 event_ids=filters['event_ids'],
                 case_ids=filters['case_ids']
             )
-            user_data_object = UsersSerializer.raw_users_serializer(
+            user_data_object_list = UsersSerializer.raw_users_serializer(
                 raw_users
             )
             user_response_json = UsersSerializer.users_response(
-                user_data_object
+                user_data_object_list
             )
             return make_response(user_response_json, 200)
         except Exception as err:
