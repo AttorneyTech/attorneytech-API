@@ -6,7 +6,7 @@ from common.auth import auth
 from common.error_handler import InternalServerError
 from common.logger import logger
 from db.users_dao import users_dao
-from serializers.users_serializer import UserSerializer
+from serializers.users_serializer import UsersSerializer
 
 
 class Users(Resource):
@@ -17,14 +17,17 @@ class Users(Resource):
         '''
         try:
             filters = users_dao.get_filters()
-            raw_user = users_dao.get_users(
+            raw_users = users_dao.get_users(
                 role=filters['role'],
                 city=filters['city'],
                 event_ids=filters['event_ids'],
                 case_ids=filters['case_ids']
             )
-            user_response_json = UserSerializer.serialize_raw_user(
-                raw_user
+            user_data_object = UsersSerializer.raw_users_serializer(
+                raw_users
+            )
+            user_response_json = UsersSerializer.users_response(
+                user_data_object
             )
             return make_response(user_response_json, 200)
         except Exception as err:

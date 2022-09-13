@@ -9,7 +9,7 @@ from common.error_handler import (
 )
 from common.logger import logger
 from db.users_dao import users_dao
-from serializers.users_serializer import UserSerializer
+from serializers.users_serializer import UsersSerializer
 
 
 class User(Resource):
@@ -23,8 +23,11 @@ class User(Resource):
                 userId=userId
             )
             if raw_user:
-                user_response_json = UserSerializer.serialize_raw_user(
+                user_data_object = UsersSerializer.raw_user_serializer(
                     raw_user
+                )
+                user_response_json = UsersSerializer.user_response(
+                    user_data_object
                 )
                 return make_response(user_response_json, 200)
             else:

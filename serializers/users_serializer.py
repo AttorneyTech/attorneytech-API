@@ -60,13 +60,22 @@ class UsersTopLevel:
     '''
     def __init__(self, user_object):
         self.links = user_object['links']
-        self.data = []
+        self.data = user_object['data']
 
 
-class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
+class UsersSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
     '''
-    Combine with the objects of user and
-    construct the serializer for user resource
+    Combine with the objects of users and construct the serializer for users
+    resource:
+
+    Depending on whether it is get /users or get /users/{userId}, if it is
+    the latter, call `raw_user_serializer()` and `user_response()` directly.
+    If the former, the database will return data in list of dict format.
+    Here generate a list of user id first, and according to this list, find
+    the same user id and append to raw_users_list. And for each raw_users_list,
+    pass it into `raw_user_serializer()` func, and append the object returned
+    to user_data_object_list. Finally, return the user_data_object_list and
+    call `users_response()`.
     '''
     def __init__(self):
         super().__init__()
@@ -76,7 +85,35 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         super(UserTopLevel, self).__init__()
 
     @staticmethod
-    def serialize_raw_user(raw_user):
+    def raw_users_serializer(raw_users):
+        '''
+        :var users_id_list: list of users id which returns from database.
+        :var raw_users_list: a group of rows user data to pass as parameters
+        into raw_user_serializer func.
+        :var users_data_object_list: list of users data objects which are
+        returned from raw_user_serializer func.
+        '''
+        users_id_set = set()
+        for row in raw_users:
+            users_id_set.add(row['user_id'])
+        users_id_list = list(users_id_set)
+        users_id_list.sort()
+
+        users_data_object_list = []
+        for user_id in users_id_list:
+            raw_users_list = []
+            for row in raw_users:
+                if row['user_id'] == user_id:
+                    raw_users_list.append(row)
+            users_data_object_list.append(
+                UsersSerializer.raw_user_serializer(
+                    raw_users_list
+                )
+            )
+        return users_data_object_list
+
+    @staticmethod
+    def raw_user_serializer(raw_user):
         '''
         Serializes raw user data from user resource
         '''
@@ -92,7 +129,6 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         # Compose the rest part of user data
         # and here use the first dict of raw user
         row = raw_user[0]
-
         # Compose the address object of user
         user_address = {
             'address_line_1': row['street_name'],
@@ -128,30 +164,34 @@ class UserSerializer(UserAddress, UserAttribute, UserData, UserTopLevel):
         }
         user_data_object = UserData(user_data)
 
-        # Compose the top level object of JSON api for a user
+        return user_data_object
+
+    @staticmethod
+    def user_response(user_data_object):
+        '''Compose the top level object of JSON api for a user'''
         user_object = {
             'links': {
-                'self': uri_builder(f'{user_resource_type}/{row["user_id"]}')
+                'self': uri_builder(
+                    f'{user_resource_type}/{user_data_object.id}'
+                )
             },
             'data': user_data_object
         }
         user_response = UserTopLevel(user_object)
-
-        # Serialize an object to native Python data types according to this
-        # Schema's fields.
         user_response_json = UserSchema().dump(user_response)
 
         return user_response_json
 
+    @staticmethod
+    def users_response(user_attributes_object_list):
+        '''Compose the top level object of JSON api for a users'''
+        user_object = {
+            'links': {
+                'self': uri_builder(f'{user_resource_type}')
+            },
+            'data': user_attributes_object_list
+        }
+        user_response = UsersTopLevel(user_object)
+        users_response_json = UsersSchema().dump(user_response)
 
-class UsersSerializer(UserAddress, UserAttribute, UserData, UsersTopLevel):
-    '''
-    Combine with the objects of users and
-    construct the serializer for users resource
-    '''
-    def __init__(self):
-        super().__init__()
-        super(UserAddress, self).__init__()
-        super(UserAttribute, self).__init__()
-        super(UserData, self).__init__()
-        super(UsersTopLevel, self).__init__()
+        return users_response_json

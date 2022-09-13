@@ -18,6 +18,5 @@ api.add_resource(
 )
 app.run(
     port=config_server['port'],
-    ssl_context=(config_server['cert_path'], config_server['key_path']),
-    debug=True
+    ssl_context=(config_server['cert_path'], config_server['key_path'])
 )

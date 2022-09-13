@@ -15,7 +15,6 @@ class UsersDao:
             'event_ids': request.args.get('filter[eventIds]'),
             'case_ids': request.args.get('filter[caseIds]')
         }
-
         return filters
 
     def get_users(
@@ -49,9 +48,8 @@ class UsersDao:
                     'userId': userId
                 }
             )
-            raw_user = self.cur.fetchall()
-
-            return raw_user
+            raw_users = self.cur.fetchall()
+            return raw_users
         except Exception as err:
             raise err
         finally:
