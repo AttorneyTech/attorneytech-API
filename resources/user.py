@@ -1,7 +1,6 @@
 from flask import make_response
 from flask_restful import Resource
 
-
 from common.auth import auth
 from common.error_handler import (
     NotFound,
@@ -14,23 +13,19 @@ from serializers.users_serializer import UsersSerializer
 
 class User(Resource):
     @auth.login_required
-    def get(self, userId):
+    def get(self, user_id):
         '''Get the specific user data by user ID'''
         try:
             raw_user = users_dao.get_users(
-                userId=userId
+                user_id=user_id
             )
             if raw_user:
-                user_data_object = UsersSerializer.raw_user_serializer(
-                    raw_user
-                )
-                user_response_json = UsersSerializer.user_response(
-                    user_data_object
-                )
-                return make_response(user_response_json, 200)
+                user_object = UsersSerializer.raw_user_serializer(raw_user)
+                user_response = UsersSerializer.user_response(user_object)
+                return make_response(user_response, 200)
             else:
                 detail = (
-                    f'The resource requested (user ID:{userId}) was not found.'
+                    f'The resource requested (user ID:{user_id}) not found.'
                 )
                 error = NotFound(detail)
                 logger.error(detail)

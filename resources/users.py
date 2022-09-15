@@ -1,7 +1,6 @@
 from flask import make_response
 from flask_restful import Resource
 
-
 from common.auth import auth
 from common.error_handler import InternalServerError
 from common.logger import logger
@@ -21,13 +20,9 @@ class Users(Resource):
                 event_ids=filters['event_ids'],
                 case_ids=filters['case_ids']
             )
-            user_data_object_list = UsersSerializer.raw_users_serializer(
-                raw_users
-            )
-            user_response_json = UsersSerializer.users_response(
-                user_data_object_list
-            )
-            return make_response(user_response_json, 200)
+            users_objects = UsersSerializer.raw_users_serializer(raw_users)
+            user_response = UsersSerializer.users_response(users_objects)
+            return make_response(user_response, 200)
         except Exception as err:
             error = InternalServerError(
                 str(err).replace('\"', '').replace('\n', '')

@@ -12,8 +12,12 @@ class UsersDao:
         filters = {
             'role': request.args.get('filter[role]'),
             'city': request.args.get('filter[city]'),
-            'event_ids': request.args.get('filter[eventIds]'),
-            'case_ids': request.args.get('filter[caseIds]')
+            'event_ids': request.args.getlist(
+                'filter[eventIds][oneOf]', type=int
+            ),
+            'case_ids': request.args.getlist(
+                'filter[caseIds][oneOf]', type=int
+            )
         }
         return filters
 
@@ -23,7 +27,7 @@ class UsersDao:
         city=None,
         event_ids=None,
         case_ids=None,
-        userId=None
+        user_id=None
     ):
         '''
         Connect to PostgreSQL and get the raw data
@@ -38,14 +42,14 @@ class UsersDao:
                     %(city)s,
                     %(event_ids)s,
                     %(case_ids)s,
-                    %(userId)s
+                    %(user_id)s
                 );''',
                 {
                     'role': role,
                     'city': city,
                     'event_ids': event_ids,
                     'case_ids': case_ids,
-                    'userId': userId
+                    'user_id': user_id
                 }
             )
             raw_users = self.cur.fetchall()
