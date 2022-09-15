@@ -10,8 +10,8 @@ class UsersDao:
 
     def get_filters(self):
         filters = {
-            'role': request.args.get('filter[role]'),
-            'city': request.args.get('filter[city]'),
+            'role': request.args.get('filter[role]', type=str),
+            'city': request.args.get('filter[city]', type=str),
             'event_ids': request.args.getlist(
                 'filter[eventIds][oneOf]', type=int
             ),
@@ -33,6 +33,7 @@ class UsersDao:
         Connect to PostgreSQL and get the raw data
         of a specific user by user ID
         '''
+
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)

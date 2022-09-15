@@ -3,7 +3,7 @@ from schemas.users_schema import UserSchema, UsersSchema
 
 
 # Type of user resource
-user_resource_type = 'users'
+user_type = 'users'
 
 
 class UserAddress:
@@ -32,6 +32,7 @@ class UserAttribute:
 
 class UserData:
     '''Construct data object of a user'''
+
     def __init__(self, user_data):
         self.id = user_data['id']
         self.type = user_data['type']
@@ -41,6 +42,7 @@ class UserData:
 
 class UserTopLevel:
     '''Construct top level object of a user in JSON:API format'''
+
     def __init__(self, user_object):
         self.links = user_object['links']
         self.data = user_object['data']
@@ -59,6 +61,7 @@ class UsersSerializer:
     to user_data_object_list. Finally, return the user_data_object_list and
     call `users_response()`.
     '''
+
     @staticmethod
     def raw_users_serializer(raw_users):
         '''
@@ -72,9 +75,7 @@ class UsersSerializer:
 
         users_objects = []
         for raw_user in raw_users:
-            users_objects.append(
-                UsersSerializer.raw_user_serializer(raw_user)
-            )
+            users_objects.append(UsersSerializer.raw_user_serializer(raw_user))
         return users_objects
 
     @staticmethod
@@ -105,9 +106,9 @@ class UsersSerializer:
         user_attributes_object = UserAttribute(user_attributes)
         user_data = {
             'id': raw_user['user_id'],
-            'type': user_resource_type,
+            'type': user_type,
             'links': {
-                'self': uri_builder(f'{user_resource_type}/{raw_user["user_id"]}')
+                'self': uri_builder(f'{user_type}/{raw_user["user_id"]}')
             },
             'attributes': user_attributes_object
         }
@@ -118,10 +119,11 @@ class UsersSerializer:
     @staticmethod
     def user_response(user_data_object):
         '''Compose the top level object of JSON api for a user'''
+
         user_object = {
             'links': {
                 'self': uri_builder(
-                    f'{user_resource_type}/{user_data_object.id}'
+                    f'{user_type}/{user_data_object.id}'
                 )
             },
             'data': user_data_object
@@ -134,9 +136,10 @@ class UsersSerializer:
     @staticmethod
     def users_response(user_attributes_object_list):
         '''Compose the top level object of JSON api for a users'''
+
         users_object = {
             'links': {
-                'self': uri_builder(f'{user_resource_type}')
+                'self': uri_builder(f'{user_type}')
             },
             'data': user_attributes_object_list
         }

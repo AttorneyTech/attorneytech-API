@@ -14,6 +14,7 @@ def verify_password(username, password):
     '''
     Verify that the username and password combination.
     '''
+
     if (
         username == config_auth['username'] and
         check_password_hash(
@@ -29,6 +30,7 @@ def auth_error():
     If failed authentication, send an authentication
     error back to the client.
     '''
+
     detail = (
         'Unauthorized. '
         'Username and password not matched with the Basic Auth credentials.'

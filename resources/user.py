@@ -15,10 +15,9 @@ class User(Resource):
     @auth.login_required
     def get(self, user_id):
         '''Get the specific user data by user ID'''
+
         try:
-            raw_user = users_dao.get_users(
-                user_id=user_id
-            )
+            raw_user = users_dao.get_users(user_id=user_id)
             if raw_user:
                 user_object = UsersSerializer.raw_user_serializer(raw_user)
                 user_response = UsersSerializer.user_response(user_object)

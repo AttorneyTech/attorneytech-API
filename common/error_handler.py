@@ -6,6 +6,7 @@ class ErrorHandler:
         '''
         Serialize the error response
         '''
+
         error = jsonify(
             {
                 "errors": [
