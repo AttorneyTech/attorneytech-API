@@ -80,7 +80,16 @@ class UsersSerializer:
 
     @staticmethod
     def raw_user_serializer(raw_user):
-        '''Serializes raw user data from user resource'''
+        '''
+        Serializes raw user data from user resource.
+        Here will check the data type of raw_user first, since the
+        raw_users fetch from database is a list of RealDictRow objects.
+        When the request is GET /users/{userId}, it will pass the list
+        into `raw_user_serializer()` directly instead row by row from
+        `raw_users_serializer()` function.
+        '''
+
+        # Get the RealDictRow objects
         if type(raw_user) == list:
             raw_user = raw_user[0]
 
