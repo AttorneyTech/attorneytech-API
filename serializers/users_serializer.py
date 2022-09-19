@@ -2,8 +2,9 @@ from common.uri_builder import uri_builder
 from schemas.users_schema import UserSchema, UsersSchema
 
 
-# Type of user resource
+# Elements to build links
 user_type = 'users'
+# filters = users_dao.get_filters()
 
 
 class UserAddress:

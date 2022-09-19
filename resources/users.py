@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, request
 from flask_restful import Resource
 
 from common.auth import auth
@@ -14,12 +14,15 @@ class Users(Resource):
         '''Get the list of users'''
 
         try:
-            filters = users_dao.get_filters()
             raw_users = users_dao.get_users(
-                role=filters['role'],
-                city=filters['city'],
-                event_ids=filters['event_ids'],
-                case_ids=filters['case_ids']
+                role=request.args.get('filter[role]', type=str),
+                city=request.args.get('filter[city]', type=str),
+                event_ids=request.args.getlist(
+                    'filter[eventIds][oneOf]', type=int
+                ),
+                case_ids=request.args.getlist(
+                    'filter[caseIds][oneOf]', type=int
+                )
             )
             users_objects = UsersSerializer.raw_users_serializer(raw_users)
             user_response = UsersSerializer.users_response(users_objects)

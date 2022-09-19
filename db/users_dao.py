@@ -1,5 +1,4 @@
 from db.connection import conn_pool
-from flask import request
 from psycopg2.extras import RealDictCursor
 
 
@@ -7,19 +6,6 @@ class UsersDao:
     def __init__(self):
         self.conn = None
         self.cur = None
-
-    def get_filters(self):
-        filters = {
-            'role': request.args.get('filter[role]', type=str),
-            'city': request.args.get('filter[city]', type=str),
-            'event_ids': request.args.getlist(
-                'filter[eventIds][oneOf]', type=int
-            ),
-            'case_ids': request.args.getlist(
-                'filter[caseIds][oneOf]', type=int
-            )
-        }
-        return filters
 
     def get_users(
         self,
