@@ -1,4 +1,5 @@
 from db.connection import conn_pool
+from flask import request
 from psycopg2.extras import RealDictCursor
 
 
@@ -6,6 +7,7 @@ class UsersDao:
     def __init__(self):
         self.conn = None
         self.cur = None
+        self.filters = request.args
 
     def get_user_by_id(self, user_id):
         try:
@@ -56,7 +58,3 @@ class UsersDao:
                 self.cur.close()
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
-
-
-# Initializing the users_dao object and preload the prepare statements
-users_dao = UsersDao()
