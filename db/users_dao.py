@@ -16,7 +16,7 @@ class UsersDao:
             self.cur.execute(
                 'EXECUTE get_user_by_id(%(user_id)s);', {'user_id': user_id}
             )
-            raw_users = self.cur.fetchall()
+            raw_users = self.cur.fetchone()
             return raw_users
         except Exception as err:
             raise err

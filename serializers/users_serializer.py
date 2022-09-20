@@ -1,10 +1,11 @@
+from flask import request
+
 from common.uri_builder import uri_builder
 from schemas.users_schema import UserSchema, UsersSchema
 
 
 # Elements to build links
 user_type = 'users'
-# filters = users_dao.get_filters()
 
 
 class UserAddress:
@@ -147,9 +148,10 @@ class UsersSerializer:
     def users_response(user_attributes_object_list):
         '''Compose the top level object of JSON api for a users'''
 
+        uri = request.url
         users_object = {
             'links': {
-                'self': uri_builder(f'{user_type}')
+                'self': uri
             },
             'data': user_attributes_object_list
         }
