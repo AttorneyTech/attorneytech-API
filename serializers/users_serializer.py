@@ -1,3 +1,5 @@
+import urllib.parse
+
 from flask import request
 
 from common.uri_builder import uri_builder
@@ -149,6 +151,7 @@ class UsersSerializer:
         '''Compose the top level object of JSON api for a users'''
 
         uri = request.url
+        uri = urllib.parse.unquote(uri)
         users_object = {
             'links': {
                 'self': uri

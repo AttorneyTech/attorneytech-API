@@ -14,14 +14,14 @@ class Users(Resource):
         '''Get the list of users'''
 
         try:
-            users_dao = UsersDao()
-            raw_users = users_dao.get_users(
-                role=users_dao.filters.get('filter[role]', type=str),
-                city=users_dao.filters.get('filter[city]', type=str),
-                event_ids=users_dao.filters.getlist(
+            dao = UsersDao()
+            raw_users = dao.get_users(
+                role=dao.filters.get('filter[role]', type=str),
+                city=dao.filters.get('filter[city]', type=str),
+                event_ids=dao.filters.getlist(
                     'filter[eventIds][oneOf]', type=int
                 ),
-                case_ids=users_dao.filters.getlist(
+                case_ids=dao.filters.getlist(
                     'filter[caseIds][oneOf]', type=int
                 )
             )
