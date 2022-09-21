@@ -31,6 +31,16 @@ class InternalServerError(ErrorHandler):
         return super().error_response()
 
 
+class BadRequest(ErrorHandler):
+    def __init__(self, detail):
+        self.status = '400'
+        self.title = 'Bad Request'
+        self.detail = detail
+
+    def error_response(self):
+        return super().error_response()
+
+
 class NotFound(ErrorHandler):
     def __init__(self, detail):
         self.status = '404'

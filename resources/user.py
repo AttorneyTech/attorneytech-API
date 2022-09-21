@@ -7,6 +7,7 @@ from common.error_handler import (
     InternalServerError
 )
 from common.logger import logger
+from common.string_handler import string_handler
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
@@ -24,15 +25,14 @@ class User(Resource):
                 user_response = UsersSerializer.user_response(user_object)
                 return make_response(user_response, 200)
             else:
-                detail = (
+                err_message = (
                     f'The resource requested (user ID:{user_id}) not found.'
                 )
-                error = NotFound(detail)
-                logger.error(detail)
+                error = NotFound(err_message)
+                logger.error(err_message)
                 return make_response(error.error_response(), 404)
         except Exception as err:
-            error = InternalServerError(
-                str(err).replace('\"', '').replace('\n', '')
-            )
-            logger.error(err)
+            err_message = string_handler(err)
+            error = InternalServerError(err_message)
+            logger.error(err_message)
             return make_response(error.error_response(), 500)
