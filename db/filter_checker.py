@@ -36,9 +36,9 @@ def valid_filters(filters, endpoint):
     for filter in data_types[endpoint].keys():
         if filter in filters:
             filters_dict = filters.to_dict(flat=False)
-            for v in filters_dict[filter]:
+            for filter_input in filters_dict[filter]:
                 try:
-                    int(v)
+                    int(filter_input)
                 except ValueError:
                     raise ValueError(
                         f'''
