@@ -5,7 +5,7 @@ from common.auth import auth
 from common.error_handler import BadRequest, InternalServerError
 from common.logger import logger
 from common.string_handler import string_handler
-from db.filter_enums import enums
+from db.filter_checker import valid_filters
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
@@ -17,16 +17,8 @@ class Users(Resource):
 
         try:
             dao = UsersDao()
-            # Check if the filter is in enum
-            for filter, enum in enums['users'].items():
-                if filter in dao.filters and dao.filters[filter] not in enum:
-                    raise ValueError(
-                        f'''
-                        Invalid query parameter at
-                         {filter}: {dao.filters[filter]},
-                         the filter must be in {enum}.
-                        '''
-                    )
+            # Check if the filter is valid.
+            valid_filters(dao.filters, 'users')
             raw_users = dao.get_users(
                 role=dao.filters.get('filter[role]', type=str),
                 city=dao.filters.get('filter[city]', type=str),
