@@ -55,26 +55,16 @@ class UserTopLevel:
 class UsersSerializer:
     '''
     Combine with the objects of users and construct the serializer for users
-    resource:
-    Depending on whether it is get /users or get /users/{userId}, if it is
-    the latter, call `raw_user_serializer()` and `user_response()` directly.
-    If the former, the database will return data in list of dict format.
-    Here generate a list of user id first, and according to this list, find
-    the same user id and append to raw_users_list. And for each raw_users_list,
-    pass it into `raw_user_serializer()` func, and append the object returned
-    to user_data_object_list. Finally, return the user_data_object_list and
-    call `users_response()`.
+    resource.
     '''
 
     @staticmethod
     def raw_users_serializer(raw_users):
         '''
-        Variables:
-        users_id_list -- list of users id which returns from database.
-        raw_users_list -- a group of rows user data to pass as parameters
-        into raw_user_serializer func.
-        users_data_object_list -- list of users data objects which are
-        returned from raw_user_serializer func.
+        The database will return data in list of dict format.
+        Call the `raw_users_serializer()` function and pass each raw_user data
+        into `raw_user_serializer()` by iterating over raw_users and get the
+        users_objects list. Finally call the `users_response()` function.
         '''
 
         users_objects = []

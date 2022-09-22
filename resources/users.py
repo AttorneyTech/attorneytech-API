@@ -30,8 +30,8 @@ class Users(Resource):
                 )
             )
             users_objects = UsersSerializer.raw_users_serializer(raw_users)
-            user_response = UsersSerializer.users_response(users_objects)
-            return make_response(user_response, 200)
+            users_response = UsersSerializer.users_response(users_objects)
+            return make_response(users_response, 200)
         except ValueError as err:
             err_message = string_handler(err)
             error = BadRequest(err_message)
