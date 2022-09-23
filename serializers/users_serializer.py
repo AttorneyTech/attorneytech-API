@@ -2,12 +2,9 @@ import urllib.parse
 
 from flask import request
 
+from common.openapi_loader import resources_type
 from common.uri_builder import uri_builder
 from schemas.users_schema import UserSchema, UsersSchema
-
-
-# Elements to build links
-user_type = 'users'
 
 
 class UserAddress:
@@ -109,9 +106,11 @@ class UsersSerializer:
         user_attributes_object = UserAttribute(user_attributes)
         user_data = {
             'id': raw_user['user_id'],
-            'type': user_type,
+            'type': resources_type['users'],
             'links': {
-                'self': uri_builder(f'{user_type}/{raw_user["user_id"]}')
+                'self': uri_builder(
+                    f'{resources_type["users"]}/{raw_user["user_id"]}'
+                )
             },
             'attributes': user_attributes_object
         }
@@ -126,7 +125,7 @@ class UsersSerializer:
         user_object = {
             'links': {
                 'self': uri_builder(
-                    f'{user_type}/{user_data_object.id}'
+                    f'{resources_type["users"]}/{user_data_object.id}'
                 )
             },
             'data': user_data_object
