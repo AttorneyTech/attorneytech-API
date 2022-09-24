@@ -1,4 +1,9 @@
-def union_events_and_cases(role: str) -> str:
+def join_events_and_cases(role: str) -> str:
+    '''
+    Join event and cases table, and combine event_id and cases_id
+    related to agent or client into array respectively.
+    '''
+
     user_role_dict = {
         'agent': 'agent_id',
         'client': 'client_id'
@@ -18,14 +23,11 @@ def union_events_and_cases(role: str) -> str:
 
 def get_users_conditional_query(filter: str) -> str:
     '''
-    :$1 Query parameter placeholder of users.role,
-    the data type pass into db is varchar.
-    :$2 Query parameter placeholder of users.city,
-    the data type pass into db is varchar
-    :$3 Query parameter placeholder of event_ids,
-    the data type pass into db is array of integer.
-    :$4 Query parameter placeholder of case_ids,
-    the data type pass into db is array of integer.
+    $1 - $4 are the placeholder of query parameters.
+    :$1 For column users.role. Data type: varchar.
+    :$2 For column users.city. Data type: varchar
+    :$3 For column event_ids. Data type: integer.
+    :$4 For column case_ids. Data type: integer.
     '''
     get_users_filters_dict = {
         'users.role': '$1',
@@ -71,9 +73,9 @@ construct_user_column = f'''
     FROM users
     LEFT JOIN
     (
-        {union_events_and_cases('agent')}
+        {join_events_and_cases('agent')}
         UNION
-        {union_events_and_cases('client')}
+        {join_events_and_cases('client')}
     ) AS users_events_cases
     ON
     users.id = users_events_cases.user_id

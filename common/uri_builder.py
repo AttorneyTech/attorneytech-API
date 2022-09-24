@@ -1,7 +1,7 @@
 from common.config import config_server
 
 
-def uri_builder(resource_path):
+def uri_builder(resource_path: str) -> str:
     api_base_url = (
         f'https://{config_server["hostname"]}:'
         f'{config_server["port"]}/'

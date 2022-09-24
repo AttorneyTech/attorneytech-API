@@ -5,7 +5,7 @@ from common.auth import auth
 from common.error_handler import BadRequest, InternalServerError
 from common.logger import logger
 from common.string_handler import string_handler
-from db.filter_handler import filter_to_list, valid_filters
+from db.filter_handler import enums_check, filter_to_list
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
@@ -18,14 +18,14 @@ class Users(Resource):
         try:
             dao = UsersDao()
             # Check if the filter is valid.
-            valid_filters(dao.filters, 'users')
+            enums_check(dao.filters, 'users')
             raw_event_ids = dao.filters.get('filter[eventIds][oneOf]')
             raw_case_ids = dao.filters.get('filter[caseIds][oneOf]')
             raw_users = dao.get_users(
                 role=dao.filters.get('filter[role]'),
                 city=dao.filters.get('filter[city]'),
-                event_ids=filter_to_list(raw_event_ids),
-                case_ids=filter_to_list(raw_case_ids)
+                event_ids=filter_to_list(raw_event_ids, data_type=int),
+                case_ids=filter_to_list(raw_case_ids, data_type=int)
             )
             users_objects = UsersSerializer.raw_users_serializer(raw_users)
             users_response = UsersSerializer.users_response(users_objects)
