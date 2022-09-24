@@ -20,6 +20,12 @@ def valid_filters(filters, endpoint):
 
 
 def filter_to_list(filter):
+    '''
+    Support for array query parameters.
+    Process the received comma separated query parameter
+    and convert it into a processable list.
+    '''
+
     if filter:
         try:
             result = []

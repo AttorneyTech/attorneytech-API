@@ -6,7 +6,7 @@ from yaml import load, Loader
 
 def safe_get(_dict: dict, *keys: str):
     '''
-    Safe get the value of nested dict
+    Safe get the value of nested dict from openapi.yaml
     '''
 
     for key in keys:
@@ -17,6 +17,7 @@ def safe_get(_dict: dict, *keys: str):
     return _dict
 
 
+# Load the openapi.yaml file and read the content as a dict
 try:
     with open('openapi.yaml', 'r') as f:
         openapi_spec = load(f, Loader=Loader)
@@ -29,6 +30,7 @@ components = safe_get(openapi_spec, 'components')
 schemas = safe_get(components, 'schemas')
 user_attributes = safe_get(schemas, 'UserAttributes')
 
+# Enums of filters
 filter_enums = {
     'users': {
         'filter[role]': safe_get(
@@ -41,14 +43,10 @@ filter_enums = {
         )
     }
 }
-resources_type = {
-    'users': safe_get(schemas, 'UserType', 'enum')[0],
-    'events': safe_get(schemas, 'EventType', 'enum')[0],
-    'cases': safe_get(schemas, 'CaseType', 'enum')[0],
-    'court': safe_get(schemas, 'CourtType', 'enum')[0],
-    'section_in_charge': safe_get(schemas, 'SectionInChargeType', 'enum')[0],
-    'opposite_client': safe_get(schemas, 'OppositeClientType', 'enum')[0],
-    'opposite_agent': safe_get(schemas, 'OppositeAgentType', 'enum')[0],
-    'paper_type': safe_get(schemas, 'PaperType', 'enum')[0],
-    'paper_file_type': safe_get(schemas, 'PaperFileType', 'enum')[0]
-}
+
+# Resource type of resource objects which defined in JSON API
+resources_type = {}
+
+for k, v in schemas.items():
+    if 'Type' in k:
+        resources_type[v.get('enum')[0]] = v.get('enum')[0]
