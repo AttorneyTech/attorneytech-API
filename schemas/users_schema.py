@@ -13,14 +13,14 @@ class UserAddressSchema(Schema):
 class UserAttributeSchema(Schema):
     '''Defines the attribute object schema of user'''
 
-    role = fields.Str()
+    role = fields.Str(required=True)
     username = fields.Str()
-    firstName = fields.Str()
+    firstName = fields.Str(required=True)
     middleName = fields.Str()
-    lastName = fields.Str()
+    lastName = fields.Str(required=True)
     eventIds = fields.List(fields.Str())
     caseIds = fields.List(fields.Str())
-    email = fields.Email()
+    email = fields.Email(required=True)
     phone = fields.Str()
     address = fields.Nested(UserAddressSchema)
 
