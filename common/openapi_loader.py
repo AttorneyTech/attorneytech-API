@@ -4,17 +4,17 @@ import traceback
 from yaml import load, Loader
 
 
-def safe_get(_dict: dict, *keys: str):
+def safe_get(openapi_dict: dict, *keys: str):
     '''
     Safe get the value of nested dict from openapi.yaml
     '''
 
     for key in keys:
         try:
-            _dict = _dict[key]
+            openapi_dict = openapi_dict[key]
         except KeyError:
             return None
-    return _dict
+    return openapi_dict
 
 
 # Load the openapi.yaml file and read the content as a dict

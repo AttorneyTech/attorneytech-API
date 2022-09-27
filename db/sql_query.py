@@ -11,13 +11,16 @@ def join_events_and_cases(role: str) -> str:
     param = user_role_dict[role]
 
     return f'''
-    SELECT cases.{param} AS user_id,
-    ARRAY_AGG(DISTINCT events.id) AS event_ids,
-    ARRAY_AGG(cases.id) AS case_ids
+    SELECT
+        cases.{param} AS user_id,
+        ARRAY_AGG(DISTINCT events.id) AS event_ids,
+        ARRAY_AGG(cases.id) AS case_ids
     FROM cases
     RIGHT JOIN events
-    ON cases.event_id = events.id
-    GROUP BY cases.{param}
+    ON
+    cases.event_id = events.id
+    GROUP BY
+    cases.{param}
     '''
 
 
@@ -37,19 +40,20 @@ def get_users_conditional_query(filter: str) -> str:
     }
     param = get_users_filters_dict[filter]
 
+    if filter in ['users.role', 'users.city']:
+        return f'''
+            CASE
+                WHEN NULLIF({param}, NULL) = {param} THEN {filter} = {param}
+                ELSE true
+            END
+            '''
     return f'''
-    CASE
-        WHEN NULLIF({param}, NULL) = {param} THEN {filter} = {param}
-        ELSE true
-    END
-    ''' if filter in ['users.role', 'users.city'] \
-        else f'''
-    CASE
-        WHEN NULLIF({param}, ARRAY[]::integer[]) = {param}
-            THEN ARRAY[{param}] && {filter}
-        ELSE true
-    END
-    '''
+        CASE
+            WHEN NULLIF({param}, ARRAY[]::integer[]) = {param}
+                THEN ARRAY[{param}] && {filter}
+            ELSE true
+        END
+        '''
 
 
 # Select columns in users table and union of events and cases

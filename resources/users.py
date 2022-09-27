@@ -3,9 +3,9 @@ from flask_restful import Resource
 
 from common.auth import auth
 from common.error_handler import BadRequest, InternalServerError
+from common.error_message_handler import string_handler
+from common.filter_handler import enums_check, filter_to_list
 from common.logger import logger
-from common.string_handler import string_handler
-from db.filter_handler import enums_check, filter_to_list
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
