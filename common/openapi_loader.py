@@ -13,7 +13,8 @@ def safe_get(openapi_dict: dict, *keys: str):
         try:
             openapi_dict = openapi_dict[key]
         except KeyError:
-            return None
+            traceback.print_exc()
+            sys.exit()
     return openapi_dict
 
 

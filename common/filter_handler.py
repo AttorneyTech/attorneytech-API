@@ -3,7 +3,7 @@ from typing import List, Optional
 from common.openapi_loader import filter_enums
 
 
-def enums_check(filters: str, endpoint: str) -> bool:
+def enums_check(filters: str, endpoint: str):
     '''
     Check if the filter is valid.
     '''
@@ -12,16 +12,15 @@ def enums_check(filters: str, endpoint: str) -> bool:
         if filter in filters and filters[filter] not in enum:
             raise ValueError(
                 f'''
-                Invalid query parameter at
-                 {filter}: {filters[filter]},
-                 the filter must be in {enum}.
+                Invalid query parameter at {filter}: {filters[filter]}, \
+                the filter must be in {enum}.
                 '''
             )
     return
 
 
-def filter_to_list(
-    filter: str, data_type: Optional[int] = None
+def filters_to_list(
+    filters: str, data_type: Optional[int] = None
 ) -> List[int | str]:
     '''
     Support for array query parameters. Process the received comma separated
@@ -32,21 +31,12 @@ def filter_to_list(
                        conform to a form acceptable to the database. It can be
                        `int` if needed otherwise default is `None`.
     '''
-
-    if filter:
-        result = []
-        filter = filter.split(',')
-        if data_type is None:
-            for item in filter:
-                result.append(item)
-        elif data_type == int:
-            for item in filter:
-                # If the filter is not numbers, such as letters, etc.
-                # Since this is not a valid query parameter for the database,
-                # so here replace it with -1.
-                if item.isdigit():
-                    result.append(data_type(item))
-                else:
-                    result.append(-1)
-        return result
-    return filter
+    result = []
+    if filters:
+        filters = filters.split(',')
+        for filter in filters:
+            if data_type == int:
+                result.append(data_type(filter) if filter.isdigit() else -1)
+            else:
+                result.append(filter)
+    return result

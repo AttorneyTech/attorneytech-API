@@ -17,10 +17,8 @@ def join_events_and_cases(role: str) -> str:
         ARRAY_AGG(cases.id) AS case_ids
     FROM cases
     RIGHT JOIN events
-    ON
-    cases.event_id = events.id
-    GROUP BY
-    cases.{param}
+        ON cases.event_id = events.id
+    GROUP BY cases.{param}
     '''
 
 
@@ -81,8 +79,7 @@ construct_user_column = f'''
         UNION
         {join_events_and_cases('client')}
     ) AS users_events_cases
-    ON
-    users.id = users_events_cases.user_id
+        ON users.id = users_events_cases.user_id
 '''
 
 
