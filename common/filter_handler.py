@@ -7,15 +7,17 @@ def enums_check(filters: str, endpoint: str):
     '''
     Check if the filter is valid.
     '''
-
+    details = []
     for filter, enum in filter_enums[endpoint].items():
         if filter in filters and filters[filter] not in enum:
-            raise ValueError(
+            details.append(
                 f'''
                 Invalid query parameter at {filter}: {filters[filter]}, \
                 the filter must be in {enum}.
                 '''
             )
+    if details:
+        raise ValueError(details)
     return
 
 

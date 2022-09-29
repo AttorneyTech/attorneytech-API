@@ -1,61 +1,55 @@
-from flask import jsonify
+def error_handler(error_objects: list) -> dict:
+    '''
+    Serialize the error response
+    '''
+
+    error_response = {
+        'errors': error_objects
+    }
+    return error_response
 
 
-class ErrorHandler:
-    def error_response(self):
-        '''
-        Serialize the error response
-        '''
-
-        error = jsonify(
+def bad_request(details: list) -> list:
+    error_objects = []
+    for detail in details:
+        error_objects.append(
             {
-                "errors": [
-                    {
-                        "status": self.status,
-                        "title": self.title,
-                        "detail": self.detail
-                    }
-                ]
+                'status': '400',
+                'title': 'Bad Request',
+                'detail': detail
             }
         )
-        return error
+    return error_objects
 
 
-class InternalServerError(ErrorHandler):
-    def __init__(self, detail):
-        self.status = '500'
-        self.title = 'Internal Server Error'
-        self.detail = detail
-
-    def error_response(self):
-        return super().error_response()
-
-
-class BadRequest(ErrorHandler):
-    def __init__(self, detail):
-        self.status = '400'
-        self.title = 'Bad Request'
-        self.detail = detail
-
-    def error_response(self):
-        return super().error_response()
+def internal_server_error(detail: list) -> list:
+    error_object = [
+        {
+            'status': '500',
+            'title': 'Internal Server Error',
+            'detail': detail
+        }
+    ]
+    return error_object
 
 
-class NotFound(ErrorHandler):
-    def __init__(self, detail):
-        self.status = '404'
-        self.title = 'Not Found'
-        self.detail = detail
+def not_found(detail: list) -> list:
+    error_object = [
+        {
+            'status': '404',
+            'title': 'Not Found',
+            'detail': detail
+        }
+    ]
+    return error_object
 
-    def error_response(self):
-        return super().error_response()
 
-
-class Unauthorized(ErrorHandler):
-    def __init__(self, detail):
-        self.status = '401'
-        self.title = 'Unauthorized'
-        self.detail = detail
-
-    def error_response(self):
-        return super().error_response()
+def unauthorized(detail: list) -> list:
+    error_object = [
+        {
+            'status': '401',
+            'title': 'Unauthorized',
+            'detail': detail
+        }
+    ]
+    return error_object

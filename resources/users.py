@@ -2,8 +2,12 @@ from flask import make_response
 from flask_restful import Resource
 
 from common.auth import auth
-from common.error_handler import BadRequest, InternalServerError
-from common.error_message_handler import string_handler
+from common.error_handler import (
+    bad_request,
+    error_handler,
+    internal_server_error
+)
+from common.string_handler import error_detail_handler
 from common.filter_handler import enums_check, filters_to_list
 from common.logger import logger
 from db.users_dao import UsersDao
@@ -31,12 +35,16 @@ class Users(Resource):
             users_response = UsersSerializer.users_response(users_objects)
             return make_response(users_response, 200)
         except ValueError as err:
-            err_message = string_handler(err)
-            error = BadRequest(err_message)
-            logger.error(err_message)
-            return make_response(error.error_response(), 400)
+            # Unpack the args to get the list of details
+            details = err.args[0]
+            details = [error_detail_handler(detail) for detail in details]
+            logger.error(details)
+            error_objects = bad_request(details)
+            error_response = error_handler(error_objects)
+            return make_response(error_response, 400)
         except Exception as err:
-            err_message = string_handler(err)
-            error = InternalServerError(err_message)
-            logger.error(err_message)
-            return make_response(error.error_response(), 500)
+            detail = error_detail_handler(err)
+            logger.error(detail)
+            error_object = internal_server_error(detail)
+            error_response = error_handler(error_object)
+            return make_response(error_response, 500)

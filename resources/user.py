@@ -3,11 +3,12 @@ from flask_restful import Resource
 
 from common.auth import auth
 from common.error_handler import (
-    NotFound,
-    InternalServerError
+    internal_server_error,
+    not_found,
+    error_handler
 )
 from common.logger import logger
-from common.error_message_handler import string_handler
+from common.string_handler import error_detail_handler
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
@@ -25,14 +26,16 @@ class User(Resource):
                 user_response = UsersSerializer.user_response(user_object)
                 return make_response(user_response, 200)
             else:
-                err_message = (
+                detail = (
                     f'The resource requested (user ID:{user_id}) not found.'
                 )
-                error = NotFound(err_message)
-                logger.error(err_message)
-                return make_response(error.error_response(), 404)
+                logger.error(detail)
+                error_object = not_found(detail)
+                error_response = error_handler(error_object)
+                return make_response(error_response, 404)
         except Exception as err:
-            err_message = string_handler(err)
-            error = InternalServerError(err_message)
-            logger.error(err_message)
-            return make_response(error.error_response(), 500)
+            detail = error_detail_handler(err)
+            logger.error(detail)
+            error_object = internal_server_error(detail)
+            error_response = error_handler(error_object)
+            return make_response(error_response, 500)
