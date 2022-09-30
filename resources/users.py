@@ -28,8 +28,12 @@ class Users(Resource):
             raw_users = dao.get_users(
                 role=dao.filters.get('filter[role]'),
                 city=dao.filters.get('filter[city]'),
-                event_ids=filters_to_list(raw_event_ids, data_type=int),
-                case_ids=filters_to_list(raw_case_ids, data_type=int)
+                event_ids=filters_to_list(
+                    raw_event_ids, data_type=int, default_value=-1
+                ),
+                case_ids=filters_to_list(
+                    raw_case_ids, data_type=int, default_value=-1
+                )
             )
             users_objects = UsersSerializer.raw_users_serializer(raw_users)
             users_response = UsersSerializer.users_response(users_objects)

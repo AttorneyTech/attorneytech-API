@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from common.openapi_loader import filter_enums
 
@@ -21,24 +21,27 @@ def enums_check(filters: str, endpoint: str):
     return
 
 
-def filters_to_list(
-    filters: str, data_type: Optional[int] = None
-) -> List[int | str]:
+def filters_to_list(filters: str, data_type=None, default_value=None) -> List:
     '''
     Support for array query parameters. Process the received comma separated
     query parameter and convert it into a processable list.
 
     :params filter: The raw filter in comma separated format.
-    :params data_type: This parameter is to convert the type of the filter to
-                       conform to a form acceptable to the database. It can be
-                       `int` if needed otherwise default is `None`.
+    :params data_type:
+        If `data_type` is provided and is a callable it should convert the
+        value and append it into result otherwise will append the default.
+    :params default:
+        The default value to be returned if the value can't be converted.
     '''
     result = []
     if filters:
         filters = filters.split(',')
         for filter in filters:
-            if data_type == int:
-                result.append(data_type(filter) if filter.isdigit() else -1)
+            if data_type is not None:
+                try:
+                    result.append(data_type(filter))
+                except ValueError:
+                    result.append(default_value)
             else:
                 result.append(filter)
     return result
