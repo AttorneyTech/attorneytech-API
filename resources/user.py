@@ -1,40 +1,41 @@
 from flask import make_response
 from flask_restful import Resource
 
-
 from common.auth import auth
 from common.error_handler import (
-    NotFound,
-    InternalServerError
+    internal_server_error,
+    not_found,
+    error_handler
 )
 from common.logger import logger
-from db.users_dao import users_dao
-from serializers.user_serializer import UserSerializer
+from common.string_handler import error_detail_handler
+from db.users_dao import UsersDao
+from serializers.users_serializer import UsersSerializer
 
 
 class User(Resource):
     @auth.login_required
-    def get(self, userId):
-        '''
-        Get the specific user data by user ID
-        '''
+    def get(self, user_id):
+        '''Get the specific user data by user ID'''
+
         try:
-            raw_user = users_dao.get_user_by_id(userId)
+            dao = UsersDao
+            raw_user = dao.get_user_by_id(self, user_id)
             if raw_user:
-                user_response_json = UserSerializer.serialize_raw_user(
-                    raw_user
-                )
-                return make_response(user_response_json, 200)
+                user_object = UsersSerializer.raw_user_serializer(raw_user)
+                user_response = UsersSerializer.user_response(user_object)
+                return make_response(user_response, 200)
             else:
                 detail = (
-                    f'The resource requested (user ID:{userId}) was not found.'
+                    f'The resource requested (user ID:{user_id}) not found.'
                 )
-                error = NotFound(detail)
                 logger.error(detail)
-                return make_response(error.error_response(), 404)
+                error_object = not_found(detail)
+                error_response = error_handler(error_object)
+                return make_response(error_response, 404)
         except Exception as err:
-            error = InternalServerError(
-                str(err).replace('\"', '').replace('\n', '')
-            )
-            logger.error(err)
-            return make_response(error.error_response(), 500)
+            detail = error_detail_handler(err)
+            logger.error(detail)
+            error_object = internal_server_error(detail)
+            error_response = error_handler(error_object)
+            return make_response(error_response, 500)

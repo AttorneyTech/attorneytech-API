@@ -10,6 +10,7 @@ class Logger:
     '''
     Construct the logger object
     '''
+
     # Custom your timezone
     custom_tz = (
         datetime.utcnow() +
@@ -30,6 +31,7 @@ class Logger:
         Create a logger and definite its format, config,
         handlers and formatter.
         '''
+
         if not os.path.exists(Logger.log_path):
             os.makedirs(Logger.log_path)
 

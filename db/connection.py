@@ -4,7 +4,7 @@ from psycopg2 import pool
 
 from common.config import config_db
 from common.logger import logger
-from db.sql_query import prepare_sql_query
+from db.sql_query import prepare_statements
 
 
 class DbConnection:
@@ -13,9 +13,8 @@ class DbConnection:
         self.cur = None
 
     def create_pool(self):
-        '''
-        Create a pool of connection to PostgreSQL
-        '''
+        '''Create a pool of connection to PostgreSQL'''
+
         try:
             conn_pool = pool.ThreadedConnectionPool(
                 minconn=config_db['poolmin'],
@@ -35,11 +34,13 @@ class DbConnection:
         Validate database connection. If validated,
         run the PREPARE statements or raise an error
         '''
+
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
             self.cur.execute('SELECT 1;')
-            self.cur.execute(prepare_sql_query())
+            for statement in prepare_statements:
+                self.cur.execute(statement)
         except Exception as err:
             logger.error(err)
             raise err
@@ -52,9 +53,8 @@ class DbConnection:
 
 @atexit.register
 def close_pool():
-    '''
-    Close the pool when application is stopped
-    '''
+    '''Close the pool when application is stopped'''
+
     conn_pool.closeall()
 
 
