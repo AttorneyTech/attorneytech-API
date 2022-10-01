@@ -120,9 +120,9 @@ class UsersSerializer:
             'data': user_data_object
         }
         user_response = UserTopLevel(user_object)
-        user_response_json = UserSchema().dump(user_response)
+        serialized_user = UserSchema().dump(user_response)
 
-        return user_response_json
+        return serialized_user
 
     @staticmethod
     def users_response(user_attributes_object_list):
@@ -137,6 +137,6 @@ class UsersSerializer:
             'data': user_attributes_object_list
         }
         user_response = UserTopLevel(users_object)
-        users_response_json = UsersSchema().dump(user_response)
+        serialized_users = UsersSchema().dump(user_response)
 
-        return users_response_json
+        return serialized_users

@@ -36,8 +36,8 @@ class Users(Resource):
                 )
             )
             users_objects = UsersSerializer.raw_users_serializer(raw_users)
-            users_response = UsersSerializer.users_response(users_objects)
-            return make_response(users_response, 200)
+            serialized_users = UsersSerializer.users_response(users_objects)
+            return make_response(serialized_users, 200)
         except ValueError as err:
             # Unpack the args to get the list of details
             details = err.args[0]
@@ -52,3 +52,8 @@ class Users(Resource):
             error_object = internal_server_error(detail)
             error_response = error_handler(error_object)
             return make_response(error_response, 500)
+
+    @auth.login_required
+    def post(self):
+        '''Create a user'''
+        pass

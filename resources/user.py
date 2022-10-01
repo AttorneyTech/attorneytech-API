@@ -23,8 +23,8 @@ class User(Resource):
             raw_user = dao.get_user_by_id(self, user_id)
             if raw_user:
                 user_object = UsersSerializer.raw_user_serializer(raw_user)
-                user_response = UsersSerializer.user_response(user_object)
-                return make_response(user_response, 200)
+                serialized_user = UsersSerializer.user_response(user_object)
+                return make_response(serialized_user, 200)
             else:
                 detail = (
                     f'The resource requested (user ID:{user_id}) not found.'
