@@ -1705,46 +1705,46 @@ components:
         firstName:
           type: string
           nullable: true
-          description: The first name of opposite agent
+          description: The first name of opposite
           example: 鐵雄
         middleName:
           type: string
           nullable: true
-          description: The middle name of opposite agent
+          description: The middle name of opposite
         lastName:
           type: string
           nullable: true
-          description: The last name of opposite agent
+          description: The last name of opposite
           example: 余
         email:
           type: string
           format: email
           nullable: true
-          description: Email address of opposite agent
+          description: Email address of opposite
         phone:
           type: string
           nullable: true
-          description: Phone number of opposite agent
+          description: Phone number of opposite
         address:
           type: object
           nullable: true
           properties:
             addressLine1:
               type: string
-              description: The street name, section, and house number of opposite agent's address
+              description: The street name, section, and house number of opposite's address
               example: '縣民大道二段 7 號'
             addressLine2:
               type: string
-              description: The district or township or city of country name of opposite agent's address
+              description: The district or township or city of country name of opposite's address
               example: 板橋區
             city:
               type: string
               enum: *cityEnums
-              description: The city name of opposite agent's address
+              description: The city name of opposite's address
               example: 新北市
             zipCode:
               type: string
-              description: The zip code of opposite agent's address
+              description: The zip code of opposite's address
               example: '220'
         caseIds:
           type: array
