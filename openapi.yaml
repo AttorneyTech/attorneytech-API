@@ -294,7 +294,7 @@ paths:
         - $ref: '#/components/parameters/filterClientIds'
         - $ref: '#/components/parameters/filterAgentIds'
         - $ref: '#/components/parameters/filterOppositeAgentIds'
-        - $ref: '#/components/parameters/filterOppositeClientIds'
+        - $ref: '#/components/parameters/filterOppositePartyIds'
         - $ref: '#/components/parameters/filterSectionInChargeIds'
         - $ref: '#/components/parameters/filterCourtIds'
         - $ref: '#/components/parameters/filterCourtDate'
@@ -527,36 +527,36 @@ paths:
           $ref: '#/components/responses/409Patch'
         '500':
           $ref: '#/components/responses/500'
-  /opposite-clients:
+  /opposites:
     post:
-      description: Create a opposite client
-      summary: Create a opposite client
+      description: Create an opposite
+      summary: Create an opposite
       tags:
-        - oppositeClients
-      operationId: postOppositeClient
+        - opposites
+      operationId: postOpposite
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OppositeClientPostBody'
+              $ref: '#/components/schemas/OppositePostBody'
       responses:
         '201':
-          description: Opposite client record successfully created
+          description: Opposite record successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeClientResult'
+                $ref: '#/components/schemas/OppositeResult'
         '400':
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
     get:
-      description: Get list of opposite clients
-      summary: Get list of opposite clients
+      description: Get list of opposites
+      summary: Get list of opposites
       tags:
-        - oppositeClients
-      operationId: getOppositeClients
+        - opposites
+      operationId: getOpposites
       parameters:
         - $ref: '#/components/parameters/filterCaseIds'
       responses:
@@ -565,144 +565,52 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeClientSetResult'
+                $ref: '#/components/schemas/OppositeSetResult'
         '400':
           $ref: '#/components/responses/400'
         '500':
           $ref: '#/components/responses/500'
-  /opposite-clients/{oppositeClientId}:
+  /opposites/{oppositeId}:
     get:
-      description: Get information of a opposite client by ID
-      summary: Get information of a opposite client by ID
+      description: Get information of a opposite by ID
+      summary: Get information of a opposite by ID
       tags:
-        - oppositeClients
-      operationId: getOppositeClientsById
+        - opposites
+      operationId: getOppositeById
       parameters:
-        - $ref: '#/components/parameters/oppositeClientId'
+        - $ref: '#/components/parameters/oppositeId'
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeClientResult'
+                $ref: '#/components/schemas/OppositeResult'
         '404':
           $ref: '#/components/responses/404'
         '500':
           $ref: '#/components/responses/500'
     patch:
-      description: Update information for a opposite client by ID
-      summary: Update information for a opposite client by ID
+      description: Update information for an opposite by ID
+      summary: Update information for an opposite by ID
       tags:
-        - oppositeClients
-      operationId: patchOppositeClientById
+        - opposites
+      operationId: patchOppositeById
       parameters:
-        - $ref: '#/components/parameters/oppositeClientId'
+        - $ref: '#/components/parameters/oppositeId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OppositeClientPatchBody'
+              $ref: '#/components/schemas/OppositePatchBody'
       responses:
         '200':
-          description: Opposite client record successfully updated
+          description: Opposite record successfully updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OppositeClientResult'
-        '400':
-          $ref: '#/components/responses/400'
-        '404':
-          $ref: '#/components/responses/404'
-        '409':
-          $ref: '#/components/responses/409Patch'
-        '500':
-          $ref: '#/components/responses/500'
-  /opposite-agents:
-    post:
-      description: Create a opposite agent
-      summary: Create a opposite agent
-      tags:
-        - oppositeAgents
-      operationId: postOppositeAgent
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OppositeAgentPostBody'
-      responses:
-        '201':
-          description: Opposite agent record successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OppositeAgentResult'
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-    get:
-      description: Get list of opposite agents
-      summary: Get list of opposite agents
-      tags:
-        - oppositeAgents
-      operationId: getOppositeAgents
-      parameters:
-        - $ref: '#/components/parameters/filterCaseIds'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OppositeAgentSetResult'
-        '400':
-          $ref: '#/components/responses/400'
-        '500':
-          $ref: '#/components/responses/500'
-  /opposite-agents/{oppositeAgentId}:
-    get:
-      description: Get information of a opposite agent by ID
-      summary: Get information of a opposite agent by ID
-      tags:
-        - oppositeAgents
-      operationId: getOppositeAgentsById
-      parameters:
-        - $ref: '#/components/parameters/oppositeAgentId'
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OppositeAgentResult'
-        '404':
-          $ref: '#/components/responses/404'
-        '500':
-          $ref: '#/components/responses/500'
-    patch:
-      description: Update information for a opposite agent by ID
-      summary: Update information for a opposite agent by ID
-      tags:
-        - oppositeAgents
-      operationId: patchOppositeAgentById
-      parameters:
-        - $ref: '#/components/parameters/oppositeAgentId'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OppositeAgentPatchBody'
-      responses:
-        '200':
-          description: Opposite agent record successfully updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OppositeAgentResult'
+                $ref: '#/components/schemas/OppositeResult'
         '400':
           $ref: '#/components/responses/400'
         '404':
@@ -749,7 +657,7 @@ paths:
         - $ref: '#/components/parameters/filterClientIds'
         - $ref: '#/components/parameters/filterAgentIds'
         - $ref: '#/components/parameters/filterOppositeAgentIds'
-        - $ref: '#/components/parameters/filterOppositeClientIds'
+        - $ref: '#/components/parameters/filterOppositePartyIds'
         - $ref: '#/components/parameters/filterSectionInChargeIds'
         - $ref: '#/components/parameters/filterCourtIds'
         - $ref: '#/components/parameters/filterCourtDate'
@@ -937,18 +845,11 @@ components:
       description: ID of a section in charge
       schema:
         type: string
-    oppositeClientId:
-      name: oppositeClientId
+    oppositeId:
+      name: oppositeId
       in: path
       required: true
-      description: ID of a opposite client
-      schema:
-        type: string
-    oppositeAgentId:
-      name: oppositeAgentId
-      in: path
-      required: true
-      description: ID of a opposite agent
+      description: ID of an opposite
       schema:
         type: string
     paperId:
@@ -978,11 +879,11 @@ components:
         items:
           type: string
         minItems: 1
-    filterOppositeClientIds:
-      name: filter[oppositeClientIds][oneOf]
+    filterOppositePartyIds:
+      name: filter[oppositePartyIds][oneOf]
       in: query
       required: false
-      description: Filter result by oppositeClientIds
+      description: Filter result by oppositePartyIds
       schema:
         type: array
         items:
@@ -1103,12 +1004,9 @@ components:
     SectionInChargeType:
       type: string
       enum: [sectionInCharges]
-    OppositeClientType:
+    OppositeType:
       type: string
-      enum: [oppositeClients]
-    OppositeAgentType:
-      type: string
-      enum: [oppositeAgents]
+      enum: [opposites]
     PaperType:
       type: string
       enum: [papers]
@@ -1351,7 +1249,7 @@ components:
         name:
           type: string
           nullable: false
-          description: Event name between client and opposite client
+          description: Event name between client and opposite party
           example: 甲與乙間臺北市東興路房地拆屋還地事件
     EventSetResult:
       type: object
@@ -1784,138 +1682,29 @@ components:
               $ref: '#/components/schemas/SectionInChargeType'
             attributes:
               $ref: '#/components/schemas/SectionInChargeAttributes'
-    OppositeClientAttributes:
+    OppositeAttributes:
       type: object
       additionalProperties: false
       required:
+        - role
         - caseIds
       properties:
-        name:
+        role:
+          type: string
+          nullable: false
+          enum: [party, agent]
+          description: |
+            Opposite's role
+            - `party` - The party of the case
+            - `agent` - The party's lawyer
+        organizationName:
           type: string
           nullable: true
-          description: The name of administration or prosecutor
+          description: The name of the organization
           example: 臺北市政府
         firstName:
           type: string
           nullable: true
-          description: The first name of opposite client
-          example: 若男
-        middleName:
-          type: string
-          nullable: true
-          description: The middle name of opposite client
-        lastName:
-          type: string
-          nullable: true
-          description: The last name of opposite client
-          example: 李
-        address:
-          type: object
-          nullable: true
-          properties:
-            addressLine1:
-              type: string
-              description: The street name, section, and house number of opposite client's address
-              example: '中山北路一段 133 號'
-            addressLine2:
-              type: string
-              description: The district or township or city of country name of opposite client's address
-              example: 中山區
-            city:
-              type: string
-              enum: *cityEnums
-              description: The city name of opposite client's address
-              example: 臺北市
-            zipCode:
-              type: string
-              description: The zip code of opposite client's address
-              example: '104'
-        caseIds:
-          type: array
-          items:
-            type: string
-          nullable: false
-          description: Identify which cases were associated with the opposite client
-          example: ['22', '78']
-    OppositeClientResult:
-      type: object
-      properties:
-        links:
-          $ref: '#/components/schemas/SelfLink'
-        data:
-          $ref: '#/components/schemas/OppositeClientResource'
-    OppositeClientSetResult:
-      type: object
-      properties:
-        links:
-          $ref: '#/components/schemas/SelfLink'
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OppositeClientResource'
-    OppositeClientId:
-      type: string
-      description: Uniquely identifies a opposite client
-      example: '74'
-    OppositeClientResource:
-      type: object
-      properties:
-        id:
-          type: string
-          description: ID of a opposite client
-          example: '133'
-        type:
-          $ref: '#/components/schemas/OppositeClientType'
-        links:
-          $ref: '#/components/schemas/SelfLink'
-        attributes:
-          $ref: '#/components/schemas/OppositeClientAttributes'
-    OppositeClientPostBody:
-      type: object
-      required:
-        - data
-      additionalProperties: false
-      properties:
-        data:
-          type: object
-          required:
-            - type
-            - attributes
-          additionalProperties: false
-          properties:
-            type:
-              $ref: '#/components/schemas/OppositeClientType'
-            attributes:
-              $ref: '#/components/schemas/OppositeClientAttributes'
-    OppositeClientPatchBody:
-      type: object
-      required:
-        - data
-      properties:
-        data:
-          type: object
-          required:
-            - id
-            - type
-          additionalProperties: false
-          properties:
-            id:
-              $ref: '#/components/schemas/OppositeClientId'
-            type:
-              $ref: '#/components/schemas/OppositeClientType'
-            attributes:
-              $ref: '#/components/schemas/OppositeClientAttributes'
-    OppositeAgentAttributes:
-      type: object
-      additionalProperties: false
-      required:
-        - firstName
-        - lastName
-        - caseIds
-      properties:
-        firstName:
-          type: string
-          nullable: false
           description: The first name of opposite agent
           example: 鐵雄
         middleName:
@@ -1924,7 +1713,7 @@ components:
           description: The middle name of opposite agent
         lastName:
           type: string
-          nullable: false
+          nullable: true
           description: The last name of opposite agent
           example: 余
         email:
@@ -1962,16 +1751,16 @@ components:
           items:
             type: string
           nullable: false
-          description: Identify which cases were associated with the opposite agent
+          description: Identify which cases were associated with the opposite
           example: ['22', '78']
-    OppositeAgentResult:
+    OppositeResult:
       type: object
       properties:
         links:
           $ref: '#/components/schemas/SelfLink'
         data:
-          $ref: '#/components/schemas/OppositeAgentResource'
-    OppositeAgentSetResult:
+          $ref: '#/components/schemas/OppositeResource'
+    OppositeSetResult:
       type: object
       properties:
         links:
@@ -1979,25 +1768,25 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/OppositeAgentResource'
-    OppositeAgentId:
+            $ref: '#/components/schemas/OppositeResource'
+    OppositeId:
       type: string
-      description: Uniquely identifies a opposite agent
+      description: Uniquely identifies an opposite
       example: '20'
-    OppositeAgentResource:
+    OppositeResource:
       type: object
       properties:
         id:
           type: string
-          description: ID of a opposite agent
+          description: ID of an opposite
           example: '133'
         type:
-          $ref: '#/components/schemas/OppositeAgentType'
+          $ref: '#/components/schemas/OppositeType'
         links:
           $ref: '#/components/schemas/SelfLink'
         attributes:
-          $ref: '#/components/schemas/OppositeAgentAttributes'
-    OppositeAgentPostBody:
+          $ref: '#/components/schemas/OppositeAttributes'
+    OppositePostBody:
       type: object
       required:
         - data
@@ -2011,10 +1800,10 @@ components:
           additionalProperties: false
           properties:
             type:
-              $ref: '#/components/schemas/OppositeAgentType'
+              $ref: '#/components/schemas/OppositeType'
             attributes:
-              $ref: '#/components/schemas/OppositeAgentAttributes'
-    OppositeAgentPatchBody:
+              $ref: '#/components/schemas/OppositeAttributes'
+    OppositePatchBody:
       type: object
       required:
         - data
@@ -2027,11 +1816,11 @@ components:
           additionalProperties: false
           properties:
             id:
-              $ref: '#/components/schemas/OppositeAgentId'
+              $ref: '#/components/schemas/OppositeId'
             type:
-              $ref: '#/components/schemas/OppositeAgentType'
+              $ref: '#/components/schemas/OppositeType'
             attributes:
-              $ref: '#/components/schemas/OppositeAgentAttributes'
+              $ref: '#/components/schemas/OppositeAttributes'
     PaperAttributes:
       type: object
       additionalProperties: false
