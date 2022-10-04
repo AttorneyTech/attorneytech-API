@@ -39,7 +39,7 @@ class DbConnection:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
             self.cur.execute('SELECT 1;')
-            for statement in prepare_statements:
+            for statement in prepare_statements.values():
                 self.cur.execute(statement)
         except Exception as err:
             logger.error(err)

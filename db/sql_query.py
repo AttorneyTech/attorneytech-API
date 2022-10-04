@@ -31,62 +31,56 @@ def get_users_conditional_query(filter: str) -> str:
         '''
 
 
-def user_join_tables():
-    user_join_tables = '''
-    LEFT JOIN cases_users
-        ON cases_users.user_id = users.id
-    LEFT JOIN cases
-        ON cases_users.case_id = cases.id
-    LEFT JOIN events
-        ON cases.event_id = events.id
-    '''
-    return user_join_tables
-
-
-select_user_column = '''
-    SELECT
-        users.id AS user_id,
-        users.role,
-        users.username,
-        users.first_name,
-        users.middle_name,
-        users.last_name,
-        users.email,
-        users.phone,
-        users.street_name,
-        users.district,
-        users.city,
-        users.zip_code,
-        events.id AS event_id,
-        cases_users.case_id
-    FROM users
-'''
-
-prepare_statements = [
-    # Get /users/{userId}
-    f'''
-    PREPARE get_user_by_id(integer) AS
-    {select_user_column}
-    {user_join_tables()}
-    WHERE users.id = $1
-    ''',
-    # Get filtered id of users
-    f'''
-    PREPARE get_users(varchar, varchar, integer[], integer[]) AS
-    SELECT DISTINCT
-        users.id AS user_id
-    FROM users
-    {user_join_tables()}
-    WHERE {get_users_conditional_query('users.role')}
-        AND {get_users_conditional_query('users.city')}
-        AND {get_users_conditional_query('event_id')}
-        AND {get_users_conditional_query('case_id')};
-    ''',
-    # Get filtered /users
-    f'''
-    PREPARE get_filtered_users(integer[]) AS
-    {select_user_column}
-    {user_join_tables()}
-    WHERE users.id = ANY(ARRAY[$1])
-    '''
-]
+reusable_users_statement = {
+    'select_user_column': '''
+        SELECT
+            users.id AS user_id,
+            users.role,
+            users.username,
+            users.first_name,
+            users.middle_name,
+            users.last_name,
+            users.email,
+            users.phone,
+            users.street_name,
+            users.district,
+            users.city,
+            users.zip_code,
+            events.id AS event_id,
+            cases_users.case_id
+        FROM users
+        ''',
+    'user_join_tables': '''
+        LEFT JOIN cases_users
+            ON cases_users.user_id = users.id
+        LEFT JOIN cases
+            ON cases_users.case_id = cases.id
+        LEFT JOIN events
+            ON cases.event_id = events.id
+        '''
+}
+prepare_statements = {
+    'get_user_by_id': f'''
+        PREPARE get_user_by_id(integer) AS
+        {reusable_users_statement['select_user_column']}
+        {reusable_users_statement['user_join_tables']}
+        WHERE users.id = $1
+        ''',
+    'get_filtered_users_id': f'''
+        PREPARE get_users(varchar, varchar, integer[], integer[]) AS
+        SELECT DISTINCT
+            users.id AS user_id
+        FROM users
+        {reusable_users_statement['user_join_tables']}
+        WHERE {get_users_conditional_query('users.role')}
+            AND {get_users_conditional_query('users.city')}
+            AND {get_users_conditional_query('event_id')}
+            AND {get_users_conditional_query('case_id')};
+        ''',
+    'get_users': f'''
+        PREPARE get_filtered_users(integer[]) AS
+        {reusable_users_statement['select_user_column']}
+        {reusable_users_statement['user_join_tables']}
+        WHERE users.id = ANY(ARRAY[$1])
+        '''
+}
