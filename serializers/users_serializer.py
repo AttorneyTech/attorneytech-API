@@ -9,6 +9,7 @@ from schemas.users_schema import UserSchema, UsersSchema
 
 class UserAddress:
     '''Construct address object of a user'''
+
     def __init__(self, user_address):
         self.addressLine1 = user_address['address_line_1']
         self.addressLine2 = user_address['address_line_2']
@@ -18,6 +19,7 @@ class UserAddress:
 
 class UserAttribute:
     '''Construct attributes object of a user'''
+
     def __init__(self, user_attributes):
         self.role = user_attributes['role']
         self.username = user_attributes['username']
@@ -65,7 +67,14 @@ class UsersSerializer:
         '''
 
         users_objects = []
+        users_collection = {}
         for raw_user in raw_users:
+            if raw_user['user_id'] not in users_collection:
+                users_collection[raw_user['user_id']] = [raw_user]
+            else:
+                users_collection[raw_user['user_id']].append(raw_user)
+
+        for raw_user in users_collection.values():
             users_objects.append(UsersSerializer.raw_user_serializer(raw_user))
         return users_objects
 
@@ -73,6 +82,19 @@ class UsersSerializer:
     def raw_user_serializer(raw_user):
         '''Serializes raw user data from user resource.'''
 
+        event_ids, case_ids = [], []
+        # Serialize the `event_ids` and `case_ids`
+        # And since the different cases could be the same event, here
+        # needs to handle the duplicate event_id.
+        for row in raw_user:
+            if row['event_id'] not in event_ids:
+                event_ids.append(row['event_id'])
+            case_ids.append(row['case_id'])
+
+        # Since the RealDictCursor return the list of RealDictRow object,
+        # here assign the single object to raw_user to serialize the rest
+        # part of user data.
+        raw_user = raw_user[0]
         user_address = {
             'address_line_1': raw_user['street_name'],
             'address_line_2': raw_user['district'],
@@ -86,8 +108,8 @@ class UsersSerializer:
             'first_name': raw_user['first_name'],
             'middle_name': raw_user['middle_name'],
             'last_name': raw_user['last_name'],
-            'event_ids': raw_user['event_ids'],
-            'case_ids': raw_user['case_ids'],
+            'event_ids': event_ids,
+            'case_ids': case_ids,
             'email': raw_user['email'],
             'phone': raw_user['phone'],
             'address': user_address_object
@@ -104,7 +126,6 @@ class UsersSerializer:
             'attributes': user_attributes_object
         }
         user_data_object = UserData(user_data)
-
         return user_data_object
 
     @staticmethod
@@ -120,9 +141,9 @@ class UsersSerializer:
             'data': user_data_object
         }
         user_response = UserTopLevel(user_object)
-        user_response_json = UserSchema().dump(user_response)
+        serialized_user = UserSchema().dump(user_response)
 
-        return user_response_json
+        return serialized_user
 
     @staticmethod
     def users_response(user_attributes_object_list):
@@ -137,6 +158,6 @@ class UsersSerializer:
             'data': user_attributes_object_list
         }
         user_response = UserTopLevel(users_object)
-        users_response_json = UsersSchema().dump(user_response)
+        serialized_users = UsersSchema().dump(user_response)
 
-        return users_response_json
+        return serialized_users
