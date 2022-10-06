@@ -49,12 +49,6 @@ class UsersDao:
                     'case_ids': case_ids
                 }
             )
-            user_ids = self.cur.fetchall()
-            filtered_user_ids = [user_id['user_id'] for user_id in user_ids]
-            self.cur.execute(
-                'EXECUTE get_filtered_users(%(filtered_user_ids)s)',
-                {'filtered_user_ids': filtered_user_ids}
-            )
             raw_users = self.cur.fetchall()
             return raw_users
         except Exception as err:

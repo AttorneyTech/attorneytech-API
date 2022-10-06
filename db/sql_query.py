@@ -76,21 +76,20 @@ prepare_statements = {
         WHERE users.id = $1
         ''',
     # GET /users
-    'get_filtered_users_id': f'''
-        PREPARE get_users(varchar, varchar, integer[], integer[]) AS
-        SELECT DISTINCT
-            users.id AS user_id
-        FROM users
-        {reusable_statement['users']['user_join_tables']}
-        WHERE {reusable_function['users']['get_users']('users.role')}
-            AND {reusable_function['users']['get_users']('users.city')}
-            AND {reusable_function['users']['get_users']('event_id')}
-            AND {reusable_function['users']['get_users']('case_id')};
-        ''',
     'get_users': f'''
-        PREPARE get_filtered_users(integer[]) AS
+        PREPARE get_users(varchar, varchar, integer[], integer[]) AS
         {reusable_statement['users']['select_user_column']}
         {reusable_statement['users']['user_join_tables']}
-        WHERE users.id = ANY(ARRAY[$1])
+        WHERE users.id IN
+            (
+                SELECT DISTINCT
+                    users.id AS user_id
+                FROM users
+                {reusable_statement['users']['user_join_tables']}
+                 WHERE {reusable_function['users']['get_users']('users.role')}
+                    AND {reusable_function['users']['get_users']('users.city')}
+                    AND {reusable_function['users']['get_users']('event_id')}
+                    AND {reusable_function['users']['get_users']('case_id')}
+            );
         '''
 }
