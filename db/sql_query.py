@@ -54,7 +54,7 @@ reusable_statement = {
                 users.district,
                 users.city,
                 users.zip_code,
-                events.id AS event_id,
+                cases.event_id AS event_id,
                 cases_users.case_id
             FROM users
             ''',
@@ -63,8 +63,6 @@ reusable_statement = {
                 ON cases_users.user_id = users.id
             LEFT JOIN cases
                 ON cases_users.case_id = cases.id
-            LEFT JOIN events
-                ON cases.event_id = events.id
             '''
     }
 }
