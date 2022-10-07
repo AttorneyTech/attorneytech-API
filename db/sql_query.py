@@ -87,8 +87,8 @@ prepare_statements = {
                     WHERE {reusable_func['get_users']('cases.event_id')}
                         AND {reusable_func['get_users']('cases.id')}
                 )
-                AND {reusable_func['get_users']('users.role')}
-                AND {reusable_func['get_users']('users.city')}
-            );
+            )
+            AND {reusable_func['get_users']('users.role')}
+            AND {reusable_func['get_users']('users.city')}
         '''
 }
