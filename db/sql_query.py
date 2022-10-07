@@ -10,8 +10,8 @@ def get_users_with_filter(filter: str) -> str:
     get_users_filters_dict = {
         'users.role': '$1',
         'users.city': '$2',
-        'event_id': '$3',
-        'case_id': '$4'
+        'cases.event_id': '$3',
+        'cases.id': '$4'
     }
     param = get_users_filters_dict[filter]
 
@@ -83,13 +83,20 @@ prepare_statements = {
         WHERE users.id IN
             (
                 SELECT DISTINCT
-                    users.id AS user_id
-                FROM users
-                {reusable_statement['users']['user_join_tables']}
-                 WHERE {reusable_function['users']['get_users']('users.role')}
-                    AND {reusable_function['users']['get_users']('users.city')}
-                    AND {reusable_function['users']['get_users']('event_id')}
-                    AND {reusable_function['users']['get_users']('case_id')}
+                    user_id
+                FROM cases_users
+                WHERE case_id IN (
+                    SELECT cases.id
+                    FROM cases
+                    WHERE {
+                        reusable_function['users']['get_users']('cases.event_id')
+                    }
+                        AND {
+                            reusable_function['users']['get_users']('cases.id')
+                        }
+                )
+                AND {reusable_function['users']['get_users']('users.role')}
+                AND {reusable_function['users']['get_users']('users.city')}
             );
         '''
 }
