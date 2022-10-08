@@ -20,14 +20,14 @@ def get_users_with_filter(filter: str) -> str:
             CASE
                 WHEN NULLIF({param}, NULL) = {param}
                     THEN {filter} = {param}
-                ELSE true
+                ELSE {param} IS NULL
             END
             '''
     return f'''
         CASE
             WHEN NULLIF({param}, ARRAY[]::integer[]) = {param}
                 THEN {filter} = ANY(ARRAY[{param}])
-            ELSE true
+            ELSE {param} = ARRAY[]::integer[]
         END
         '''
 
@@ -63,6 +63,10 @@ reusable_statement = {
         '''
 }
 
+Sql_statements = {
+
+}
+
 prepare_statements = {
     # GET /users/{userId}
     'get_user_by_id': f'''
@@ -85,7 +89,7 @@ prepare_statements = {
                     SELECT cases.id
                     FROM cases
                     WHERE {reusable_func['get_users']('cases.event_id')}
-                        AND {reusable_func['get_users']('cases.id')}
+                    OR {reusable_func['get_users']('cases.id')}
                 )
             )
             AND {reusable_func['get_users']('users.role')}
