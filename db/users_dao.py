@@ -37,6 +37,14 @@ class UsersDao:
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
+            print('***********')
+            print(select_users(
+                    role=role,
+                    city=city,
+                    event_ids=event_ids,
+                    case_ids=case_ids
+                ))
+            print('***********')
             self.cur.execute(
                 select_users(
                     role=role,
