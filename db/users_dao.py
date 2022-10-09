@@ -2,7 +2,6 @@ from flask import request
 from psycopg2.extras import RealDictCursor
 
 from db.connection import conn_pool
-from db.sql_query import select_users
 
 
 class UsersDao:
@@ -38,7 +37,12 @@ class UsersDao:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                select_users(event_ids=event_ids, case_ids=case_ids),
+                '''EXECUTE get_users(
+                    %(role)s,
+                    %(city)s,
+                    %(event_ids)s,
+                    %(case_ids)s
+                );''',
                 {
                     'role': role,
                     'city': city,

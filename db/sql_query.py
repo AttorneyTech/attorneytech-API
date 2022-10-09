@@ -1,101 +1,97 @@
-from string import Template
-
-
-single_filter = Template(
+def get_users_filter(filter: str) -> str:
     '''
-    CASE
-        WHEN NULLIF(%($value)s, NULL) = %($value)s
-            THEN $filter = %($value)s
-        ELSE %($value)s IS NULL
-    END
+    $1 - $4 are the placeholder of query parameters.
+    :$1 For column users.role. Data type: varchar.
+    :$2 For column users.city. Data type: varchar
+    :$3 For column event_ids. Data type: integer.
+    :$4 For column case_ids. Data type: integer.
     '''
-)
-list_filter = Template(
-    '''
-    CASE
-        WHEN NULLIF(%($value)s, ARRAY[]::integer[]) = %($value)s
-            THEN $filter = ANY(%($value)s)
-        ELSE true
-    END
-    '''
-)
+    get_users_filters_dict = {
+        'users.role': '$1',
+        'users.city': '$2',
+        'event_id': '$3',
+        'case_id': '$4'
+    }
+    param = get_users_filters_dict[filter]
 
-
-# Define the functions of conditional statement
-def users_filters(filter: str, value) -> str:
     if filter in ['users.role', 'users.city']:
-        filter_statement = single_filter.substitute(
-            filter=filter, value=value
-        )
-        return filter_statement
-    elif filter in ['cases.event_id', 'cases.id']:
-        filter_statement = list_filter.substitute(
-            filter=filter, value=value
-        )
-        return filter_statement
+        return f'''
+            CASE
+                WHEN NULLIF({param}, NULL) = {param}
+                    THEN {filter} = {param}
+                ELSE {param} IS NULL
+            END
+            '''
+    elif filter in ['event_id', 'case_id']:
+        return f'''
+            CASE
+                WHEN NULLIF({param}, ARRAY[]::integer[]) = {param}
+                    THEN {filter} = ANY({param})
+                ELSE true
+            END
+            '''
 
 
-select_user_column = '''
-    SELECT
-        users.id AS user_id,
-        users.role,
-        users.username,
-        users.first_name,
-        users.middle_name,
-        users.last_name,
-        users.email,
-        users.phone,
-        users.street_name,
-        users.district,
-        users.city,
-        users.zip_code,
-        cases.event_id AS event_id,
-        cases_users.case_id
-    FROM users
+get_users_functions = {
+    'get_users_filter': get_users_filter
+}
+
+get_users_statements = {
+    'select_columns': '''
+        SELECT
+            users.id AS user_id,
+            users.role,
+            users.username,
+            users.first_name,
+            users.middle_name,
+            users.last_name,
+            users.email,
+            users.phone,
+            users.street_name,
+            users.district,
+            users.city,
+            users.zip_code,
+            cases.event_id AS event_id,
+            cases_users.case_id
+        FROM users
+    ''',
+    'three_way_join': '''
+        LEFT JOIN cases_users
+            ON cases_users.user_id = users.id
+        LEFT JOIN cases
+            ON cases_users.case_id = cases.id
+    ''',
+    'filter_subquery': '''
+        SELECT DISTINCT
+            cases_users.user_id
+        FROM cases_users
+        LEFT JOIN cases
+        ON cases.id = cases_users.case_id
     '''
-user_join_tables = '''
-    LEFT JOIN cases_users
-        ON cases_users.user_id = users.id
-    LEFT JOIN cases
-        ON cases_users.case_id = cases.id
-    '''
-
-
-def select_users(event_ids: list, case_ids: list):
-    role_filter = users_filters(filter='users.role', value='role')
-    city_filter = users_filters(filter='users.city', value='city')
-    case_id_filter = users_filters(filter='cases.id', value='case_ids')
-    event_id_filter = users_filters(filter='cases.event_id', value='event_ids')
-    return f'''
-        {select_user_column}
-        {user_join_tables}
-        WHERE users.id IN
-            (
-                SELECT DISTINCT
-                    cases_users.user_id
-                FROM cases_users
-                LEFT JOIN cases
-                ON cases.id = cases_users.case_id
-                WHERE {case_id_filter}
-                INTERSECT
-                SELECT DISTINCT
-                    cases_users.user_id
-                FROM cases_users
-                LEFT JOIN cases
-                ON cases.id = cases_users.case_id
-                WHERE {event_id_filter}
-            )
-            AND {role_filter}
-            AND {city_filter};
-        '''
-
+}
 
 prepare_statements = {
     # GET /users/{userId}
     'get_user_by_id': f'''
         PREPARE get_user_by_id(integer) AS
-        {select_user_column}
-        {user_join_tables}
+        {get_users_statements['select_columns']}
+        {get_users_statements['three_way_join']}
         WHERE users.id = $1
-        '''
+    ''',
+    # GET /users
+    'get_users': f'''
+        PREPARE get_users(varchar, varchar, integer[], integer[]) AS
+        {get_users_statements['select_columns']}
+        {get_users_statements['three_way_join']}
+        WHERE users.id IN
+            (
+                {get_users_statements['filter_subquery']}
+                WHERE {get_users_filter('case_id')}
+                INTERSECT
+                {get_users_statements['filter_subquery']}
+                WHERE {get_users_filter('event_id')}
+        )
+            AND {get_users_filter('users.role')}
+            AND {get_users_filter('users.city')};
+    '''
 }
