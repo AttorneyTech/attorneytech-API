@@ -28,11 +28,6 @@ class UsersDao:
                 conn_pool.putconn(conn=self.conn)
 
     def get_users(self, role, city, event_ids, case_ids):
-        '''
-        Connect to PostgreSQL and get the raw data
-        of a specific user by user ID
-        '''
-
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
