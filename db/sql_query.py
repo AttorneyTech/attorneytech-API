@@ -15,7 +15,7 @@ list_filter = Template(
     CASE
         WHEN NULLIF(%($value)s, ARRAY[]::integer[]) = %($value)s
             THEN $filter = ANY(%($value)s)
-        ELSE $boolean
+        ELSE true
     END
     '''
 )
@@ -29,10 +29,9 @@ def users_filters(filter: str, value) -> str:
         )
         return filter_statement
     elif filter in ['cases.event_id', 'cases.id']:
-        filter_statement = list_filter.safe_substitute(
+        filter_statement = list_filter.substitute(
             filter=filter, value=value
         )
-        filter_statement = Template(filter_statement)
         return filter_statement
 
 
@@ -67,26 +66,24 @@ def select_users(event_ids: list, case_ids: list):
     city_filter = users_filters(filter='users.city', value='city')
     case_id_filter = users_filters(filter='cases.id', value='case_ids')
     event_id_filter = users_filters(filter='cases.event_id', value='event_ids')
-    if event_ids or case_ids:
-        case_id_filter = case_id_filter.substitute(boolean='false')
-        event_id_filter = event_id_filter.substitute(boolean='false')
-    else:
-        case_id_filter = case_id_filter.substitute(boolean='true')
-        event_id_filter = event_id_filter.substitute(boolean='true')
     return f'''
         {select_user_column}
         {user_join_tables}
         WHERE users.id IN
             (
                 SELECT DISTINCT
-                    user_id
+                    cases_users.user_id
                 FROM cases_users
-                WHERE case_id IN (
-                    SELECT cases.id
-                    FROM cases
-                    WHERE {case_id_filter}
-                    OR {event_id_filter}
-                )
+                LEFT JOIN cases
+                ON cases.id = cases_users.case_id
+                WHERE {case_id_filter}
+                INTERSECT
+                SELECT DISTINCT
+                    cases_users.user_id
+                FROM cases_users
+                LEFT JOIN cases
+                ON cases.id = cases_users.case_id
+                WHERE {event_id_filter}
             )
             AND {role_filter}
             AND {city_filter};
