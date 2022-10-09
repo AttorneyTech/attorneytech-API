@@ -4,17 +4,17 @@ from string import Template
 single_filter = Template(
     '''
     CASE
-        WHEN NULLIF($value, NULL) = $value
-            THEN $filter = $value
-        ELSE $value IS NULL
+        WHEN NULLIF(%($value)s, NULL) = %($value)s
+            THEN $filter = %($value)s
+        ELSE %($value)s IS NULL
     END
     '''
 )
 list_filter = Template(
     '''
     CASE
-        WHEN NULLIF($value, ARRAY[]::integer[]) = $value
-            THEN $filter = ANY(ARRAY[$value])
+        WHEN NULLIF(%($value)s, ARRAY[]::integer[]) = %($value)s
+            THEN $filter = ANY(%($value)s)
         ELSE $boolean
     END
     '''
@@ -62,26 +62,16 @@ user_join_tables = '''
     '''
 
 
-def select_users(role, city, event_ids, case_ids):
-    role_filter = users_filters(filter='users.role', value=role)
-    city_filter = users_filters(filter='users.city', value=city)
+def select_users(event_ids: list, case_ids: list):
+    role_filter = users_filters(filter='users.role', value='role')
+    city_filter = users_filters(filter='users.city', value='city')
+    case_id_filter = users_filters(filter='cases.id', value='case_ids')
+    event_id_filter = users_filters(filter='cases.event_id', value='event_ids')
     if event_ids or case_ids:
-        case_id_filter = users_filters(
-            filter='cases.id', value=event_ids
-        )
         case_id_filter = case_id_filter.substitute(boolean='false')
-        event_id_filter = users_filters(
-            filter='cases.event_id', value=event_ids
-        )
         event_id_filter = event_id_filter.substitute(boolean='false')
     else:
-        case_id_filter = users_filters(
-            filter='cases.id', value=event_ids
-        )
         case_id_filter = case_id_filter.substitute(boolean='true')
-        event_id_filter = users_filters(
-            filter='cases.event_id', value=event_ids
-        )
         event_id_filter = event_id_filter.substitute(boolean='true')
     return f'''
         {select_user_column}
