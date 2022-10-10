@@ -1,11 +1,12 @@
 def get_users_filter(filter: str) -> str:
     '''
-    $1 - $4 are the placeholder of query parameters.
-    :$1 For column users.role. Data type: varchar.
-    :$2 For column users.city. Data type: varchar
-    :$3 For column event_ids. Data type: integer.
-    :$4 For column case_ids. Data type: integer.
+    $1 - $4 are the query parameters.
+    :$1 users.role column, data type: varchar.
+    :$2 users.city column, data type: varchar
+    :$3 event_ids column, data type: integer.
+    :$4 case_ids column, data type: integer.
     '''
+
     get_users_filters_dict = {
         'users.role': '$1',
         'users.city': '$2',
@@ -21,7 +22,7 @@ def get_users_filter(filter: str) -> str:
                     THEN {filter} = {param}
                 ELSE {param} IS NULL
             END
-            '''
+        '''
     elif filter in ['event_id', 'case_id']:
         return f'''
             CASE
@@ -29,13 +30,12 @@ def get_users_filter(filter: str) -> str:
                     THEN {filter} = ANY({param})
                 ELSE true
             END
-            '''
+        '''
 
 
 get_users_functions = {
     'get_users_filter': get_users_filter
 }
-
 get_users_statements = {
     'select_columns': '''
         SELECT
@@ -69,7 +69,6 @@ get_users_statements = {
         ON cases.id = cases_users.case_id
     '''
 }
-
 prepare_statements = {
     # GET /users/{userId}
     'get_user_by_id': f'''
