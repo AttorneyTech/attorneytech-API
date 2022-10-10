@@ -7,6 +7,7 @@ def enums_check(filters: str, endpoint: str):
     '''
     Check if the filter is valid.
     '''
+
     details = []
     for filter, enum in filter_enums[endpoint].items():
         if filter in filters and filters[filter] not in enum:
@@ -33,6 +34,7 @@ def filters_to_list(filters: str, data_type=None, default_value=None) -> List:
     :params default:
         The default value to be returned if the value can't be converted.
     '''
+
     result = []
     if filters:
         filters = filters.split(',')

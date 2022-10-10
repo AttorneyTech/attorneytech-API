@@ -1,102 +1,96 @@
-def join_events_and_cases(role: str) -> str:
+def get_users_filter(filter: str) -> str:
     '''
-    Join event and cases table, and combine event_id and cases_id
-    related to agent or client into array respectively.
-    '''
-
-    user_role_dict = {
-        'agent': 'agent_id',
-        'client': 'client_id'
-    }
-    param = user_role_dict[role]
-
-    return f'''
-    SELECT
-        cases.{param} AS user_id,
-        ARRAY_AGG(DISTINCT events.id) AS event_ids,
-        ARRAY_AGG(cases.id) AS case_ids
-    FROM cases
-    RIGHT JOIN events
-        ON cases.event_id = events.id
-    GROUP BY cases.{param}
+    $1 - $4 are the query parameters.
+    :$1 users.role column, data type: varchar.
+    :$2 users.city column, data type: varchar
+    :$3 event_ids column, data type: integer.
+    :$4 case_ids column, data type: integer.
     '''
 
-
-def get_users_conditional_query(filter: str) -> str:
-    '''
-    $1 - $4 are the placeholder of query parameters.
-    :$1 For column users.role. Data type: varchar.
-    :$2 For column users.city. Data type: varchar
-    :$3 For column event_ids. Data type: integer.
-    :$4 For column case_ids. Data type: integer.
-    '''
     get_users_filters_dict = {
         'users.role': '$1',
         'users.city': '$2',
-        'event_ids': '$3',
-        'case_ids': '$4'
+        'event_id': '$3',
+        'case_id': '$4'
     }
     param = get_users_filters_dict[filter]
 
     if filter in ['users.role', 'users.city']:
         return f'''
             CASE
-                WHEN NULLIF({param}, NULL) = {param} THEN {filter} = {param}
+                WHEN NULLIF({param}, NULL) = {param}
+                    THEN {filter} = {param}
+                ELSE {param} IS NULL
+            END
+        '''
+    elif filter in ['event_id', 'case_id']:
+        return f'''
+            CASE
+                WHEN NULLIF({param}, ARRAY[]::integer[]) = {param}
+                    THEN {filter} = ANY({param})
                 ELSE true
             END
-            '''
-    return f'''
-        CASE
-            WHEN NULLIF({param}, ARRAY[]::integer[]) = {param}
-                THEN ARRAY[{param}] && {filter}
-            ELSE true
-        END
         '''
 
 
-# Select columns in users table and union of events and cases
-# This SQL statement will be reused in get /users and /users/{userId}
-construct_user_column = f'''
-    SELECT
-        users.id AS user_id,
-        users.role,
-        users.username,
-        users.first_name,
-        users.middle_name,
-        users.last_name,
-        users.email,
-        users.phone,
-        users.street_name,
-        users.district,
-        users.city,
-        users.zip_code,
-        event_ids,
-        case_ids
-    FROM users
-    LEFT JOIN
-    (
-        {join_events_and_cases('agent')}
-        UNION
-        {join_events_and_cases('client')}
-    ) AS users_events_cases
-        ON users.id = users_events_cases.user_id
-'''
-
-
-prepare_statements = [
-    # Get /users/{userId}
-    f'''
-    PREPARE get_user_by_id(integer) AS
-    {construct_user_column}
-    WHERE users.id = $1
+get_users_functions = {
+    'get_users_filter': get_users_filter
+}
+get_users_statements = {
+    'select_columns': '''
+        SELECT
+            users.id AS user_id,
+            users.role,
+            users.username,
+            users.first_name,
+            users.middle_name,
+            users.last_name,
+            users.email,
+            users.phone,
+            users.street_name,
+            users.district,
+            users.city,
+            users.zip_code,
+            cases.event_id AS event_id,
+            cases_users.case_id
+        FROM users
     ''',
-    # Get /users
-    f'''
-    PREPARE get_users(varchar, varchar, integer[], integer[]) AS
-    {construct_user_column}
-    WHERE {get_users_conditional_query('users.role')}
-        AND {get_users_conditional_query('users.city')}
-        AND {get_users_conditional_query('event_ids')}
-        AND {get_users_conditional_query('case_ids')};
+    'three_way_join': '''
+        LEFT JOIN cases_users
+            ON cases_users.user_id = users.id
+        LEFT JOIN cases
+            ON cases_users.case_id = cases.id
+    ''',
+    'filter_subquery': '''
+        SELECT DISTINCT
+            cases_users.user_id
+        FROM cases_users
+        LEFT JOIN cases
+        ON cases.id = cases_users.case_id
     '''
-]
+}
+prepare_statements = {
+    # GET /users/{userId}
+    'get_user_by_id': f'''
+        PREPARE get_user_by_id(integer) AS
+        {get_users_statements['select_columns']}
+        {get_users_statements['three_way_join']}
+        WHERE users.id = $1
+    ''',
+    # GET /users
+    'get_users': f'''
+        PREPARE get_users(varchar, varchar, integer[], integer[]) AS
+        {get_users_statements['select_columns']}
+        {get_users_statements['three_way_join']}
+        WHERE users.id IN
+            (
+                {get_users_statements['filter_subquery']}
+                WHERE {get_users_filter('case_id')}
+                INTERSECT
+                {get_users_statements['filter_subquery']}
+                WHERE {get_users_filter('event_id')}
+        )
+            AND {get_users_filter('users.role')}
+            AND {get_users_filter('users.city')};
+    '''
+}
