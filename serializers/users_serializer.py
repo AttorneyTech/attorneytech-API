@@ -141,8 +141,7 @@ class UsersSerializer:
             'data': user_data_object
         }
         user_response = UserTopLevel(user_object)
-        schema = UserSchema()
-        serialized_user = schema.dump(user_response)
+        serialized_user = UserSchema().dump(user_response)
         return serialized_user
 
     @staticmethod
@@ -158,6 +157,5 @@ class UsersSerializer:
             'data': user_attributes_object_list
         }
         user_response = UserTopLevel(users_object)
-        schema = UsersSchema()
-        serialized_users = schema.dump(user_response)
+        serialized_users = UsersSchema().dump(user_response)
         return serialized_users
