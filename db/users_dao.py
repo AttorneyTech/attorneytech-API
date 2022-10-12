@@ -9,6 +9,7 @@ class UsersDao:
         self.conn = None
         self.cur = None
         self.filters = request.args
+        # self.post_data = request.get_json()
 
     def get_user_by_id(self, user_id):
         try:
@@ -54,3 +55,6 @@ class UsersDao:
                 self.cur.close()
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
+
+    def post_user(self):
+        pass

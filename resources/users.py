@@ -12,6 +12,8 @@ from common.filter_handler import enums_check, filters_to_list
 from common.logger import logger
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
+# from serializers.users_deserializer import
+from schemas.users_schema import UserSchema
 
 
 class Users(Resource):
@@ -52,3 +54,15 @@ class Users(Resource):
             error_object = internal_server_error(detail)
             error_response = error_handler(error_object)
             return make_response(error_response, 500)
+
+    @auth.login_required
+    def post(self):
+        '''Create a user'''
+        dao = UsersDao()
+        data = dao.post_data
+        obj = UserSchema()
+        result = obj.load(data)
+        print('***********')
+        print(result)
+        print('***********')
+
