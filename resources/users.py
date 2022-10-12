@@ -1,5 +1,8 @@
-from flask import make_response
+import json
+
+from flask import make_response, request
 from flask_restful import Resource
+from marshmallow import ValidationError
 
 from common.auth import auth
 from common.error_handler import (
@@ -58,9 +61,20 @@ class Users(Resource):
     @auth.login_required
     def post(self):
         '''Create a user'''
-        dao = UsersDao()
-        data = dao.post_data
-        result = UserPostSchema().load(data)
-        print('***********')
-        print(result)
-        print('***********')
+
+        try:
+            post_data = request.get_json()
+            result = UserPostSchema().load(post_data)
+            print('***********')
+            print(result)
+            print('***********')
+        # The marshmallow module will check if the format or something missed
+        # in post data according to the schema of users.
+        except ValidationError as err:
+            details = []
+            detail = error_detail_handler(json.dumps(err.messages))
+            details.append(detail)
+            logger.error(details)
+            error_object = bad_request(details)
+            error_response = error_handler(error_object)
+            return make_response(error_response, 400)

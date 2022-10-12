@@ -22,7 +22,7 @@ def bad_request(details: list) -> list:
     return error_objects
 
 
-def internal_server_error(detail: list) -> list:
+def internal_server_error(detail: str) -> list:
     error_object = [
         {
             'status': '500',
@@ -33,7 +33,7 @@ def internal_server_error(detail: list) -> list:
     return error_object
 
 
-def not_found(detail: list) -> list:
+def not_found(detail: str) -> list:
     error_object = [
         {
             'status': '404',
@@ -44,7 +44,7 @@ def not_found(detail: list) -> list:
     return error_object
 
 
-def unauthorized(detail: list) -> list:
+def unauthorized(detail: str) -> list:
     error_object = [
         {
             'status': '401',
