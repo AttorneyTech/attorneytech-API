@@ -9,7 +9,7 @@ class UsersDao:
         self.conn = None
         self.cur = None
         self.filters = request.args
-        # self.post_data = request.get_json()
+        self.post_data = request.get_json()
 
     def get_user_by_id(self, user_id):
         try:

@@ -13,7 +13,7 @@ from common.logger import logger
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 # from serializers.users_deserializer import
-from schemas.users_schema import UserSchema
+from schemas.users_schema import UserPostSchema
 
 
 class Users(Resource):
@@ -60,9 +60,7 @@ class Users(Resource):
         '''Create a user'''
         dao = UsersDao()
         data = dao.post_data
-        obj = UserSchema()
-        result = obj.load(data)
+        result = UserPostSchema().load(data)
         print('***********')
         print(result)
         print('***********')
-

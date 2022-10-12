@@ -23,9 +23,19 @@ class UserAttributeSchema(Schema):
     email = fields.Email(required=True)
     phone = fields.Str()
     address = fields.Nested(UserAddressSchema)
+    password = fields.Str()
 
 
 class UserDataSchema(Schema):
+    '''Defines the data object schema of user'''
+
+    id = fields.Str()
+    type = fields.Str()
+    links = fields.Dict(keys=fields.Str(), values=fields.Str())
+    attributes = fields.Nested(UserAttributeSchema(exclude=('password',)))
+
+
+class UserPostDataSchema(Schema):
     '''Defines the data object schema of user'''
 
     id = fields.Str()
@@ -39,6 +49,13 @@ class UserSchema(Schema):
 
     links = fields.Dict(keys=fields.Str(), values=fields.Str())
     data = fields.Nested(UserDataSchema)
+
+
+class UserPostSchema(Schema):
+    '''Defines the top level object schema of user'''
+
+    links = fields.Dict(keys=fields.Str(), values=fields.Str())
+    data = fields.Nested(UserPostDataSchema)
 
 
 class UsersSchema(Schema):
