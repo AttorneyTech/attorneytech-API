@@ -1,29 +1,29 @@
-from marshmallow import Schema, fields
+from marshmallow import fields, Schema, validate
 
 
 class UserAddressSchema(Schema):
     '''Defines the address object schema of user'''
 
-    addressLine1 = fields.Str()
-    addressLine2 = fields.Str()
-    city = fields.Str()
-    zipCode = fields.Str()
+    addressLine1 = fields.Str(validate=[validate.Length(max=100)])
+    addressLine2 = fields.Str(validate=[validate.Length(max=20)])
+    city = fields.Str(validate=[validate.Length(max=20)])
+    zipCode = fields.Str(validate=[validate.Length(max=10)])
 
 
 class UserAttributeSchema(Schema):
     '''Defines the attribute object schema of user'''
 
     role = fields.Str(required=True)
-    username = fields.Str()
-    firstName = fields.Str(required=True)
-    middleName = fields.Str()
-    lastName = fields.Str(required=True)
+    username = fields.Str(validate=[validate.Length(max=20)])
+    firstName = fields.Str(validate=[validate.Length(max=50)], required=True)
+    middleName = fields.Str(validate=[validate.Length(max=50)])
+    lastName = fields.Str(validate=[validate.Length(max=50)], required=True)
     eventIds = fields.List(fields.Str())
     caseIds = fields.List(fields.Str())
-    email = fields.Email(required=True)
-    phone = fields.Str()
+    email = fields.Email(validate=[validate.Length(max=50)], required=True)
+    phone = fields.Str(validate=[validate.Length(max=10)])
     address = fields.Nested(UserAddressSchema)
-    password = fields.Str()
+    password = fields.Str(validate=[validate.Length(min=6, max=36)])
 
 
 class UserDataSchema(Schema):
