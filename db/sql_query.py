@@ -92,5 +92,19 @@ prepare_statements = {
         )
             AND {get_users_filter('users.role')}
             AND {get_users_filter('users.city')};
+    ''',
+    'check_user_email': '''
+        PREPARE check_user_email(varchar) AS
+        SELECT
+            users.email
+        FROM users
+        WHERE users.email = $1;
+    ''',
+    'check_user_username': '''
+        PREPARE check_user_username(varchar) AS
+        SELECT
+            users.username
+        FROM users
+        WHERE users.username = $1;
     '''
 }

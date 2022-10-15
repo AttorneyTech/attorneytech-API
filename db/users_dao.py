@@ -55,5 +55,41 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
+    def check_user_email(self, email):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(
+                'EXECUTE check_user_email(%(email)s);',
+                {'email': email}
+            )
+            raw_user = self.cur.fetchone()
+            return raw_user
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
+    def check_user_username(self, username):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(
+                'EXECUTE check_user_username(%(username)s);',
+                {'username': username}
+            )
+            raw_user = self.cur.fetchone()
+            return raw_user
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
     def post_user(self):
         pass

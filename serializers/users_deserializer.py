@@ -1,2 +1,3 @@
-from schemas.users_schema import UserSchema
+from schemas.users_schema import UserPostSchema
+
 

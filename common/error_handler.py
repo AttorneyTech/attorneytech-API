@@ -9,6 +9,7 @@ def error_handler(error_objects: list) -> dict:
     return error_response
 
 
+# 400 Bad request
 def bad_request(details: list) -> list:
     error_objects = []
     for detail in details:
@@ -22,17 +23,19 @@ def bad_request(details: list) -> list:
     return error_objects
 
 
-def internal_server_error(detail: str) -> list:
+# 401 Unauthorized
+def unauthorized(detail: str) -> list:
     error_object = [
         {
-            'status': '500',
-            'title': 'Internal Server Error',
+            'status': '401',
+            'title': 'Unauthorized',
             'detail': detail
         }
     ]
     return error_object
 
 
+# 404 Not Found
 def not_found(detail: str) -> list:
     error_object = [
         {
@@ -44,11 +47,24 @@ def not_found(detail: str) -> list:
     return error_object
 
 
-def unauthorized(detail: str) -> list:
+# 409 Conflict
+def conflict(detail: str) -> list:
     error_object = [
         {
-            'status': '401',
-            'title': 'Unauthorized',
+            'status': '409',
+            'title': 'Conflict',
+            'detail': detail
+        }
+    ]
+    return error_object
+
+
+# 500 Internal Server Error
+def internal_server_error(detail: str) -> list:
+    error_object = [
+        {
+            'status': '500',
+            'title': 'Internal Server Error',
             'detail': detail
         }
     ]

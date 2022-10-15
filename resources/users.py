@@ -7,16 +7,16 @@ from marshmallow import ValidationError
 from common.auth import auth
 from common.error_handler import (
     bad_request,
+    conflict,
     error_handler,
     internal_server_error
 )
-from common.string_handler import error_detail_handler
 from common.filter_handler import enums_check, filters_to_list
 from common.logger import logger
+from common.string_handler import error_detail_handler
+from common.validate_data import validate_post_user
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
-# from serializers.users_deserializer import
-from schemas.users_schema import UserPostSchema
 
 
 class Users(Resource):
@@ -64,12 +64,10 @@ class Users(Resource):
 
         try:
             post_data = request.get_json()
-            result = UserPostSchema().load(post_data)
-            print('***********')
-            print(result)
-            print('***********')
-        # The marshmallow module will check if the format or something missed
-        # in post data according to the schema of users.
+            validate_post_user(post_data)
+
+        # If something missed in post data or the format are wrong based on
+        # schema of users, it will return the details with 400 bad request.
         except ValidationError as err:
             details = []
             detail = error_detail_handler(json.dumps(err.messages))
@@ -78,3 +76,11 @@ class Users(Resource):
             error_object = bad_request(details)
             error_response = error_handler(error_object)
             return make_response(error_response, 400)
+        # If something are conflict with exist users, it will return the
+        # details with 409 conflict.
+        except Exception as err:
+            detail = str(err)
+            logger.error(detail)
+            error_object = conflict(detail)
+            error_response = error_handler(error_object)
+            return make_response(error_response, 409)
