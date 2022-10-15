@@ -60,14 +60,17 @@ class Users(Resource):
 
     @auth.login_required
     def post(self):
-        '''Create a user'''
+        '''
+        Create a user.
+        If something missed in post data or the format are wrong based on
+        schema of users, it will return the details with 400 bad request.
+        And if something are conflict with exist users, it will return the
+        details with 409 conflict.
+        '''
 
         try:
             post_data = request.get_json()
             validate_post_user(post_data)
-
-        # If something missed in post data or the format are wrong based on
-        # schema of users, it will return the details with 400 bad request.
         except ValidationError as err:
             details = []
             detail = error_detail_handler(json.dumps(err.messages))
@@ -76,8 +79,6 @@ class Users(Resource):
             error_object = bad_request(details)
             error_response = error_handler(error_object)
             return make_response(error_response, 400)
-        # If something are conflict with exist users, it will return the
-        # details with 409 conflict.
         except Exception as err:
             detail = str(err)
             logger.error(detail)

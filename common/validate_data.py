@@ -23,12 +23,14 @@ def validate_post_user(post_data: dict) -> None | Exception:
             raise Exception(f'The email: {dup_email} of user already exists.')
         # Check the username has been used or not.
         post_username = post_data.get('data').get('attributes').get('username')
-        if post_username:
+        if post_username is not None:
             has_result = dao.check_user_username(post_username)
             if has_result:
                 dup_username = has_result['username']
                 raise Exception(
                     f'The username: {dup_username} has been used.'
                 )
+            elif not post_username.strip():
+                raise Exception('The username can not be empty.')
     except Exception as err:
         raise err
