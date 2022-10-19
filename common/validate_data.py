@@ -30,7 +30,15 @@ def validate_post_user(post_data: dict) -> None | Exception:
                 raise Exception(
                     f'The username: {dup_username} has been used.'
                 )
+            # Prevent empty username input.
             elif not post_username.strip():
                 raise Exception('The username can not be empty.')
+        post_case_ids = post_data.get('data').get('attributes').get('caseIds')
+        post_event_ids = post_data.get('data').get('attributes').get('eventIds')
     except Exception as err:
         raise err
+
+# TODO:
+# - Check the case id exist or not.
+# - Check the corresponding event id exist in input or not.
+# - Extra event id in input?

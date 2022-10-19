@@ -91,5 +91,8 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
+    def check_user_case_and_event(self):
+        pass
+
     def post_user(self):
         pass
