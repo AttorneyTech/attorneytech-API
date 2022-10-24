@@ -91,8 +91,41 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def check_user_case_and_event(self):
-        pass
+    def check_case_ids(self, case_ids):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(
+                'EXECUTE check_case_ids(%(case_ids)s);',
+                {'case_ids': case_ids}
+            )
+            raw_user = self.cur.fetchall()
+            return raw_user
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
+    def check_user_case_and_event(self, case_ids):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
+            self.cur.execute(
+                'EXECUTE check_user_case_and_event(%(case_ids)s);',
+                {'case_ids': case_ids}
+            )
+            raw_user = self.cur.fetchone()
+            return raw_user
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
 
     def post_user(self):
         pass

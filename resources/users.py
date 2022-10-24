@@ -69,8 +69,8 @@ class Users(Resource):
         '''
 
         try:
-            post_data = request.get_json()
-            validate_post_user(post_data)
+            unchecked_data = request.get_json()
+            validate_post_user(unchecked_data)
         except ValidationError as err:
             details = []
             detail = error_detail_handler(json.dumps(err.messages))
@@ -79,9 +79,15 @@ class Users(Resource):
             error_object = bad_request(details)
             error_response = error_handler(error_object)
             return make_response(error_response, 400)
-        except Exception as err:
+        except ValueError as err:
             detail = str(err)
             logger.error(detail)
             error_object = conflict(detail)
             error_response = error_handler(error_object)
             return make_response(error_response, 409)
+        except Exception as err:
+            detail = error_detail_handler(err)
+            logger.error(detail)
+            error_object = internal_server_error(detail)
+            error_response = error_handler(error_object)
+            return make_response(error_response, 500)
