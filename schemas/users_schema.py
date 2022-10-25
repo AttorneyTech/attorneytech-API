@@ -1,4 +1,5 @@
 from marshmallow import fields, Schema, validate
+from common.openapi_loader import enums
 
 
 class UserAddressSchema(Schema):
@@ -6,21 +7,32 @@ class UserAddressSchema(Schema):
 
     addressLine1 = fields.Str(validate=[validate.Length(max=100)])
     addressLine2 = fields.Str(validate=[validate.Length(max=20)])
-    city = fields.Str(validate=[validate.Length(max=20)])
+    city = fields.Str(
+        validate=[
+            validate.Length(max=20),
+            validate.OneOf(enums['users']['filter[city]'])
+        ]
+    )
     zipCode = fields.Str(validate=[validate.Length(max=10)])
 
 
 class UserAttributeSchema(Schema):
     '''Defines the attribute object schema of user'''
 
-    role = fields.Str(required=True)
+    role = fields.Str(
+        required=True,
+        validate=validate.OneOf(enums['users']['filter[role]'])
+    )
     username = fields.Str(validate=[validate.Length(max=20)])
-    firstName = fields.Str(validate=[validate.Length(max=50)], required=True)
+    firstName = fields.Str(required=True, validate=[validate.Length(max=50)])
     middleName = fields.Str(validate=[validate.Length(max=50)])
-    lastName = fields.Str(validate=[validate.Length(max=50)], required=True)
+    lastName = fields.Str(required=True, validate=[validate.Length(max=50)])
     eventIds = fields.List(fields.Str())
     caseIds = fields.List(fields.Str())
-    email = fields.Email(validate=[validate.Length(max=50)], required=True)
+    email = fields.Email(
+        required=True,
+        validate=[validate.Length(max=50), validate.Email()]
+    )
     phone = fields.Str(validate=[validate.Length(max=10)])
     address = fields.Nested(UserAddressSchema)
     password = fields.Str(validate=[validate.Length(min=6, max=36)])

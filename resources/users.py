@@ -69,11 +69,14 @@ class Users(Resource):
         '''
 
         try:
-            unchecked_data = request.get_json()
-            validate_post_user(unchecked_data)
+            dao = UsersDao()
+            raw_data = request.get_json()
+            validate_post_user(dao, raw_data)
         except ValidationError as err:
             details = []
-            detail = error_detail_handler(json.dumps(err.messages))
+            detail = error_detail_handler(
+                json.dumps(err.messages, ensure_ascii=False)
+            )
             details.append(detail)
             logger.error(details)
             error_object = bad_request(details)

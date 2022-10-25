@@ -1,6 +1,6 @@
 from typing import List
 
-from common.openapi_loader import filter_enums
+from common.openapi_loader import enums
 
 
 def enums_check(filters: str, endpoint: str):
@@ -9,7 +9,7 @@ def enums_check(filters: str, endpoint: str):
     '''
 
     details = []
-    for filter, enum in filter_enums[endpoint].items():
+    for filter, enum in enums[endpoint].items():
         if filter in filters and filters[filter] not in enum:
             details.append(
                 f'''

@@ -2,7 +2,6 @@ from typing import List
 
 from marshmallow import ValidationError
 
-from db.users_dao import UsersDao
 from schemas.users_schema import UserPostSchema
 
 
@@ -75,14 +74,18 @@ def validate_events_with_cases(
         )
 
 
-def validate_post_user(unchecked_data: dict) -> None | Exception:
+def validate_post_user(dao: object, raw_data: dict) -> None | Exception:
     '''
     Checking the validation of data for creating a user.
+    The marshmallow module will check if the raw_data has something
+    required but missed, and basic format of data. If there are something
+    invalid, will raise ValidationError.
+    After that return `unchecked_data` to check if in conflict with the
+    resources. If something invalid, will raise ValueError.
     '''
 
     try:
-        dao = UsersDao()
-        unchecked_data = UserPostSchema().load(unchecked_data)
+        unchecked_data = UserPostSchema().load(raw_data)
         email = unchecked_data['data']['attributes']['email']
         username = unchecked_data.get('data').get('attributes').get('username')
         post_case_ids = (
@@ -105,8 +108,3 @@ def validate_post_user(unchecked_data: dict) -> None | Exception:
         raise err
     except Exception as err:
         raise err
-
-# TODO:
-# Validate role
-# Validate city
-# fields.Str(validate=validate.OneOf(["read", "write", "admin"]))
