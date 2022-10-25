@@ -121,5 +121,21 @@ prepare_statements = {
             ARRAY_AGG(cases.event_id) AS event_ids
         FROM cases
         WHERE cases.id = ANY($1);
+    ''',
+    'post_user': '''
+        PREPARE
+            post_user(
+                VARCHAR,VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR,
+                VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR
+            ) AS
+        INSERT INTO
+            users (
+                role, username, password, first_name, middle_name, last_name,
+                email, phone, street_name, district, city, zip_code
+            )
+        VALUES (
+            $1, $2, $3, $4, $5, $6,
+            $7, $8, $9, $10, $11, $12
+        );
     '''
 }

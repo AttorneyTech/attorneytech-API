@@ -127,5 +127,47 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def post_user(self):
-        pass
+    def post_user(self, valid_data):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor()
+            attributes = valid_data['data']['attributes']
+            address = valid_data['data']['attributes']['address']
+            self.cur.execute(
+                '''EXECUTE post_user(
+                    %(role)s,
+                    %(username)s,
+                    %(password)s,
+                    %(first_name)s,
+                    %(middle_name)s,
+                    %(last_name)s,
+                    %(email)s,
+                    %(phone)s,
+                    %(street_name)s,
+                    %(district)s,
+                    %(city)s,
+                    %(zip_code)s
+                );
+                ''',
+                {
+                    'role': attributes.get('role'),
+                    'username': attributes.get('username'),
+                    'password': attributes.get('password'),
+                    'first_name': attributes.get('firstName'),
+                    'middle_name': attributes.get('middleName'),
+                    'last_name': attributes.get('lastName'),
+                    'email': attributes.get('email'),
+                    'phone': attributes.get('phone'),
+                    'street_name': address.get('addressLine1'),
+                    'district': address.get('addressLine2'),
+                    'city': address.get('city'),
+                    'zip_code': address.get('zipCode')
+                }
+            )
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)

@@ -74,7 +74,7 @@ def validate_events_with_cases(
         )
 
 
-def validate_post_user(dao: object, raw_data: dict) -> None | Exception:
+def validate_post_user(dao: object, raw_data: dict) -> dict | Exception:
     '''
     Checking the validation of data for creating a user.
     The marshmallow module will check if the raw_data has something
@@ -102,6 +102,7 @@ def validate_post_user(dao: object, raw_data: dict) -> None | Exception:
                 raise ValueError('Case_ids and event_ids can not be empty.')
             case_ids = validate_cases_ids(dao, post_case_ids)
             validate_events_with_cases(dao, post_event_ids, case_ids)
+        return unchecked_data
     except ValidationError as err:
         raise err
     except ValueError as err:
