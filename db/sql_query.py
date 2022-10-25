@@ -94,44 +94,32 @@ prepare_statements = {
             AND {get_users_filter('users.city')};
     ''',
     # POST /users
-    'check_user_email': '''
-        PREPARE check_user_email(varchar) AS
+    'get_user_email': '''
+        PREPARE get_user_email(varchar) AS
         SELECT
             users.email
         FROM users
         WHERE users.email = $1;
     ''',
-    'check_user_username': '''
-        PREPARE check_user_username(varchar) AS
+    'get_user_username': '''
+        PREPARE get_user_username(varchar) AS
         SELECT
             users.username
         FROM users
         WHERE users.username = $1;
     ''',
-    'check_case_ids': '''
-        PREPARE check_case_ids(integer[]) AS
+    'get_case_ids': '''
+        PREPARE get_case_ids(integer[]) AS
         SELECT
             cases.id AS case_id
         FROM cases
         WHERE cases.id = ANY($1);
     ''',
-    'check_user_case_and_event': '''
-        PREPARE check_user_case_and_event(integer[]) AS
+    'get_event_ids_by_case_ids': '''
+        PREPARE get_event_ids_by_case_ids(integer[]) AS
         SELECT
             ARRAY_AGG(cases.event_id) AS event_ids
         FROM cases
-        WHERE
-            EXISTS
-                (
-                    SELECT
-                        case_ids
-                    FROM
-                        (
-                            SELECT ARRAY_AGG(cases.id) AS case_ids
-                            FROM cases
-                    ) AS case_id_array
-                    WHERE case_ids @> $1
-            )
-            AND cases.id = ANY($1);
+        WHERE cases.id = ANY($1);
     '''
 }

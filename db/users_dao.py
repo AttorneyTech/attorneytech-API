@@ -55,12 +55,12 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def check_user_email(self, email):
+    def get_user_email(self, email):
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                'EXECUTE check_user_email(%(email)s);',
+                'EXECUTE get_user_email(%(email)s);',
                 {'email': email}
             )
             raw_user = self.cur.fetchone()
@@ -73,12 +73,12 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def check_user_username(self, username):
+    def get_user_username(self, username):
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                'EXECUTE check_user_username(%(username)s);',
+                'EXECUTE get_user_username(%(username)s);',
                 {'username': username}
             )
             raw_user = self.cur.fetchone()
@@ -91,12 +91,12 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def check_case_ids(self, case_ids):
+    def get_case_ids(self, case_ids):
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                'EXECUTE check_case_ids(%(case_ids)s);',
+                'EXECUTE get_case_ids(%(case_ids)s);',
                 {'case_ids': case_ids}
             )
             raw_user = self.cur.fetchall()
@@ -109,12 +109,12 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def check_user_case_and_event(self, case_ids):
+    def get_event_ids_by_case_ids(self, case_ids):
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                'EXECUTE check_user_case_and_event(%(case_ids)s);',
+                'EXECUTE get_event_ids_by_case_ids(%(case_ids)s);',
                 {'case_ids': case_ids}
             )
             raw_user = self.cur.fetchone()

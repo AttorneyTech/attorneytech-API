@@ -80,7 +80,7 @@ class Users(Resource):
             error_response = error_handler(error_object)
             return make_response(error_response, 400)
         except ValueError as err:
-            detail = str(err)
+            detail = error_detail_handler(err)
             logger.error(detail)
             error_object = conflict(detail)
             error_response = error_handler(error_object)
