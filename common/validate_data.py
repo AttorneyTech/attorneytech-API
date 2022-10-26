@@ -47,7 +47,6 @@ def validate_cases_ids(
 
     if set_case_ids:
         raise ValueError(f'Inputted case_ids: {set_case_ids} does not exist.')
-
     return case_ids
 
 
@@ -104,7 +103,13 @@ def validate_post_user(
                 raise ValueError('Case_ids and event_ids can not be empty.')
             case_ids = validate_cases_ids(dao, post_case_ids)
             validate_events_cases(dao, post_event_ids, case_ids)
-        return unchecked_data, case_ids
+            return unchecked_data, case_ids
+        elif post_case_ids is None and post_event_ids is None:
+            return unchecked_data, None
+        else:
+            raise ValueError(
+                'Case_ids and event_ids must be correspond to each other.'
+            )
     except ValidationError as err:
         raise err
     except ValueError as err:
