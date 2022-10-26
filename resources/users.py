@@ -76,6 +76,10 @@ class Users(Resource):
             user_id = raw_user_id[0]
             if case_ids:
                 dao.post_cases_users(case_ids, user_id)
+            raw_user = dao.get_user_by_id(user_id)
+            user_object = UsersSerializer.raw_user_serializer(raw_user)
+            serialized_user = UsersSerializer.user_response(user_object)
+            return make_response(serialized_user, 201)
         except ValidationError as err:
             details = []
             detail = error_detail_handler(
