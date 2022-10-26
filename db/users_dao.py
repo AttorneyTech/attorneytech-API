@@ -165,6 +165,25 @@ class UsersDao:
                 }
             )
             self.conn.commit()
+            raw_user_id = self.cur.fetchone()
+            return raw_user_id
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
+    def post_cases_users(self, case_ids, user_id):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor()
+            self.cur.execute(
+                'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
+                {'case_ids': case_ids, 'user_id': user_id}
+            )
+            self.conn.commit()
         except Exception as err:
             raise err
         finally:

@@ -129,13 +129,22 @@ prepare_statements = {
                 VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR
             ) AS
         INSERT INTO
-            users (
+            users(
                 role, username, password, first_name, middle_name, last_name,
                 email, phone, street_name, district, city, zip_code
             )
-        VALUES (
+        VALUES(
             $1, $2, $3, $4, $5, $6,
             $7, $8, $9, $10, $11, $12
-        );
+        )
+        RETURNING id;
+    ''',
+    'post_cases_users': '''
+        PREPARE
+            post_cases_users(integer[], integer) AS
+        INSERT INTO
+            cases_users(case_id, user_id)
+        VALUES
+            (unnest($1), $2);
     '''
 }

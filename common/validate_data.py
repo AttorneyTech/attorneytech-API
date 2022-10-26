@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from marshmallow import ValidationError
 
@@ -51,7 +51,7 @@ def validate_cases_ids(
     return case_ids
 
 
-def validate_events_with_cases(
+def validate_events_cases(
     dao: object, post_event_ids: List[str], case_ids: list
 ) -> None | ValueError:
     '''Check the cases_ids correspond to event_ids or not.'''
@@ -74,7 +74,9 @@ def validate_events_with_cases(
         )
 
 
-def validate_post_user(dao: object, raw_data: dict) -> dict | Exception:
+def validate_post_user(
+    dao: object, raw_data: dict
+) -> Union[dict, list, Exception]:
     '''
     Checking the validation of data for creating a user.
     The marshmallow module will check if the raw_data has something
@@ -101,8 +103,8 @@ def validate_post_user(dao: object, raw_data: dict) -> dict | Exception:
             if post_case_ids == [] or post_event_ids == []:
                 raise ValueError('Case_ids and event_ids can not be empty.')
             case_ids = validate_cases_ids(dao, post_case_ids)
-            validate_events_with_cases(dao, post_event_ids, case_ids)
-        return unchecked_data
+            validate_events_cases(dao, post_event_ids, case_ids)
+        return unchecked_data, case_ids
     except ValidationError as err:
         raise err
     except ValueError as err:

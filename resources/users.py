@@ -71,8 +71,11 @@ class Users(Resource):
         try:
             dao = UsersDao()
             raw_data = request.get_json()
-            valid_data = validate_post_user(dao, raw_data)
-            dao.post_user(valid_data)
+            valid_data, case_ids = validate_post_user(dao, raw_data)
+            raw_user_id = dao.post_user(valid_data)
+            user_id = raw_user_id[0]
+            if case_ids:
+                dao.post_cases_users(case_ids, user_id)
         except ValidationError as err:
             details = []
             detail = error_detail_handler(
