@@ -125,7 +125,7 @@ prepare_statements = {
     'post_user': '''
         PREPARE
             post_user(
-                VARCHAR,VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR,
+                VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR,
                 VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR
             ) AS
         INSERT INTO

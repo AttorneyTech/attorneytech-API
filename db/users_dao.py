@@ -164,6 +164,7 @@ class UsersDao:
                     'zip_code': address.get('zipCode')
                 }
             )
+            self.conn.commit()
         except Exception as err:
             raise err
         finally:
