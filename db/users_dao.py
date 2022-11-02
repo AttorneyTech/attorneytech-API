@@ -55,34 +55,16 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
-    def get_user_email(self, email):
+    def get_email_username(self, email, username):
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                'EXECUTE get_user_email(%(email)s);',
-                {'email': email}
+                'EXECUTE validate_email_username(%(email)s, %(username)s);',
+                {'email': email, 'username': username}
             )
-            raw_user = self.cur.fetchone()
-            return raw_user
-        except Exception as err:
-            raise err
-        finally:
-            if self.cur:
-                self.cur.close()
-            if self.conn:
-                conn_pool.putconn(conn=self.conn)
-
-    def get_user_username(self, username):
-        try:
-            self.conn = conn_pool.getconn()
-            self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
-            self.cur.execute(
-                'EXECUTE get_user_username(%(username)s);',
-                {'username': username}
-            )
-            raw_user = self.cur.fetchone()
-            return raw_user
+            raw_result = self.cur.fetchall()
+            return raw_result
         except Exception as err:
             raise err
         finally:

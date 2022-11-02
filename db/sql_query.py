@@ -94,12 +94,19 @@ prepare_statements = {
             AND {get_users_filter('users.city')};
     ''',
     # POST /users
-    'get_user_email': '''
-        PREPARE get_user_email(varchar) AS
+    'validate_email_username': '''
+        PREPARE validate_email_username(varchar, varchar) AS
         SELECT
-            users.email
+            users.email,
+            users.username
         FROM users
-        WHERE users.email = $1;
+        WHERE users.email = $1
+            OR
+                CASE
+                    WHEN NULLIF($2, NULL) = $2
+                        THEN users.username = $2
+                    ELSE false
+                END;
     ''',
     'get_user_username': '''
         PREPARE get_user_username(varchar) AS

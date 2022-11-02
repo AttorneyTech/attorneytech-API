@@ -5,25 +5,20 @@ from marshmallow import ValidationError
 from schemas.users_schema import UserPostSchema
 
 
-def validate_user_email(dao: object, email: str) -> None | ValueError:
+def validate_email_username(
+    dao: object, email: str, username: str
+) -> None | ValueError:
     '''Check the email exist or not.'''
 
-    has_result = dao.get_user_email(email)
-    if has_result:
-        dup_email = has_result['email']
-        raise ValueError(f'The email: {dup_email} of user already exists.')
-
-
-def validate_username(dao: object, username: str) -> None | ValueError:
-    '''Check the username has been used or not.'''
-
-    if username is not None:
-        has_result = dao.get_user_username(username)
-        if has_result:
-            dup_username = has_result['username']
-            raise ValueError(f'The username: {dup_username} has been used.')
-        elif username.strip() == '':
-            raise ValueError('The username can not be empty.')
+    if username is not None and username.isspace():
+        raise ValueError('The username can not be empty.')
+    raw_result = dao.get_email_username(email, username)
+    if raw_result:
+        for row in raw_result:
+            if row['email'] == email:
+                raise ValueError(f'The email: {email} of user already exists.')
+            if row['username'] == username:
+                raise ValueError(f'The username: {username} has been used.')
 
 
 def validate_cases_ids(
@@ -34,7 +29,7 @@ def validate_cases_ids(
     case_ids = []
     for item in post_case_ids:
         if not item.isdigit():
-            raise ValueError('Case id must be number.')
+            raise ValueError('Case id must be a digit string.')
         case_ids.append(int(item))
 
     raw_case_ids = dao.get_case_ids(case_ids)
@@ -95,8 +90,7 @@ def validate_post_user(
         post_event_ids = (
             unchecked_data.get('data').get('attributes').get('eventIds')
         )
-        validate_user_email(dao, email)
-        validate_username(dao, username)
+        validate_email_username(dao, email, username)
 
         if post_case_ids is not None and post_event_ids is not None:
             if post_case_ids == [] or post_event_ids == []:
@@ -110,9 +104,11 @@ def validate_post_user(
             raise ValueError(
                 'Case_ids and event_ids must be correspond to each other.'
             )
-    except ValidationError as err:
+    except (ValidationError, ValueError, Exception) as err:
         raise err
-    except ValueError as err:
-        raise err
-    except Exception as err:
-        raise err
+
+
+# TODO:
+# Combine validate_user_email and validate_username
+# Check data format before query to database.
+# Combine the exception in users.py
