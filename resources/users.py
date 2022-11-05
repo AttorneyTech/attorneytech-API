@@ -5,6 +5,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from common.auth import auth
+from common.custom_exception import CustomValidationError
 from common.error_handler import (
     bad_request,
     conflict,
@@ -90,7 +91,7 @@ class Users(Resource):
             error_object = bad_request(details)
             error_response = error_handler(error_object)
             return make_response(error_response, 400)
-        except ValueError as err:
+        except CustomValidationError as err:
             detail = error_detail_handler(err)
             logger.error(detail)
             error_object = conflict(detail)

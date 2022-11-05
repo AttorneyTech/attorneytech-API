@@ -2,58 +2,69 @@ from typing import List, Union
 
 from marshmallow import ValidationError
 
+from common.custom_exception import CustomValidationError
 from schemas.users_schema import UserPostSchema
 
 
 def validate_email_username(
     dao: object, email: str, username: str
-) -> None | ValueError:
+) -> None | CustomValidationError:
     '''Check the email exist or not.'''
 
     if username is not None and username.isspace():
-        raise ValueError('The username can not be empty.')
+        raise CustomValidationError('The username cannot be empty.')
     raw_result = dao.get_email_username(email, username)
     if raw_result:
         for row in raw_result:
             if row['email'] == email:
-                raise ValueError(f'The email: {email} of user already exists.')
+                raise CustomValidationError(
+                    f'The email: {email} of user already exists.'
+                )
             if row['username'] == username:
-                raise ValueError(f'The username: {username} has been used.')
+                raise CustomValidationError(
+                    f'The username: {username} has been used.'
+                )
 
 
 def validate_cases_ids(
     dao: object, post_case_ids: List[str]
-) -> list | ValueError:
-    '''Check if the inputted cases_ids exist in database'''
+) -> list | CustomValidationError:
+    '''
+    Check if the inputted cases_ids exist in database.
+    If the `post_case_ids` is valid, convert it to int of list
+    and return it as `case_ids`.
+    '''
 
     case_ids = []
     for item in post_case_ids:
         if not item.isdigit():
-            raise ValueError('Case id must be a digit string.')
+            raise CustomValidationError('Case id must be a digit string.')
         case_ids.append(int(item))
 
     raw_case_ids = dao.get_case_ids(case_ids)
     if not raw_case_ids:
-        raise ValueError('Inputted case_ids does not exist.')
+        raise CustomValidationError('Inputted case_ids does not exist.')
 
     set_case_ids = set(case_ids)
     for row in raw_case_ids:
         set_case_ids.remove(row['case_id'])
 
     if set_case_ids:
-        raise ValueError(f'Inputted case_ids: {set_case_ids} does not exist.')
+        raise CustomValidationError(
+            f'Inputted case_ids: {set_case_ids} does not exist.'
+        )
     return case_ids
 
 
 def validate_events_cases(
     dao: object, post_event_ids: List[str], case_ids: list
-) -> None | ValueError:
+) -> None | CustomValidationError:
     '''Check the cases_ids correspond to event_ids or not.'''
 
     event_ids = []
     for item in post_event_ids:
         if not item.isdigit():
-            raise ValueError('Event id must be number.')
+            raise CustomValidationError('Event id must be a digit string.')
         event_ids.append(int(item))
 
     result = dao.get_event_ids_by_case_ids(case_ids)
@@ -61,7 +72,7 @@ def validate_events_cases(
     input_event_ids = set(event_ids)
     if result_event_ids != input_event_ids:
         invalid_event_ids = result_event_ids.intersection(input_event_ids)
-        raise ValueError(
+        raise CustomValidationError(
             f'''
             Inputted event_ids: {invalid_event_ids} can not be matched.
             '''
@@ -70,14 +81,14 @@ def validate_events_cases(
 
 def validate_post_user(
     dao: object, raw_data: dict
-) -> Union[dict, list, Exception]:
+) -> Union[dict, list, None, Exception]:
     '''
     Checking the validation of data for creating a user.
     The marshmallow module will check if the raw_data has something
     required but missed, and basic format of data. If there are something
     invalid, will raise ValidationError.
     After that return `unchecked_data` to check if in conflict with the
-    resources. If something invalid, will raise ValueError.
+    resources. If something invalid, will raise CustomValidationError.
     '''
 
     try:
@@ -92,23 +103,23 @@ def validate_post_user(
         )
         validate_email_username(dao, email, username)
 
-        if post_case_ids is not None and post_event_ids is not None:
+        if post_case_ids is None and post_event_ids is None:
+            return unchecked_data, None
+        elif post_case_ids is not None and post_event_ids is not None:
             if post_case_ids == [] or post_event_ids == []:
-                raise ValueError('Case_ids and event_ids can not be empty.')
+                raise CustomValidationError(
+                    'Case_ids and event_ids cannot be empty.'
+                )
             case_ids = validate_cases_ids(dao, post_case_ids)
             validate_events_cases(dao, post_event_ids, case_ids)
             return unchecked_data, case_ids
-        elif post_case_ids is None and post_event_ids is None:
-            return unchecked_data, None
         else:
-            raise ValueError(
+            raise CustomValidationError(
                 'Case_ids and event_ids must be correspond to each other.'
             )
-    except (ValidationError, ValueError, Exception) as err:
+    except (ValidationError, CustomValidationError, Exception) as err:
         raise err
 
 
 # TODO:
-# Combine validate_user_email and validate_username
-# Check data format before query to database.
 # Combine the exception in users.py
