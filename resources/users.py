@@ -9,7 +9,6 @@ from common.custom_exception import CustomValidationError
 from common.error_handler import (
     bad_request,
     conflict,
-    error_handler,
     internal_server_error
 )
 from common.filter_handler import enums_check, filters_to_list
@@ -49,14 +48,12 @@ class Users(Resource):
             details = err.args[0]
             details = [error_detail_handler(detail) for detail in details]
             logger.error(details)
-            error_objects = bad_request(details)
-            error_response = error_handler(error_objects)
+            error_response = bad_request(details)
             return make_response(error_response, 400)
         except Exception as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_object = internal_server_error(detail)
-            error_response = error_handler(error_object)
+            error_response = internal_server_error(detail)
             return make_response(error_response, 500)
 
     @auth.login_required
@@ -88,18 +85,15 @@ class Users(Resource):
             )
             details.append(detail)
             logger.error(details)
-            error_object = bad_request(details)
-            error_response = error_handler(error_object)
+            error_response = bad_request(details)
             return make_response(error_response, 400)
         except CustomValidationError as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_object = conflict(detail)
-            error_response = error_handler(error_object)
+            error_response = conflict(detail)
             return make_response(error_response, 409)
         except Exception as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_object = internal_server_error(detail)
-            error_response = error_handler(error_object)
+            error_response = internal_server_error(detail)
             return make_response(error_response, 500)

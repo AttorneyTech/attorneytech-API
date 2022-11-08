@@ -4,8 +4,7 @@ from flask_restful import Resource
 from common.auth import auth
 from common.error_handler import (
     internal_server_error,
-    not_found,
-    error_handler
+    not_found
 )
 from common.logger import logger
 from common.string_handler import error_detail_handler
@@ -30,12 +29,10 @@ class User(Resource):
                     f'The resource requested (user ID:{user_id}) not found.'
                 )
                 logger.error(detail)
-                error_object = not_found(detail)
-                error_response = error_handler(error_object)
+                error_response = not_found(detail)
                 return make_response(error_response, 404)
         except Exception as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_object = internal_server_error(detail)
-            error_response = error_handler(error_object)
+            error_response = internal_server_error(detail)
             return make_response(error_response, 500)

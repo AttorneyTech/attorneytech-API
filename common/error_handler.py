@@ -20,7 +20,8 @@ def bad_request(details: list) -> list:
                 'detail': detail
             }
         )
-    return error_objects
+    error_response = error_handler(error_objects)
+    return error_response
 
 
 # 401 Unauthorized
@@ -32,7 +33,8 @@ def unauthorized(detail: str) -> list:
             'detail': detail
         }
     ]
-    return error_object
+    error_response = error_handler(error_object)
+    return error_response
 
 
 # 404 Not Found
@@ -44,7 +46,8 @@ def not_found(detail: str) -> list:
             'detail': detail
         }
     ]
-    return error_object
+    error_response = error_handler(error_object)
+    return error_response
 
 
 # 409 Conflict
@@ -56,7 +59,8 @@ def conflict(detail: str) -> list:
             'detail': detail
         }
     ]
-    return error_object
+    error_response = error_handler(error_object)
+    return error_response
 
 
 # 500 Internal Server Error
@@ -68,4 +72,5 @@ def internal_server_error(detail: str) -> list:
             'detail': detail
         }
     ]
-    return error_object
+    error_response = error_handler(error_object)
+    return error_response
