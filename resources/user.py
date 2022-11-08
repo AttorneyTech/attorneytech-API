@@ -29,10 +29,10 @@ class User(Resource):
                     f'The resource requested (user ID:{user_id}) not found.'
                 )
                 logger.error(detail)
-                error_response = not_found(detail)
-                return make_response(error_response, 404)
+                error_response, error_code = not_found(detail)
+                return make_response(error_response, error_code)
         except Exception as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_response = internal_server_error(detail)
-            return make_response(error_response, 500)
+            error_response, error_code = internal_server_error(detail)
+            return make_response(error_response, error_code)

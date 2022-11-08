@@ -60,7 +60,7 @@ class UsersDao:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
             self.cur.execute(
-                'EXECUTE validate_email_username(%(email)s, %(username)s);',
+                'XECUTE validate_email_username(%(email)s, %(username)s);',
                 {'email': email, 'username': username}
             )
             raw_result = self.cur.fetchall()

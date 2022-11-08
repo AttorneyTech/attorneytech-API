@@ -1,4 +1,4 @@
-def error_handler(error_objects: list) -> dict:
+def error_top_level(error_objects: list) -> dict:
     '''
     Serialize the error response
     '''
@@ -20,8 +20,8 @@ def bad_request(details: list) -> list:
                 'detail': detail
             }
         )
-    error_response = error_handler(error_objects)
-    return error_response
+    error_response = error_top_level(error_objects)
+    return error_response, 400
 
 
 # 401 Unauthorized
@@ -33,8 +33,8 @@ def unauthorized(detail: str) -> list:
             'detail': detail
         }
     ]
-    error_response = error_handler(error_object)
-    return error_response
+    error_response = error_top_level(error_object)
+    return error_response, 401
 
 
 # 404 Not Found
@@ -46,8 +46,8 @@ def not_found(detail: str) -> list:
             'detail': detail
         }
     ]
-    error_response = error_handler(error_object)
-    return error_response
+    error_response = error_top_level(error_object)
+    return error_response, 404
 
 
 # 409 Conflict
@@ -59,8 +59,8 @@ def conflict(detail: str) -> list:
             'detail': detail
         }
     ]
-    error_response = error_handler(error_object)
-    return error_response
+    error_response = error_top_level(error_object)
+    return error_response, 409
 
 
 # 500 Internal Server Error
@@ -72,5 +72,5 @@ def internal_server_error(detail: str) -> list:
             'detail': detail
         }
     ]
-    error_response = error_handler(error_object)
-    return error_response
+    error_response = error_top_level(error_object)
+    return error_response, 500
