@@ -1,4 +1,7 @@
-def error_top_level(error_objects: list) -> dict:
+from typing import Union
+
+
+def error_top_level(error_objects: list) -> Union[dict, int]:
     '''
     Serialize the error response
     '''
@@ -10,7 +13,7 @@ def error_top_level(error_objects: list) -> dict:
 
 
 # 400 Bad request
-def bad_request(details: list) -> list:
+def bad_request(details: list) -> Union[dict, int]:
     error_objects = []
     for detail in details:
         error_objects.append(
@@ -25,7 +28,7 @@ def bad_request(details: list) -> list:
 
 
 # 401 Unauthorized
-def unauthorized(detail: str) -> list:
+def unauthorized(detail: str) -> Union[dict, int]:
     error_object = [
         {
             'status': '401',
@@ -38,7 +41,7 @@ def unauthorized(detail: str) -> list:
 
 
 # 404 Not Found
-def not_found(detail: str) -> list:
+def not_found(detail: str) -> Union[dict, int]:
     error_object = [
         {
             'status': '404',
@@ -51,7 +54,7 @@ def not_found(detail: str) -> list:
 
 
 # 409 Conflict
-def conflict(detail: str) -> list:
+def conflict(detail: str) -> Union[dict, int]:
     error_object = [
         {
             'status': '409',
@@ -64,7 +67,7 @@ def conflict(detail: str) -> list:
 
 
 # 500 Internal Server Error
-def internal_server_error(detail: str) -> list:
+def internal_server_error(detail: str) -> Union[dict, int]:
     error_object = [
         {
             'status': '500',
@@ -74,3 +77,8 @@ def internal_server_error(detail: str) -> list:
     ]
     error_response = error_top_level(error_object)
     return error_response, 500
+
+
+error_names = {
+    'CustomValidationError': conflict
+}

@@ -8,8 +8,8 @@ from common.auth import auth
 from common.custom_exception import CustomValidationError
 from common.error_handler import (
     bad_request,
-    conflict,
-    internal_server_error
+    internal_server_error,
+    error_names
 )
 from common.filter_handler import enums_check, filters_to_list
 from common.logger import logger
@@ -48,13 +48,13 @@ class Users(Resource):
             details = err.args[0]
             details = [error_detail_handler(detail) for detail in details]
             logger.error(details)
-            error_response = bad_request(details)
-            return make_response(error_response, 400)
+            error_response, error_code = bad_request(details)
+            return make_response(error_response, error_code)
         except Exception as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_response = internal_server_error(detail)
-            return make_response(error_response, 500)
+            error_response, error_code = internal_server_error(detail)
+            return make_response(error_response, error_code)
 
     @auth.login_required
     def post(self):
@@ -87,13 +87,12 @@ class Users(Resource):
             logger.error(details)
             error_response, error_code = bad_request(details)
             return make_response(error_response, error_code)
-        except CustomValidationError as err:
+        except (CustomValidationError, Exception) as err:
             detail = error_detail_handler(err)
             logger.error(detail)
-            error_response, error_code = conflict(detail)
-            return make_response(error_response, error_code)
-        except Exception as err:
-            detail = error_detail_handler(err)
-            logger.error(detail)
-            error_response, error_code = internal_server_error(detail)
+            if type(err).__name__ in error_names.keys():
+                error_handler = error_names[type(err).__name__]
+            else:
+                error_handler = internal_server_error
+            error_response, error_code = error_handler(detail)
             return make_response(error_response, error_code)
