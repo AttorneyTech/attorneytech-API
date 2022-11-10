@@ -2,33 +2,33 @@ from typing import List, Union
 
 from marshmallow import ValidationError
 
-from common.custom_exception import CustomValidationError
+from common.custom_exception import CustomBadRequestError, CustomConflictError
 from schemas.users_schema import UserPostSchema
 
 
 def validate_email_username(
     dao: object, email: str, username: str
-) -> None | CustomValidationError:
+) -> None | CustomConflictError:
     '''Check the email exist or not.'''
 
     if username is not None and username.isspace():
-        raise CustomValidationError('The username cannot be empty.')
+        raise CustomConflictError('The username cannot be empty.')
     raw_result = dao.get_email_username(email, username)
     if raw_result:
         for row in raw_result:
             if row['email'] == email:
-                raise CustomValidationError(
+                raise CustomConflictError(
                     f'The email: {email} of user already exists.'
                 )
             if row['username'] == username:
-                raise CustomValidationError(
+                raise CustomConflictError(
                     f'The username: {username} has been used.'
                 )
 
 
 def validate_cases_ids(
     dao: object, post_case_ids: List[str]
-) -> list | CustomValidationError:
+) -> Union[list, CustomBadRequestError, CustomConflictError]:
     '''
     Check if the inputted cases_ids exist in database.
     If the `post_case_ids` is valid, convert it to int of list
@@ -38,19 +38,19 @@ def validate_cases_ids(
     case_ids = []
     for item in post_case_ids:
         if not item.isdigit():
-            raise CustomValidationError('Case id must be a digit string.')
+            raise CustomBadRequestError('Case id must be a digit string.')
         case_ids.append(int(item))
 
     raw_case_ids = dao.get_case_ids(case_ids)
     if not raw_case_ids:
-        raise CustomValidationError('Inputted case_ids does not exist.')
+        raise CustomConflictError('Inputted case_ids does not exist.')
 
     set_case_ids = set(case_ids)
     for row in raw_case_ids:
         set_case_ids.remove(row['case_id'])
 
     if set_case_ids:
-        raise CustomValidationError(
+        raise CustomConflictError(
             f'Inputted case_ids: {set_case_ids} does not exist.'
         )
     return case_ids
@@ -58,13 +58,13 @@ def validate_cases_ids(
 
 def validate_events_cases(
     dao: object, post_event_ids: List[str], case_ids: list
-) -> None | CustomValidationError:
+) -> Union[None, CustomBadRequestError, CustomConflictError]:
     '''Check the cases_ids correspond to event_ids or not.'''
 
     event_ids = []
     for item in post_event_ids:
         if not item.isdigit():
-            raise CustomValidationError('Event id must be a digit string.')
+            raise CustomBadRequestError('Event id must be a digit string.')
         event_ids.append(int(item))
 
     result = dao.get_event_ids_by_case_ids(case_ids)
@@ -72,7 +72,7 @@ def validate_events_cases(
     input_event_ids = set(event_ids)
     if result_event_ids != input_event_ids:
         invalid_event_ids = result_event_ids.intersection(input_event_ids)
-        raise CustomValidationError(
+        raise CustomConflictError(
             f'''
             Inputted event_ids: {invalid_event_ids} can not be matched.
             '''
@@ -88,7 +88,7 @@ def validate_post_user(
     required but missed, and basic format of data. If there are something
     invalid, will raise ValidationError.
     After that return `unchecked_data` to check if in conflict with the
-    resources. If something invalid, will raise CustomValidationError.
+    resources. If something invalid, will raise CustomConflictError.
     '''
 
     try:
@@ -107,17 +107,19 @@ def validate_post_user(
             return unchecked_data, None
         elif post_case_ids is not None and post_event_ids is not None:
             if post_case_ids == [] or post_event_ids == []:
-                raise CustomValidationError(
+                raise CustomConflictError(
                     'Case_ids and event_ids cannot be empty.'
                 )
             case_ids = validate_cases_ids(dao, post_case_ids)
             validate_events_cases(dao, post_event_ids, case_ids)
             return unchecked_data, case_ids
         else:
-            raise CustomValidationError(
+            raise CustomConflictError(
                 'Case_ids and event_ids must be correspond to each other.'
             )
-    except (ValidationError, CustomValidationError, Exception) as err:
+    except (
+        ValidationError, CustomBadRequestError, CustomConflictError, Exception
+    ) as err:
         raise err
 
 

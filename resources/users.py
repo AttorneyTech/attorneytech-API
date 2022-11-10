@@ -5,7 +5,7 @@ from flask_restful import Resource
 from marshmallow import ValidationError
 
 from common.auth import auth
-from common.custom_exception import CustomValidationError
+from common.custom_exception import CustomBadRequestError, CustomConflictError
 from common.error_handler import (
     bad_request,
     internal_server_error,
@@ -78,16 +78,21 @@ class Users(Resource):
             user_object = UsersSerializer.raw_user_serializer(raw_user)
             serialized_user = UsersSerializer.user_response(user_object)
             return make_response(serialized_user, 201)
-        except ValidationError as err:
+        except (ValidationError, CustomBadRequestError) as err:
             details = []
-            detail = error_detail_handler(
-                json.dumps(err.messages, ensure_ascii=False)
-            )
-            details.append(detail)
+            if type(err).__name__ == 'ValidationError':
+                details.append(
+                    error_detail_handler(
+                        json.dumps(err.messages, ensure_ascii=False)
+                    )
+                )
+            else:
+                detail = error_detail_handler(err)
+                details.append(detail)
             logger.error(details)
             error_response, error_code = bad_request(details)
             return make_response(error_response, error_code)
-        except (CustomValidationError, Exception) as err:
+        except (CustomConflictError, Exception) as err:
             detail = error_detail_handler(err)
             logger.error(detail)
             if type(err).__name__ in error_names.keys():
