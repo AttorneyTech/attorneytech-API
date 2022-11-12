@@ -45,13 +45,10 @@ def validate_cases_ids(
     if not raw_case_ids:
         raise CustomConflictError('Inputted case_ids does not exist.')
 
-    set_case_ids = set(case_ids)
-    for row in raw_case_ids:
-        set_case_ids.remove(row['case_id'])
-
-    if set_case_ids:
+    diff_set = set(case_ids) - set([row['case_id'] for row in raw_case_ids])
+    if diff_set:
         raise CustomConflictError(
-            f'Inputted case_ids: {set_case_ids} does not exist.'
+            f'Inputted case_ids: {diff_set} does not exist.'
         )
     return case_ids
 
@@ -121,7 +118,3 @@ def validate_post_user(
         ValidationError, CustomBadRequestError, CustomConflictError, Exception
     ) as err:
         raise err
-
-
-# TODO:
-# Combine the exception in users.py

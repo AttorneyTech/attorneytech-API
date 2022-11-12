@@ -80,5 +80,5 @@ def internal_server_error(detail: str) -> Union[dict, int]:
 
 
 error_names = {
-    'CustomValidationError': conflict
+    'CustomConflictError': conflict
 }
