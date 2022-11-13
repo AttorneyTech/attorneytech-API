@@ -20,10 +20,11 @@ def validate_email_username(
                 raise CustomConflictError(
                     f'The email: {email} of user already exists.'
                 )
-            if row['username'] == username:
-                raise CustomConflictError(
-                    f'The username: {username} has been used.'
-                )
+            else:
+                if row['username'] == username:
+                    raise CustomConflictError(
+                        f'The username: {username} has been used.'
+                    )
 
 
 def validate_cases_ids(
