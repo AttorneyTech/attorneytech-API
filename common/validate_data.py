@@ -43,11 +43,11 @@ def validate_cases_ids(
 
     raw_case_ids = dao.get_case_ids(case_ids)
     if not raw_case_ids:
-        raise CustomConflictError('Inputted case_ids does not exist.')
+        raise CustomBadRequestError('Inputted case_ids does not exist.')
 
     diff_set = set(case_ids) - set([row['case_id'] for row in raw_case_ids])
     if diff_set:
-        raise CustomConflictError(
+        raise CustomBadRequestError(
             f'Inputted case_ids: {diff_set} does not exist.'
         )
     return case_ids
@@ -104,7 +104,7 @@ def validate_post_user(
             return unchecked_data, None
         elif post_case_ids is not None and post_event_ids is not None:
             if post_case_ids == [] or post_event_ids == []:
-                raise CustomConflictError(
+                raise CustomBadRequestError(
                     'Case_ids and event_ids cannot be empty.'
                 )
             case_ids = validate_cases_ids(dao, post_case_ids)
