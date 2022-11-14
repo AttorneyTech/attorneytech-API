@@ -31,8 +31,8 @@ components = safe_get(openapi_spec, 'components')
 schemas = safe_get(components, 'schemas')
 user_attributes = safe_get(schemas, 'UserAttributes')
 
-# Enums of filters
-filter_enums = {
+# Enums
+enums = {
     'users': {
         'filter[role]': safe_get(
             user_attributes,

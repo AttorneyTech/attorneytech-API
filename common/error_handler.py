@@ -1,4 +1,7 @@
-def error_handler(error_objects: list) -> dict:
+from typing import Union
+
+
+def error_top_level(error_objects: list) -> Union[dict, int]:
     '''
     Serialize the error response
     '''
@@ -9,7 +12,8 @@ def error_handler(error_objects: list) -> dict:
     return error_response
 
 
-def bad_request(details: list) -> list:
+# 400 Bad request
+def bad_request(details: list) -> Union[dict, int]:
     error_objects = []
     for detail in details:
         error_objects.append(
@@ -19,32 +23,12 @@ def bad_request(details: list) -> list:
                 'detail': detail
             }
         )
-    return error_objects
+    error_response = error_top_level(error_objects)
+    return error_response, 400
 
 
-def internal_server_error(detail: list) -> list:
-    error_object = [
-        {
-            'status': '500',
-            'title': 'Internal Server Error',
-            'detail': detail
-        }
-    ]
-    return error_object
-
-
-def not_found(detail: list) -> list:
-    error_object = [
-        {
-            'status': '404',
-            'title': 'Not Found',
-            'detail': detail
-        }
-    ]
-    return error_object
-
-
-def unauthorized(detail: list) -> list:
+# 401 Unauthorized
+def unauthorized(detail: str) -> Union[dict, int]:
     error_object = [
         {
             'status': '401',
@@ -52,4 +36,49 @@ def unauthorized(detail: list) -> list:
             'detail': detail
         }
     ]
-    return error_object
+    error_response = error_top_level(error_object)
+    return error_response, 401
+
+
+# 404 Not Found
+def not_found(detail: str) -> Union[dict, int]:
+    error_object = [
+        {
+            'status': '404',
+            'title': 'Not Found',
+            'detail': detail
+        }
+    ]
+    error_response = error_top_level(error_object)
+    return error_response, 404
+
+
+# 409 Conflict
+def conflict(detail: str) -> Union[dict, int]:
+    error_object = [
+        {
+            'status': '409',
+            'title': 'Conflict',
+            'detail': detail
+        }
+    ]
+    error_response = error_top_level(error_object)
+    return error_response, 409
+
+
+# 500 Internal Server Error
+def internal_server_error(detail: str) -> Union[dict, int]:
+    error_object = [
+        {
+            'status': '500',
+            'title': 'Internal Server Error',
+            'detail': detail
+        }
+    ]
+    error_response = error_top_level(error_object)
+    return error_response, 500
+
+
+error_names = {
+    'CustomConflictError': conflict
+}

@@ -3,7 +3,7 @@ from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from common.config import config_auth
-from common.error_handler import error_handler, unauthorized
+from common.error_handler import unauthorized
 from common.logger import logger
 
 auth = HTTPBasicAuth()
@@ -35,7 +35,6 @@ def auth_error():
         'Unauthorized. '
         'Username and password not matched with the Basic Auth credentials.'
     )
-    error_object = unauthorized(detail)
+    error_response = unauthorized(detail)
     logger.error(detail)
-    error_response = error_handler(error_object)
     return make_response(error_response, 401)

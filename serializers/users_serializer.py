@@ -142,7 +142,6 @@ class UsersSerializer:
         }
         user_response = UserTopLevel(user_object)
         serialized_user = UserSchema().dump(user_response)
-
         return serialized_user
 
     @staticmethod
@@ -159,5 +158,4 @@ class UsersSerializer:
         }
         user_response = UserTopLevel(users_object)
         serialized_users = UsersSchema().dump(user_response)
-
         return serialized_users

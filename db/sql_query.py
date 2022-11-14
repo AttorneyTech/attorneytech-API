@@ -92,5 +92,66 @@ prepare_statements = {
         )
             AND {get_users_filter('users.role')}
             AND {get_users_filter('users.city')};
+    ''',
+    # POST /users
+    'validate_email_username': '''
+        PREPARE validate_email_username(varchar, varchar) AS
+        SELECT
+            users.email,
+            users.username
+        FROM users
+        WHERE users.email = $1
+            OR
+                CASE
+                    WHEN NULLIF($2, NULL) = $2
+                        THEN users.username = $2
+                    ELSE false
+                END;
+    ''',
+    'get_user_username': '''
+        PREPARE get_user_username(varchar) AS
+        SELECT
+            users.username
+        FROM users
+        WHERE users.username = $1;
+    ''',
+    'get_case_ids': '''
+        PREPARE get_case_ids(integer[]) AS
+        SELECT
+            cases.id AS case_id
+        FROM cases
+        WHERE cases.id = ANY($1);
+    ''',
+    'get_event_ids_by_case_ids': '''
+        PREPARE get_event_ids_by_case_ids(integer[]) AS
+        SELECT
+            ARRAY_AGG(cases.event_id) AS event_ids
+        FROM cases
+        WHERE cases.id = ANY($1);
+    ''',
+    'post_user': '''
+        PREPARE
+            post_user(
+                VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR,
+                VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR
+            ) AS
+        INSERT INTO
+            users(
+                role, username, password, first_name, middle_name, last_name,
+                email, phone, street_name, district, city, zip_code
+            )
+        VALUES(
+            $1, $2, $3, $4, $5, $6,
+            $7, $8, $9, $10, $11, $12
+        )
+        RETURNING id;
+    ''',
+    'post_cases_users': '''
+        PREPARE
+            post_cases_users(integer[], integer) AS
+        INSERT INTO
+            cases_users(case_id, user_id)
+        VALUES
+            (unnest($1), $2);
     '''
 }
