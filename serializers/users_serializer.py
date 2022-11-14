@@ -58,7 +58,7 @@ class UsersSerializer:
     '''
 
     @staticmethod
-    def raw_users_serializer(raw_users):
+    def raw_users_serializer(raw_users: list):
         '''
         The database will return data in list of dict RealDictRow format.
         Call the `raw_users_serializer()` function and pass each raw_user data
@@ -79,48 +79,52 @@ class UsersSerializer:
         return users_objects
 
     @staticmethod
-    def raw_user_serializer(raw_user):
-        '''Serializes raw user data from user resource.'''
+    def raw_user_serializer(raw_user: list):
+        '''
+        Serializes raw user data from user resource.
+        And since the RealDictCursor return the list of RealDictRow object,
+        here assign the single object to raw_user to serialize the rest
+        part of user data (except event_ids and case_ids).
+        '''
+        raw_user_row = raw_user[0]
+        if raw_user_row['event_id'] and raw_user_row['case_id']:
+            event_ids, case_ids = [], []
+            # Serialize the `event_ids` and `case_ids`
+            # And since the different cases could be the same event, here
+            # needs to handle the duplicate event_id.
+            for row in raw_user:
+                if row['event_id'] not in event_ids:
+                    event_ids.append(row['event_id'])
+                case_ids.append(row['case_id'])
+        else:
+            event_ids = case_ids = None
 
-        event_ids, case_ids = [], []
-        # Serialize the `event_ids` and `case_ids`
-        # And since the different cases could be the same event, here
-        # needs to handle the duplicate event_id.
-        for row in raw_user:
-            if row['event_id'] not in event_ids:
-                event_ids.append(row['event_id'])
-            case_ids.append(row['case_id'])
-
-        # Since the RealDictCursor return the list of RealDictRow object,
-        # here assign the single object to raw_user to serialize the rest
-        # part of user data.
-        raw_user = raw_user[0]
         user_address = {
-            'address_line_1': raw_user['street_name'],
-            'address_line_2': raw_user['district'],
-            'city': raw_user['city'],
-            'zip_code': raw_user['zip_code']
+            'address_line_1': raw_user_row['street_name'],
+            'address_line_2': raw_user_row['district'],
+            'city': raw_user_row['city'],
+            'zip_code': raw_user_row['zip_code']
         }
         user_address_object = UserAddress(user_address)
         user_attributes = {
-            'role': raw_user['role'],
-            'username': raw_user['username'],
-            'first_name': raw_user['first_name'],
-            'middle_name': raw_user['middle_name'],
-            'last_name': raw_user['last_name'],
+            'role': raw_user_row['role'],
+            'username': raw_user_row['username'],
+            'first_name': raw_user_row['first_name'],
+            'middle_name': raw_user_row['middle_name'],
+            'last_name': raw_user_row['last_name'],
             'event_ids': event_ids,
             'case_ids': case_ids,
-            'email': raw_user['email'],
-            'phone': raw_user['phone'],
+            'email': raw_user_row['email'],
+            'phone': raw_user_row['phone'],
             'address': user_address_object
         }
         user_attributes_object = UserAttribute(user_attributes)
         user_data = {
-            'id': raw_user['user_id'],
+            'id': raw_user_row['user_id'],
             'type': resources_type['users'],
             'links': {
                 'self': uri_builder(
-                    f'{resources_type["users"]}/{raw_user["user_id"]}'
+                    f'{resources_type["users"]}/{raw_user_row["user_id"]}'
                 )
             },
             'attributes': user_attributes_object

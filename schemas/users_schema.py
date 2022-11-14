@@ -40,8 +40,8 @@ class UserAttributeSchema(Schema):
     lastName = fields.Str(
         required=True, validate=[validate.Length(max=50)]
     )
-    eventIds = fields.List(fields.Str(allow_none=True))
-    caseIds = fields.List(fields.Str(allow_none=True))
+    eventIds = fields.List(fields.Str(), allow_none=True)
+    caseIds = fields.List(fields.Str(), allow_none=True)
     email = fields.Email(
         required=True,
         validate=[validate.Length(max=50), validate.Email()]

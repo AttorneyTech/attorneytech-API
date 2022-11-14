@@ -161,10 +161,18 @@ class UsersDao:
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
-            self.cur.execute(
-                'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
-                {'case_ids': case_ids, 'user_id': user_id}
-            )
+            if case_ids:
+                self.cur.execute(
+                    'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
+                    {'case_ids': case_ids, 'user_id': user_id}
+                )
+            else:
+                self.cur.execute(
+                    '''
+                    EXECUTE post_empty_cases_users(%(case_ids)s, %(user_id)s);
+                    ''',
+                    {'case_ids': case_ids, 'user_id': user_id}
+                )
             self.conn.commit()
         except Exception as err:
             raise err

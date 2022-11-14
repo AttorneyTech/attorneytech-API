@@ -72,8 +72,7 @@ class Users(Resource):
             valid_data, case_ids = validate_post_user(dao, raw_data)
             raw_user_id = dao.post_user(valid_data)
             user_id = raw_user_id[0]
-            if case_ids:
-                dao.post_cases_users(case_ids, user_id)
+            dao.post_cases_users(case_ids, user_id)
             raw_user = dao.get_user_by_id(user_id)
             user_object = UsersSerializer.raw_user_serializer(raw_user)
             serialized_user = UsersSerializer.user_response(user_object)

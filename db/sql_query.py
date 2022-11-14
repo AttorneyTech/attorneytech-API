@@ -153,5 +153,13 @@ prepare_statements = {
             cases_users(case_id, user_id)
         VALUES
             (unnest($1), $2);
+    ''',
+    'post_empty_cases_users': '''
+        PREPARE
+            post_empty_cases_users(integer, integer) AS
+        INSERT INTO
+            cases_users(case_id, user_id)
+        VALUES
+            ($1, $2);
     '''
 }
