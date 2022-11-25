@@ -14,7 +14,7 @@ from common.error_handler import (
 from common.filter_handler import enums_check, filters_to_list
 from common.logger import logger
 from common.string_handler import error_detail_handler
-from common.validate_data import validate_post_user
+from common.validate_data import validate_user_data
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
@@ -69,7 +69,9 @@ class Users(Resource):
         try:
             dao = UsersDao()
             raw_data = request.get_json()
-            valid_data, case_ids = validate_post_user(dao, raw_data)
+            valid_data, case_ids = validate_user_data(
+                dao, raw_data, patch=False
+            )
             raw_user_id = dao.post_user(valid_data)
             user_id = raw_user_id[0]
             dao.post_cases_users(case_ids, user_id)

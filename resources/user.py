@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, request
 from flask_restful import Resource
 
 from common.auth import auth
@@ -8,6 +8,7 @@ from common.error_handler import (
 )
 from common.logger import logger
 from common.string_handler import error_detail_handler
+from common.validate_data import validate_user_data
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
 
@@ -36,3 +37,13 @@ class User(Resource):
             logger.error(detail)
             error_response, error_code = internal_server_error(detail)
             return make_response(error_response, error_code)
+
+    def patch(self, user_id):
+        '''Update information for a user by ID'''
+
+        dao = UsersDao()
+        raw_data = request.get_json()
+        valid_data = validate_user_data(dao, raw_data, patch=True)
+        print('***********')
+        print(valid_data)
+        print('***********')

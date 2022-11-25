@@ -77,8 +77,8 @@ def validate_events_cases(
         )
 
 
-def validate_post_user(
-    dao: object, raw_data: dict
+def validate_user_data(
+    dao: object, raw_data: dict, patch: bool
 ) -> Union[dict, list, None, Exception]:
     '''
     Checking the validation of data for creating a user.
@@ -90,8 +90,11 @@ def validate_post_user(
     '''
 
     try:
-        unchecked_data = UserPostSchema().load(raw_data)
-        email = unchecked_data['data']['attributes']['email']
+        if patch:
+            unchecked_data = UserPostSchema().load(raw_data, partial=True)
+        else:
+            unchecked_data = UserPostSchema().load(raw_data)
+        email = unchecked_data.get('data').get('attributes').get('email')
         username = unchecked_data.get('data').get('attributes').get('username')
         post_case_ids = (
             unchecked_data.get('data').get('attributes').get('caseIds')
