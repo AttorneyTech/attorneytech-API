@@ -181,3 +181,30 @@ class UsersDao:
                 self.cur.close()
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
+
+    def patch_user(self, valid_data, user_id):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor()
+            attributes = valid_data[0].get('data').get('attributes')
+            address = valid_data[0].get('data').get('attributes').get('address')
+            print('***********')
+            print(attributes.keys())
+            print(address)
+            print('***********')
+
+            # self.cur.execute(
+            # f'''
+            # UPDATE users
+            # SET
+            # WHERE users.id = {user_id}
+            # '''
+            # )
+            # self.conn.commit()
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)

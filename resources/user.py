@@ -44,6 +44,4 @@ class User(Resource):
         dao = UsersDao()
         raw_data = request.get_json()
         valid_data = validate_user_data(dao, raw_data, patch=True)
-        print('***********')
-        print(valid_data)
-        print('***********')
+        dao.patch_user(valid_data, user_id)
