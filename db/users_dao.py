@@ -1,6 +1,7 @@
 from flask import request
 from psycopg2.extras import RealDictCursor
 
+from common.string_handler import users_attributes
 from db.connection import conn_pool
 
 
@@ -186,21 +187,42 @@ class UsersDao:
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
-            attributes = valid_data[0].get('data').get('attributes')
-            address = valid_data[0].get('data').get('attributes').get('address')
-            print('***********')
-            print(attributes.keys())
-            print(address)
-            print('***********')
+            attributes = valid_data.get('data').get('attributes')
 
-            # self.cur.execute(
-            # f'''
-            # UPDATE users
-            # SET
-            # WHERE users.id = {user_id}
-            # '''
-            # )
-            # self.conn.commit()
+            set_clauses = []
+            values = []
+            for attr, value in attributes.items():
+                if attr in users_attributes:
+                    attr = users_attributes[attr]
+                if attr in ['caseIds', 'eventIds']:
+                    continue
+                set_clauses.append(f'{attr} = %s')
+                values.append(value)
+
+            set_clause = ', '.join(set_clauses)
+            sql = f'UPDATE users SET {set_clause} WHERE id = %s'
+            values.append(user_id)
+
+            self.cur.execute(sql, tuple(values))
+            self.conn.commit()
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
+    def patch_cases_users(self, case_ids, user_id):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor()
+            if case_ids:
+                self.cur.execute(
+                    'EXECUTE patch_cases_users(%(case_ids)s, %(user_id)s);',
+                    {'case_ids': case_ids, 'user_id': user_id}
+                )
+            self.conn.commit()
         except Exception as err:
             raise err
         finally:

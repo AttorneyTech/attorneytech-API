@@ -161,5 +161,14 @@ prepare_statements = {
             cases_users(case_id, user_id)
         VALUES
             ($1, $2);
+    ''',
+    'patch_cases_users': '''
+        PREPARE
+            patch_cases_users(integer[], integer) AS
+        UPDATE
+            cases_users
+        SET
+            case_id = unnest($1),
+            user_id = $2;
     '''
 }

@@ -1,10 +1,16 @@
+import json
+
 from flask import make_response, request
 from flask_restful import Resource
+from marshmallow import ValidationError
 
 from common.auth import auth
+from common.custom_exception import CustomBadRequestError, CustomConflictError
 from common.error_handler import (
+    bad_request,
     internal_server_error,
-    not_found
+    not_found,
+    error_names
 )
 from common.logger import logger
 from common.string_handler import error_detail_handler
@@ -41,7 +47,42 @@ class User(Resource):
     def patch(self, user_id):
         '''Update information for a user by ID'''
 
-        dao = UsersDao()
-        raw_data = request.get_json()
-        valid_data = validate_user_data(dao, raw_data, patch=True)
-        dao.patch_user(valid_data, user_id)
+        try:
+            dao = UsersDao()
+            raw_data = request.get_json()
+            valid_data, case_ids = validate_user_data(
+                dao, raw_data, patch=True
+            )
+
+            print('***********')
+            print(case_ids)
+            print('***********')
+
+            if case_ids:
+                dao.patch_cases_users(case_ids, user_id)
+
+            dao.patch_user(valid_data, user_id)
+
+        except (ValidationError, CustomBadRequestError) as err:
+            details = []
+            if type(err).__name__ == 'ValidationError':
+                details.append(
+                    error_detail_handler(
+                        json.dumps(err.messages, ensure_ascii=False)
+                    )
+                )
+            else:
+                detail = error_detail_handler(err)
+                details.append(detail)
+            logger.error(details)
+            error_response, error_code = bad_request(details)
+            return make_response(error_response, error_code)
+        except (CustomConflictError, Exception) as err:
+            detail = error_detail_handler(err)
+            logger.error(detail)
+            if type(err).__name__ in error_names.keys():
+                error_handler = error_names[type(err).__name__]
+            else:
+                error_handler = internal_server_error
+            error_response, error_code = error_handler(detail)
+            return make_response(error_response, error_code)

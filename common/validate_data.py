@@ -94,6 +94,7 @@ def validate_user_data(
             unchecked_data = UserPostSchema().load(raw_data, partial=True)
         else:
             unchecked_data = UserPostSchema().load(raw_data)
+
         email = unchecked_data.get('data').get('attributes').get('email')
         username = unchecked_data.get('data').get('attributes').get('username')
         post_case_ids = (
