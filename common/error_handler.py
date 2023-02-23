@@ -53,6 +53,14 @@ def not_found(detail: str) -> Union[dict, int]:
     return error_response, 404
 
 
+def user_not_found(user_id):
+    detail = (
+        f'The resource requested (user ID:{user_id}) not found.'
+    )
+    error_response, error_code = not_found(detail)
+    return error_response, error_code, detail
+
+
 # 409 Conflict
 def conflict(detail: str) -> Union[dict, int]:
     error_object = [

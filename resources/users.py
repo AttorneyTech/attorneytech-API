@@ -1,5 +1,3 @@
-import json
-
 from flask import make_response, request
 from flask_restful import Resource
 from marshmallow import ValidationError
@@ -13,7 +11,7 @@ from common.error_handler import (
 )
 from common.filter_handler import enums_check, filters_to_list
 from common.logger import logger
-from common.string_handler import error_detail_handler
+from common.string_handler import error_detail_handler, get_values
 from common.validate_data import validate_user_data
 from db.users_dao import UsersDao
 from serializers.users_serializer import UsersSerializer
@@ -82,11 +80,13 @@ class Users(Resource):
         except (ValidationError, CustomBadRequestError) as err:
             details = []
             if type(err).__name__ == 'ValidationError':
-                details.append(
-                    error_detail_handler(
-                        json.dumps(err.messages, ensure_ascii=False)
-                    )
-                )
+                messages = get_values(data=err.messages, values=[])
+                details = [error_detail_handler(detail) for detail in messages]
+                # details.append(
+                #     error_detail_handler(
+                #         json.dumps(err.messages, ensure_ascii=False)
+                #     )
+                # )
             else:
                 detail = error_detail_handler(err)
                 details.append(detail)

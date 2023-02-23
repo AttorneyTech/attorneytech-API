@@ -199,6 +199,9 @@ class UsersDao:
                 set_clauses.append(f'{attr} = %s')
                 values.append(value)
 
+            if not set_clauses:
+                return
+
             set_clause = ', '.join(set_clauses)
             sql = f'UPDATE users SET {set_clause} WHERE id = %s'
             values.append(user_id)
@@ -217,11 +220,14 @@ class UsersDao:
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
-            if case_ids:
-                self.cur.execute(
-                    'EXECUTE patch_cases_users(%(case_ids)s, %(user_id)s);',
-                    {'case_ids': case_ids, 'user_id': user_id}
-                )
+            self.cur.execute(
+                'EXECUTE del_exist_cases_users(%(user_id)s);',
+                {'user_id': user_id}
+            )
+            self.cur.execute(
+                'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
+                {'case_ids': case_ids, 'user_id': user_id}
+            )
             self.conn.commit()
         except Exception as err:
             raise err

@@ -162,13 +162,10 @@ prepare_statements = {
         VALUES
             ($1, $2);
     ''',
-    'patch_cases_users': '''
+    'del_exist_cases_users': '''
         PREPARE
-            patch_cases_users(integer[], integer) AS
-        UPDATE
-            cases_users
-        SET
-            case_id = unnest($1),
-            user_id = $2;
+            del_exist_cases_users (integer) AS
+        DELETE FROM cases_users
+        WHERE user_id = $1;
     '''
 }

@@ -9,7 +9,7 @@ from common.custom_exception import CustomBadRequestError, CustomConflictError
 from common.error_handler import (
     bad_request,
     internal_server_error,
-    not_found,
+    user_not_found,
     error_names
 )
 from common.logger import logger
@@ -26,17 +26,18 @@ class User(Resource):
 
         try:
             dao = UsersDao
+            if not user_id.isdigit():
+                error_response, error_code, detail = user_not_found(user_id)
+                logger.error(detail)
+                return make_response(error_response, error_code)
             raw_user = dao.get_user_by_id(self, user_id)
             if raw_user:
                 user_object = UsersSerializer.raw_user_serializer(raw_user)
                 serialized_user = UsersSerializer.user_response(user_object)
                 return make_response(serialized_user, 200)
             else:
-                detail = (
-                    f'The resource requested (user ID:{user_id}) not found.'
-                )
+                error_response, error_code, detail = user_not_found(user_id)
                 logger.error(detail)
-                error_response, error_code = not_found(detail)
                 return make_response(error_response, error_code)
         except Exception as err:
             detail = error_detail_handler(err)
@@ -54,11 +55,11 @@ class User(Resource):
                 dao, raw_data, patch=True
             )
 
-            print('***********')
-            print(case_ids)
-            print('***********')
+            attributes = valid_data.get('data').get('attributes')
 
-            if case_ids:
+            # Patch caseIds to null
+            if 'caseIds' in attributes.keys():
+                case_ids = attributes['caseIds']
                 dao.patch_cases_users(case_ids, user_id)
 
             dao.patch_user(valid_data, user_id)

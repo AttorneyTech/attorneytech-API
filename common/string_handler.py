@@ -22,3 +22,18 @@ def error_detail_handler(raw_detail: str | BaseException) -> str:
     ).replace('\"', '').replace('\n', '').replace('  ', '')
 
     return string
+
+
+def get_values(data, values):
+    '''
+    This function is mainly for processing strings
+    verified by marshmallow.
+    '''
+
+    if isinstance(data, dict):
+        for v in data.values():
+            get_values(v, values)
+    else:
+        values.append(data[0])
+
+    return values
