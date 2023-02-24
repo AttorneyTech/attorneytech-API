@@ -1,11 +1,10 @@
-import json
-
 from flask import make_response, request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
 from common.auth import auth
 from common.custom_exception import CustomBadRequestError, CustomConflictError
+from common.dict_handler import get_marshmallow_valid_message
 from common.error_handler import (
     bad_request,
     internal_server_error,
@@ -65,11 +64,10 @@ class User(Resource):
         except (ValidationError, CustomBadRequestError) as err:
             details = []
             if type(err).__name__ == 'ValidationError':
-                details.append(
-                    error_detail_handler(
-                        json.dumps(err.messages, ensure_ascii=False)
-                    )
+                messages = get_marshmallow_valid_message(
+                    data=err.messages, values=[]
                 )
+                details = [error_detail_handler(detail) for detail in messages]
             else:
                 detail = error_detail_handler(err)
                 details.append(detail)

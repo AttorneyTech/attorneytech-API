@@ -1,7 +1,7 @@
 from flask import request
 from psycopg2.extras import RealDictCursor
 
-from common.string_handler import users_attributes
+from common.dict_handler import get_patch_user_values
 from db.connection import conn_pool
 
 
@@ -212,29 +212,26 @@ class UsersDao:
 
         Then wrap values in tuple and map to set_clause string.
         '''
+
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
-            attributes = valid_data.get('data').get('attributes')
+            patch_attributes = valid_data.get('data').get('attributes')
+            set_columns, patch_values = get_patch_user_values(patch_attributes)
 
-            set_clauses = []
-            values = []
-            for attr, value in attributes.items():
-                if attr in users_attributes:
-                    attr = users_attributes[attr]
-                if attr in ['caseIds', 'eventIds']:
-                    continue
-                set_clauses.append(f'{attr} = %s')
-                values.append(value)
+            print('***********')
+            print(set_columns)
+            print(patch_values)
+            print('***********')
 
-            if not set_clauses:
+            if not set_columns:
                 return
 
-            set_clause = ', '.join(set_clauses)
-            sql = f'UPDATE users SET {set_clause} WHERE id = %s'
-            values.append(user_id)
+            set_column = ', '.join(set_columns)
+            sql = f'UPDATE users SET {set_column} WHERE id = %s'
+            patch_values.append(user_id)
 
-            self.cur.execute(sql, tuple(values))
+            self.cur.execute(sql, tuple(patch_values))
             self.conn.commit()
         except Exception as err:
             raise err
