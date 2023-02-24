@@ -162,9 +162,9 @@ prepare_statements = {
         VALUES
             ($1, $2);
     ''',
-    'del_exist_cases_users': '''
+    'del_cases_users': '''
         PREPARE
-            del_exist_cases_users (integer) AS
+            del_cases_users (integer) AS
         DELETE FROM cases_users
         WHERE user_id = $1;
     '''

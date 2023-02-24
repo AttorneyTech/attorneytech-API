@@ -183,7 +183,35 @@ class UsersDao:
             if self.conn:
                 conn_pool.putconn(conn=self.conn)
 
+    def post_empty_cases_users(self, case_ids, user_id):
+        try:
+            self.conn = conn_pool.getconn()
+            self.cur = self.conn.cursor()
+            self.cur.execute(
+                '''
+                EXECUTE post_empty_cases_users(%(case_ids)s, %(user_id)s);
+                ''',
+                {'case_ids': case_ids, 'user_id': user_id}
+            )
+            self.conn.commit()
+        except Exception as err:
+            raise err
+        finally:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                conn_pool.putconn(conn=self.conn)
+
     def patch_user(self, valid_data, user_id):
+        '''
+        Suppose now patch first Name and middle Name.
+
+        :set_clauses: ['middle_name = %s', 'first_name = %s']
+        :set_clause: first_name = %s, middle_name = %s
+        :values: ['new_middle_name', 'new_first_name', 'user_id']
+
+        Then wrap values in tuple and map to set_clause string.
+        '''
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
@@ -221,13 +249,21 @@ class UsersDao:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
             self.cur.execute(
-                'EXECUTE del_exist_cases_users(%(user_id)s);',
+                'EXECUTE del_cases_users(%(user_id)s);',
                 {'user_id': user_id}
             )
-            self.cur.execute(
-                'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
-                {'case_ids': case_ids, 'user_id': user_id}
-            )
+            if case_ids:
+                self.cur.execute(
+                    'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
+                    {'case_ids': case_ids, 'user_id': user_id}
+                )
+            else:
+                self.cur.execute(
+                    '''
+                    EXECUTE post_empty_cases_users(%(case_ids)s, %(user_id)s);
+                    ''',
+                    {'case_ids': case_ids, 'user_id': user_id}
+                )
             self.conn.commit()
         except Exception as err:
             raise err

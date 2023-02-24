@@ -57,9 +57,7 @@ class User(Resource):
 
             attributes = valid_data.get('data').get('attributes')
 
-            # Patch caseIds to null
             if 'caseIds' in attributes.keys():
-                case_ids = attributes['caseIds']
                 dao.patch_cases_users(case_ids, user_id)
 
             dao.patch_user(valid_data, user_id)
