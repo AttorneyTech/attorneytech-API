@@ -60,7 +60,10 @@ class User(Resource):
                 dao.patch_cases_users(case_ids, user_id)
 
             dao.patch_user(valid_data, user_id)
-
+            raw_user = dao.get_user_by_id(user_id)
+            user_object = UsersSerializer.raw_user_serializer(raw_user)
+            serialized_user = UsersSerializer.user_response(user_object)
+            return make_response(serialized_user, 200)
         except (ValidationError, CustomBadRequestError) as err:
             details = []
             if type(err).__name__ == 'ValidationError':
