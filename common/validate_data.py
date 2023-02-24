@@ -13,7 +13,9 @@ def validate_email_username(
 
     if username is not None and username.isspace():
         raise CustomConflictError('The username cannot be empty.')
+
     raw_result = dao.get_email_username(email, username)
+
     if raw_result:
         for row in raw_result:
             if row['email'] == email:
@@ -43,10 +45,12 @@ def validate_cases_ids(
         case_ids.append(int(item))
 
     raw_case_ids = dao.get_case_ids(case_ids)
+
     if not raw_case_ids:
         raise CustomBadRequestError('Inputted case_ids does not exist.')
 
     diff_set = set(case_ids) - set([row['case_id'] for row in raw_case_ids])
+
     if diff_set:
         raise CustomBadRequestError(
             f'Inputted case_ids: {diff_set} does not exist.'
@@ -63,11 +67,13 @@ def validate_events_cases(
     for item in post_event_ids:
         if not item.isdigit():
             raise CustomBadRequestError('Event id must be a digit string.')
+
         event_ids.append(int(item))
 
     result = dao.get_event_ids_by_case_ids(case_ids)
     result_event_ids = set(result['event_ids'])
     input_event_ids = set(event_ids)
+
     if result_event_ids != input_event_ids:
         invalid_event_ids = result_event_ids.intersection(input_event_ids)
         raise CustomConflictError(
@@ -112,6 +118,7 @@ def validate_user_data(
                 raise CustomBadRequestError(
                     'Case_ids and event_ids cannot be empty.'
                 )
+
             case_ids = validate_cases_ids(dao, post_case_ids)
             validate_events_cases(dao, post_event_ids, case_ids)
             return unchecked_data, case_ids

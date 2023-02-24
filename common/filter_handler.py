@@ -46,4 +46,5 @@ def filters_to_list(filters: str, data_type=None, default_value=None) -> List:
                     result.append(default_value)
             else:
                 result.append(filter)
+
     return result

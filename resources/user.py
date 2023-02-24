@@ -29,7 +29,9 @@ class User(Resource):
                 error_response, error_code, detail = user_not_found(user_id)
                 logger.error(detail)
                 return make_response(error_response, error_code)
+
             raw_user = dao.get_user_by_id(self, user_id)
+
             if raw_user:
                 user_object = UsersSerializer.raw_user_serializer(raw_user)
                 serialized_user = UsersSerializer.user_response(user_object)
@@ -66,6 +68,7 @@ class User(Resource):
             return make_response(serialized_user, 200)
         except (ValidationError, CustomBadRequestError) as err:
             details = []
+
             if type(err).__name__ == 'ValidationError':
                 messages = get_marshmallow_valid_message(
                     data=err.messages, values=[]
@@ -74,15 +77,18 @@ class User(Resource):
             else:
                 detail = error_detail_handler(err)
                 details.append(detail)
+
             logger.error(details)
             error_response, error_code = bad_request(details)
             return make_response(error_response, error_code)
         except (CustomConflictError, Exception) as err:
             detail = error_detail_handler(err)
             logger.error(detail)
+
             if type(err).__name__ in error_names.keys():
                 error_handler = error_names[type(err).__name__]
             else:
                 error_handler = internal_server_error
+
             error_response, error_code = error_handler(detail)
             return make_response(error_response, error_code)

@@ -45,5 +45,4 @@ def get_patch_user_values(patch_attributes):
                 patch_values.append(v)
 
     get_values_recursive(patch_attributes)
-
     return set_columns, patch_values

@@ -8,5 +8,4 @@ def uri_builder(resource_path: str) -> str:
         f'{config_server["api_version"]}'
     )
     uri = f'{api_base_url}/{resource_path}'
-
     return uri

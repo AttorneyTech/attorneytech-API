@@ -83,6 +83,7 @@ class Users(Resource):
             return make_response(serialized_user, 201)
         except (ValidationError, CustomBadRequestError) as err:
             details = []
+
             if type(err).__name__ == 'ValidationError':
                 messages = get_marshmallow_valid_message(
                     data=err.messages, values=[]
@@ -91,15 +92,18 @@ class Users(Resource):
             else:
                 detail = error_detail_handler(err)
                 details.append(detail)
+
             logger.error(details)
             error_response, error_code = bad_request(details)
             return make_response(error_response, error_code)
         except (CustomConflictError, Exception) as err:
             detail = error_detail_handler(err)
             logger.error(detail)
+
             if type(err).__name__ in error_names.keys():
                 error_handler = error_names[type(err).__name__]
             else:
                 error_handler = internal_server_error
+
             error_response, error_code = error_handler(detail)
             return make_response(error_response, error_code)

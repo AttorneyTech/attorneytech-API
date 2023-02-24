@@ -162,6 +162,7 @@ class UsersDao:
         try:
             self.conn = conn_pool.getconn()
             self.cur = self.conn.cursor()
+
             if case_ids:
                 self.cur.execute(
                     'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
@@ -174,6 +175,7 @@ class UsersDao:
                     ''',
                     {'case_ids': case_ids, 'user_id': user_id}
                 )
+
             self.conn.commit()
         except Exception as err:
             raise err
@@ -219,18 +221,12 @@ class UsersDao:
             patch_attributes = valid_data.get('data').get('attributes')
             set_columns, patch_values = get_patch_user_values(patch_attributes)
 
-            print('***********')
-            print(set_columns)
-            print(patch_values)
-            print('***********')
-
             if not set_columns:
                 return
 
             set_column = ', '.join(set_columns)
             sql = f'UPDATE users SET {set_column} WHERE id = %s'
             patch_values.append(user_id)
-
             self.cur.execute(sql, tuple(patch_values))
             self.conn.commit()
         except Exception as err:
@@ -249,6 +245,7 @@ class UsersDao:
                 'EXECUTE del_cases_users(%(user_id)s);',
                 {'user_id': user_id}
             )
+
             if case_ids:
                 self.cur.execute(
                     'EXECUTE post_cases_users(%(case_ids)s, %(user_id)s);',
@@ -261,6 +258,7 @@ class UsersDao:
                     ''',
                     {'case_ids': case_ids, 'user_id': user_id}
                 )
+
             self.conn.commit()
         except Exception as err:
             raise err
