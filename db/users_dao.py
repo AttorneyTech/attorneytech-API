@@ -48,7 +48,6 @@ class UsersDao:
         query_param_pairs = [
             ('EXECUTE get_user_by_id(%(user_id)s);', {'user_id': user_id})
         ]
-
         return self.execute_query(query_param_pairs, fetch_type='all')
 
     def get_users(self, role, city, event_ids, case_ids):
@@ -157,7 +156,6 @@ class UsersDao:
                 {'case_ids': case_ids, 'user_id': user_id}
             )
         ]
-
         return self.execute_query(query_param_pairs, commit=True)
 
     def patch_user(self, valid_data, user_id):
