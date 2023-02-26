@@ -24,13 +24,13 @@ class User(Resource):
         '''Get the specific user data by user ID'''
 
         try:
-            dao = UsersDao
+            dao = UsersDao()
             if not user_id.isdigit():
                 error_response, error_code, detail = user_not_found(user_id)
                 logger.error(detail)
                 return make_response(error_response, error_code)
 
-            raw_user = dao.get_user_by_id(self, user_id)
+            raw_user = dao.get_user_by_id(user_id)
 
             if raw_user:
                 user_object = UsersSerializer.raw_user_serializer(raw_user)

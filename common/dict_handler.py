@@ -36,13 +36,13 @@ def get_patch_user_values(patch_attributes):
     set_columns = []
     patch_values = []
 
-    def get_values_recursive(patch_attributes):
+    def traverse_attributes(patch_attributes):
         for k, v in patch_attributes.items():
             if isinstance(v, dict):
-                get_values_recursive(v)
+                traverse_attributes(v)
             elif k in users_attributes and k not in ['caseIds', 'eventIds']:
                 set_columns.append(f'{users_attributes[k]} = %s')
                 patch_values.append(v)
 
-    get_values_recursive(patch_attributes)
+    traverse_attributes(patch_attributes)
     return set_columns, patch_values

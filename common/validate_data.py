@@ -84,7 +84,7 @@ def validate_events_cases(
 
 
 def validate_user_data(
-    dao: object, raw_data: dict, patch: bool
+    dao: object, raw_data: dict, post: bool = False, patch: bool = False
 ) -> Union[dict, list, None, Exception]:
     '''
     Checking the validation of data for creating a user.
@@ -96,10 +96,10 @@ def validate_user_data(
     '''
 
     try:
-        if patch:
-            unchecked_data = UserPostSchema().load(raw_data, partial=True)
-        else:
+        if post:
             unchecked_data = UserPostSchema().load(raw_data)
+        elif patch:
+            unchecked_data = UserPostSchema().load(raw_data, partial=True)
 
         email = unchecked_data.get('data').get('attributes').get('email')
         username = unchecked_data.get('data').get('attributes').get('username')

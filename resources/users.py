@@ -67,10 +67,9 @@ class Users(Resource):
             dao = UsersDao()
             raw_data = request.get_json()
             valid_data, case_ids = validate_user_data(
-                dao, raw_data, patch=False
+                dao, raw_data, post=True
             )
-            raw_user_id = dao.post_user(valid_data)
-            user_id = raw_user_id[0]
+            user_id = dao.post_user(valid_data)['id']
 
             if case_ids:
                 dao.post_cases_users(case_ids, user_id)
