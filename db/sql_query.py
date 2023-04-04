@@ -161,5 +161,11 @@ prepare_statements = {
             cases_users(case_id, user_id)
         VALUES
             ($1, $2);
+    ''',
+    'del_cases_users': '''
+        PREPARE
+            del_cases_users (integer) AS
+        DELETE FROM cases_users
+        WHERE user_id = $1;
     '''
 }
